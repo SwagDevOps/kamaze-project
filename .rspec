@@ -1,0 +1,5 @@
+--require ./spec/helper.rb
+--color
+--pattern ./spec/**/*_spec.rb
+--format progress
+--order rand
