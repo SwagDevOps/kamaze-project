@@ -6,6 +6,7 @@
 /.vagrant/
 /.yardoc
 /_yardoc/
+/build/
 /coverage/
 /doc/
 /Gemfile.lock
