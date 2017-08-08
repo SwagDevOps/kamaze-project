@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
-require 'swag_dev/project/rake/gemspec'
+require 'swag_dev/project/tasks/gemspec'
 require 'rake/clean'
 require 'cliver'
 
@@ -21,7 +21,7 @@ namespace :gem do
     # internal namespace name
     ns = '_%s' % SecureRandom.hex(4)
     namespace ns do
-      task = Gem::PackageTask.new(project.spec)
+      task = Gem::PackageTask.new(project.gem.spec)
       task.define
       # Task management
       begin
@@ -34,7 +34,7 @@ namespace :gem do
     end
   end
 
-  if (project.spec&.executables).to_a.size > 0 and Cliver.detect(:rubyc)
+  if (project.gem.spec&.executables).to_a.size > 0 and Cliver.detect(:rubyc)
     CLOBBER.include('build')
 
     desc 'compile executables'
@@ -61,7 +61,7 @@ namespace :gem do
              '--jobs', Etc.nprocessors.to_s,
              '--without', 'development', 'doc', 'test')
 
-          project.spec.executables.each do |executable|
+          project.gem.spec.executables.each do |executable|
             sh(ENV.to_h, Cliver.detect!(:rubyc),
                "#{project.spec.bindir}/#{executable}",
                '-d', "#{curdir}/#{tmpdir}",
@@ -86,7 +86,7 @@ namespace :gem do
     sh(*[Cliver.detect(:sudo),
          Cliver.detect!(:gem),
          :install,
-         project.gem].compact.map(&:to_s))
+         project.spec.gem].compact.map(&:to_s))
   end
 
   # @see http://guides.rubygems.org/publishing/
@@ -99,7 +99,7 @@ namespace :gem do
      'rubygems/gem_runner',
      'rubygems/exceptions'].each { |i| require i }
 
-    args = ['push', project.gem]
+    args = ['push', project.spec.gem]
     begin
       Gem::GemRunner.new.run(args.map(&:to_s))
     rescue Gem::SystemExitException => e

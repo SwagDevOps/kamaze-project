@@ -4,7 +4,7 @@
 # see: https://gist.github.com/chetan/1827484
 
 require 'swag_dev/project'
-require 'swag_dev/project/rake/gem'
+require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 
 project = SwagDev::Project.new
