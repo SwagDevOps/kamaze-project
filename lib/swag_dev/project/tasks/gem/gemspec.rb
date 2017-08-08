@@ -8,8 +8,6 @@ project      = SwagDev::Project.new
 template     = 'gemspec.tpl'
 dependencies = [template] + (project.gem.spec&.files).to_a
 
-CLOBBER.include("#{project.name}.gemspec")
-
 file "#{project.name}.gemspec": FileList.new(*dependencies) do
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin].each do |required|
     require required.to_s
