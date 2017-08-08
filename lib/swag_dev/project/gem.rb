@@ -9,14 +9,14 @@ require 'pathname'
 # and a ``name``, more informations are retrieved from
 # ``spec_file`` (through ``Gem::Specification``).
 class SwagDev::Project::Gem
-  # @return [String\Symbol]
+  # @return [String|Symbol]
   attr_reader :name
 
   # @return [Pathname]
   attr_reader :working_dir
 
   # @param [String|Symbol|Object] gem_name
-  # @param [String\Pathname] path
+  # @param [String|Pathname] working_dir
   def initialize(gem_name, working_dir = Dir.pwd)
     @name = gem_name
     @working_dir = Pathname.new(working_dir).realpath
@@ -26,7 +26,7 @@ class SwagDev::Project::Gem
   #
   # @return [Gem::Specification]
   def spec
-    Gem::Specification::load(spec_file)
+    Gem::Specification::load(spec_file.to_s)
   end
 
   # @return [Pathname]
