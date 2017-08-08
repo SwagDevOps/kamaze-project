@@ -2,38 +2,16 @@
 
 require 'swag_dev/project'
 require 'swag_dev/project/tasks/gem/gemspec'
+require 'swag_dev/project/tasks/gem/package'
 require 'rake/clean'
 require 'cliver'
 
 project = SwagDev::Project.new
 
-CLOBBER.include('pkg')
-
 desc 'Build all the packages'
 task gem: ['gem:gemspec', 'gem:package']
 
 namespace :gem do
-  # desc Rake::Task[:gem].comment
-  task package: FileList.new('gem:gemspec', 'lib/**/*.rb') do
-    require 'rubygems/package_task'
-    require 'securerandom'
-
-    # internal namespace name
-    ns = '_%s' % SecureRandom.hex(4)
-    namespace ns do
-      task = Gem::PackageTask.new(project.gem.spec)
-      task.define
-      # Task management
-      begin
-        Rake::Task['%s:package' % ns].invoke
-      rescue Gem::InvalidSpecificationException => e
-        STDERR.puts(e)
-        exit 1
-      end
-      Rake::Task['clobber'].reenable
-    end
-  end
-
   if (project.gem.spec&.executables).to_a.size > 0 and Cliver.detect(:rubyc)
     CLOBBER.include('build')
 
