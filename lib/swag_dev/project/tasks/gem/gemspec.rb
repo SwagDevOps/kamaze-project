@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
+require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 
-project = SwagDev::Project.new
+project      = SwagDev::Project.new
+template     = 'gemspec.tpl'
+dependencies = [template] + (project.gem.spec&.files).to_a
 
 CLOBBER.include("#{project.name}.gemspec")
 
-GEMSPEC_TEMPLATE = 'gemspec.tpl'
-
-file "#{project.name}.gemspec" => FileList.new(GEMSPEC_TEMPLATE,
-                                               'Gemfile',
-                                               'lib/**/*.rb',
-                                               'lib/**/version_info.yml') do
+file "#{project.name}.gemspec": FileList.new(*dependencies) do
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin].each do |required|
     require required.to_s
   end
@@ -23,7 +21,7 @@ file "#{project.name}.gemspec" => FileList.new(GEMSPEC_TEMPLATE,
   )
 
   files = OpenStruct.new(
-    templated: Pathname.new(GEMSPEC_TEMPLATE),
+    templated: Pathname.new(template),
     generated: Pathname.new(Dir.pwd).join("#{project.name}.gemspec")
   )
 
@@ -33,8 +31,9 @@ file "#{project.name}.gemspec" => FileList.new(GEMSPEC_TEMPLATE,
                  .flatten.fetch(0)
 
   context = {
-    dependencies: tools.deps_gen.generate_project_dependencies(spec_id).strip,
     name: project.name,
+    dependencies: tools.deps_gen
+                       .generate_project_dependencies(spec_id).strip,
   }.merge(project.version_info)
 
   content = tools.template.render(files.templated.to_s, context)

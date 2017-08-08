@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
-require 'swag_dev/project/tasks/gemspec'
+require 'swag_dev/project/tasks/gem/gemspec'
 require 'rake/clean'
 require 'cliver'
 
