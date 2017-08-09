@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 # base
 gem 'activesupport', '~> 5.1'
 gem 'version_info', '~> 1.9'
+gem 'sham', '~> 1.1'
 
 gem 'listen', '~> 3.1'
 gem 'pry', '~> 0.10'
@@ -31,6 +32,5 @@ group :development do
 end
 
 group :test, :development do
-  gem 'hashie', '~> 3.5'
   gem 'factory_girl', '~> 4.8'
 end
