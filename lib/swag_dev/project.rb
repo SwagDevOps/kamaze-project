@@ -2,40 +2,64 @@
 
 require 'pathname'
 
-unless Kernel.const_defined?('SwagDev')
-  module SwagDev
+module SwagDev
+  class Project
+    [
+      'concern/helper',
+      'concern/versionable',
+      'gem'
+    ].each { |req| require "swag_dev/project/#{req}" }
+  end
+
+  class << self
+    include Project::Concern::Helper
+
+    # Get a singleton instance of project
+    #
+    # @return [SwagDev::Project]
+    def project
+      helper.get(:project)
+    end
   end
 end
 
 class SwagDev::Project
-  require 'swag_dev/project/concern/versionable'
-  require 'swag_dev/project/concern/helper'
-  require 'swag_dev/project/gem'
-
   include Concern::Versionable
   include Concern::Helper
 
+  # Project name
+  #
   # @return [Symbol]
   attr_reader :name
 
   # @return [Hash]
   attr_reader :version_info
 
+  # Project gem
+  #
   # @return [Pathname]
   attr_reader :gem
 
+  # Project subject, main class
+  #
+  # @return [Class]
+  attr_reader :subject
+
   def initialize
     @name = ENV.fetch('PROJECT_NAME').to_sym
+    @subject = subject!
     @version_info = ({
                        version: subject.VERSION.to_s
                      }.merge(subject.version_info)).freeze
     @gem = Gem.new(@name)
   end
 
+  protected
+
   # Main class (subject of project)
   #
   # @return [Class]
-  def subject
+  def subject!
     inflector = helper.get(:inflector)
     name = self.name.to_s.gsub('-', '/')
 
