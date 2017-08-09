@@ -5,3 +5,4 @@
 --protected
 --embed-mixins
 --readme README.md
+--exclude /lib/swag_dev/project/tasks/
