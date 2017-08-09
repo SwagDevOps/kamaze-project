@@ -12,48 +12,6 @@ desc 'Build all the packages'
 task gem: ['gem:gemspec', 'gem:package']
 
 namespace :gem do
-  if (project.gem.spec&.executables).to_a.size > 0 and Cliver.detect(:rubyc)
-    CLOBBER.include('build')
-
-    desc 'compile executables'
-    task compile: ['gem:package'] do
-      curdir = Pathname.new('.').realpath
-      pkgdir = "pkg/#{project.name}-#{project.version_info[:version]}"
-      srcdir = 'build/src'
-      tmpdir = 'build/tmp'
-      bindir = Pathname.new('build')
-                       .join(RbConfig::CONFIG['host_os'])
-                       .join(RbConfig::CONFIG['host_cpu'])
-
-      Bundler.with_clean_env do
-        rm_rf(srcdir)
-        [srcdir, bindir, tmpdir]
-          .map(&:to_s).sort.each { |dir| mkdir_p(dir) }
-        Dir.glob(["#{pkgdir}/*", "*.gemspec", 'Gemfile', 'Gemfile.lock'])
-           .sort
-           .each { |path| cp_r(path, srcdir) }
-
-        Dir.chdir(srcdir) do
-          sh(Cliver.detect!(:bundle), 'install',
-             '--path', 'vendor/bundle', '--clean',
-             '--jobs', Etc.nprocessors.to_s,
-             '--without', 'development', 'doc', 'test')
-
-          project.gem.spec.executables.each do |executable|
-            sh(ENV.to_h, Cliver.detect!(:rubyc),
-               "#{project.spec.bindir}/#{executable}",
-               '-d', "#{curdir}/#{tmpdir}",
-               '-r', "#{curdir}/#{srcdir}",
-               '-o', "#{curdir}/#{bindir}/#{executable}")
-            sh(Cliver.detect!(:strip),
-               '-s', "#{curdir}/#{bindir}/#{executable}") if Cliver.detect(:strip)
-            # tar -czfv bin.tgz bin/
-          end
-        end
-      end
-    end
-  end
-
   desc 'Update gemspec'
   task gemspec: "#{project.name}.gemspec"
 
