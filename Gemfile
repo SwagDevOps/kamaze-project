@@ -7,7 +7,6 @@ source 'https://rubygems.org'
 gem 'activesupport', '~> 5.1'
 gem 'version_info', '~> 1.9'
 
-gem 'rake', '~> 12.0'
 gem 'listen', '~> 3.1'
 gem 'pry', '~> 0.10'
 gem 'cliver', '= 0.3.2'
@@ -26,8 +25,12 @@ gem 'redcarpet', '~> 3.4'
 gem 'github-markup', '~> 1.6'
 # test
 gem 'rspec', '~> 3.6'
-gem 'factory_girl', '~> 4.8'
+
+group :development do
+  gem 'rake', '~> 12.0'
+end
 
 group :test, :development do
   gem 'hashie', '~> 3.5'
+  gem 'factory_girl', '~> 4.8'
 end
