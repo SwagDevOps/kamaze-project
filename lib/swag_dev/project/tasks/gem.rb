@@ -6,7 +6,7 @@ require 'swag_dev/project/tasks/gem/package'
 require 'rake/clean'
 require 'cliver'
 
-project = SwagDev::Project.new
+project = SwagDev.project
 
 desc 'Build all the packages'
 task gem: ['gem:gemspec', 'gem:package']

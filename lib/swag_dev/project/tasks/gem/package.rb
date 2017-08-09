@@ -4,7 +4,7 @@ require 'swag_dev/project'
 require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 
-project      = SwagDev::Project.new
+project      = SwagDev.project
 dependencies = ['gem:gemspec'] + (project.gem.spec&.files).to_a
 
 CLOBBER.include('pkg')

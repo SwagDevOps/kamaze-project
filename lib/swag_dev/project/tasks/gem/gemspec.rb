@@ -4,7 +4,7 @@ require 'swag_dev/project'
 require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 
-project      = SwagDev::Project.new
+project      = SwagDev.project
 template     = 'gemspec.tpl'
 dependencies = [template] + (project.gem.spec&.files).to_a
 

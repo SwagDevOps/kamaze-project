@@ -5,7 +5,7 @@ require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 require 'cliver'
 
-project      = SwagDev::Project.new
+project      = SwagDev.project
 executables  = (project.gem.spec&.executables).to_a
 pkg_dir      = "pkg/#{project.name}-#{project.version_info[:version]}"
 sys          = RbConfig::CONFIG
