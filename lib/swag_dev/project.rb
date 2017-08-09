@@ -6,15 +6,20 @@ module SwagDev
   class Project
     [
       'concern/helper',
+      'concern/sham',
       'concern/versionable',
       'gem'
     ].each { |req| require "swag_dev/project/#{req}" }
+
+    include Concern::Helper
+    include Concern::Sham
+    include Concern::Versionable
   end
 
   class << self
     include Project::Concern::Helper
 
-    # Get a singleton instance of project
+    # Get an instance of project
     #
     # @return [SwagDev::Project]
     def project
@@ -24,9 +29,6 @@ module SwagDev
 end
 
 class SwagDev::Project
-  include Concern::Versionable
-  include Concern::Helper
-
   # Project name
   #
   # @return [Symbol]
@@ -60,9 +62,8 @@ class SwagDev::Project
   #
   # @return [Class]
   def subject!
-    inflector = helper.get(:inflector)
     name = self.name.to_s.gsub('-', '/')
 
-    inflector.constantize(inflector.classify(name))
+    helper.get(:inflector).resolve(name)
   end
 end
