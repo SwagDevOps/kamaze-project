@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
+require 'swag_dev/project/tasks/doc'
 require 'pathname'
 require 'listen'
 
-project = SwagDev::Project.new
+project = SwagDev.project
 
 # @todo use a kind of config
 ignored_patterns = [
