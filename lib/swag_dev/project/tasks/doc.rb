@@ -69,36 +69,4 @@ if (yardopts_file = Pathname.new(Dir.pwd).join('.yardopts')).file?
       end
     end
   end
-
-  namespace :doc do
-    desc 'Watch documentation changes'
-    task watch: ['gem:gemspec'] do
-      require 'listen'
-
-      options = {
-        only:   /\.rb$/,
-        ignore: ignored_patterns,
-      }
-
-      # ENV['LISTEN_GEM_DEBUGGING'] = '2'
-      # rubocop:disable Lint/HandleExceptions
-      begin
-        paths = project.spec.require_paths
-        ptask = proc do
-          env = { 'RAKE_DOC_WATCH' => '1' }
-
-          sh(env, 'rake', 'doc', verbose: false)
-        end
-
-        if ptask.call
-          listener = Listen.to(*paths, options) { ptask.call }
-          listener.start
-
-          sleep
-        end
-      rescue SystemExit, Interrupt
-      end
-      # rubocop:enable Lint/HandleExceptions
-    end
-  end
 end
