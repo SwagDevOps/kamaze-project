@@ -21,9 +21,22 @@ module SwagDev::Project::Sham
     # @return [nil]
     # @yieldreturn [Sham::Config]
     def config(name)
-      Sham.config(shammable, name)
+      name = name.to_sym
 
+      Sham.config(shammable, name)
       yield(Sham::Config.new(shammable, name)) if block_given?
+
+      self
+    end
+
+    def define(name, &block)
+      name = name.to_sym
+
+      unless has?(name)
+        self.public_send(:config, name, &block)
+      end
+
+      self
     end
 
     # Retrieve a sham
@@ -31,6 +44,8 @@ module SwagDev::Project::Sham
     # @param [Symbol] name
     # @return [SwagDev::Project::Struct]
     def sham(name, *args)
+      name = name.to_sym
+
       sham!(name, *args) if has?(name)
     end
 
@@ -40,6 +55,8 @@ module SwagDev::Project::Sham
     # @param [Symbol] name
     # @return [SwagDev::Project::Struct]
     def sham!(name, *args)
+      name = name.to_sym
+
       raise ArgumentError, "no sham for `#{name}'" unless has?(name)
 
       shammable.sham!(*([name] + args))
@@ -49,12 +66,16 @@ module SwagDev::Project::Sham
     #
     # @param [Symbol] name
     def has?(name)
-      nil != shammable.sham_config(name)
+      name = name.to_sym
+
+      if shammable.respond_to?(:sham_config)
+        return nil != shammable.sham_config(name)
+      end
+
+      false
     end
 
-    protected
-
-    # Class used for shams
+    # Class used to sham
     #
     # @see SwagDev::Project::Struct
     # @return [Class]
