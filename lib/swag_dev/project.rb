@@ -56,6 +56,13 @@ class SwagDev::Project
     @gem = Gem.new(@name)
   end
 
+  # Get an instance of ``YARD::CLI::Yardoc`` based on current environment
+  #
+  # @return [YARD::CLI::Yardoc]
+  def yardoc
+    helper.get('yardoc').cli
+  end
+
   protected
 
   # Main class (subject of project)
