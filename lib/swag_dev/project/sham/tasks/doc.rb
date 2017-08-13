@@ -10,6 +10,9 @@ SwagDev::Project::Sham.define('tasks/doc') do |c|
   c.attributes do
     {
       yardopts: SwagDev.project.sham!(:yardopts),
+      dependencies: {
+        'gem:gemspec' => 'swag_dev/project/tasks/gem'
+      }.to_a,
       ignored_patterns: [
         %r{/\.#},
         /_flymake\.rb$/,
