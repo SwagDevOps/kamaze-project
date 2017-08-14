@@ -15,7 +15,7 @@ require 'sham'
 # @see SwagDev::Project::Struct
 module SwagDev::Project::Sham
   class << self
-    # Define a sham
+    # Configure a sham
     #
     # @param [Symbol] name
     # @return [nil]
@@ -29,6 +29,11 @@ module SwagDev::Project::Sham
       self
     end
 
+    # Define a sham
+    #
+    # @param [Symbol] name
+    # @return [nil]
+    # @yieldreturn [Sham::Config]
     def define(name, &block)
       name = name.to_sym
 
