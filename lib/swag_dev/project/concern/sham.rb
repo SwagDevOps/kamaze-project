@@ -16,7 +16,7 @@ module SwagDev::Project::Concern::Sham
   #
   # Define a sham when a block is given,
   # or retrieve a sham by its name.
-  # Return nil when retrieving and sham is not already defined.
+  # Return ``nil`` when retrieving not already defined sham ``(name)``.
   #
   # @param [Symbol] name
   # @yieldreturn [Sham::Config]
