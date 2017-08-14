@@ -22,9 +22,7 @@ module SwagDev::Project::Concern::Sham
   # @yieldreturn [Sham::Config]
   # @return [self|SwagDev::Project::Struct|nil]
   def sham(name, *args)
-    name = name.to_sym
-
-    return shammer.sham(name, *args) unless block_given?
+    shammer_as(name).sham(name, *args) unless block_given?
 
     shammable = shammer.config(name).shammable
     yield(Sham::Config.new(shammable, name))
@@ -38,9 +36,7 @@ module SwagDev::Project::Concern::Sham
   # @param [Symbol] name
   # @return [SwagDev::Project::Struct]
   def sham!(name, *args)
-    name = name.to_sym
-
-    shammer.sham!(name, *args)
+    shammer_as(name).sham!(name, *args)
   end
 
   protected
@@ -50,5 +46,19 @@ module SwagDev::Project::Concern::Sham
   # @return [SwagDev::Project::Sham]
   def shammer
     SwagDev::Project::Sham
+  end
+
+  # Load sham by name
+  #
+  # @param [String|Symbol] name
+  # @return [SwagDev::Project::Sham]
+  def shammer_as(name)
+    begin
+      require "swag_dev/project/sham/#{name}"
+    rescue LoadError
+      return shammer
+    end unless shammer.has?(name)
+
+    shammer
   end
 end
