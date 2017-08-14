@@ -4,7 +4,6 @@
 # @see https://gist.github.com/chetan/1827484
 
 require 'swag_dev/project'
-require 'swag_dev/project/sham/tasks/doc'
 require 'rake/clean'
 
 project = SwagDev.project
