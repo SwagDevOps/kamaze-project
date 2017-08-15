@@ -29,6 +29,9 @@ module SwagDev
 end
 
 class SwagDev::Project
+  # @return [Pathname]
+  attr_reader :working_dir
+
   # Project name
   #
   # @return [Symbol]
@@ -47,13 +50,14 @@ class SwagDev::Project
   # @return [Class]
   attr_reader :subject
 
-  def initialize
+  def initialize(working_dir = Dir.pwd)
+    @working_dir = Pathname.new(working_dir)
     @name = ENV.fetch('PROJECT_NAME').to_sym
     @subject = subject!
     @version_info = ({
                        version: subject.VERSION.to_s
                      }.merge(subject.version_info)).freeze
-    @gem = Gem.new(@name)
+    @gem = Gem.new(@name, working_dir)
   end
 
   # Get an instance of ``YARD::CLI::Yardoc`` based on current environment
@@ -61,6 +65,11 @@ class SwagDev::Project
   # @return [YARD::CLI::Yardoc]
   def yardoc
     helper.get('yardoc').cli
+  end
+
+  # @return [Pathname]
+  def path(*args)
+    working_dir.join(*args)
   end
 
   protected
