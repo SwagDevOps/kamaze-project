@@ -5,21 +5,17 @@ require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
 require 'cliver'
 
-project      = SwagDev.project
-executables  = (project.gem.spec&.executables).to_a
-pkg_dir      = "pkg/#{project.name}-#{project.version_info[:version]}"
-sys          = RbConfig::CONFIG
-build_dir    = Pathname.new('build').join(sys['host_os'], sys['host_cpu'])
-build_dirs   = { src: nil, tmp: nil, bin: nil }
-  .map { |k, str| [k, build_dir.join(k.to_s)] }.to_h
+project = SwagDev.project
+config  = project.sham!('tasks/gem/compile')
+config.build_dirs = config.build_dirs.to_h
 
-CLOBBER.include(build_dir)
+CLOBBER.include(config.build_dir) if config.build_dir
 
 namespace :gem do
-  desc 'compile executable%s #{executable}' % {
+  desc "compile executable%s #{config.executables}" % {
     true  => nil,
     false => 's'
-  }[1 == executables.size]
+  }[1 == config.executables.size]
   task compile: [
          'gem:package',
          'gem:compile:prepare',
@@ -32,22 +28,22 @@ namespace :gem do
   namespace :compile do
     # prepare directories for compiler
     task :prepare do
-      rm_rf(build_dirs[:src])
-      [:src, :bin, :tmp]
-        .map { |name| build_dirs.fetch(name) }
-        .map(&:to_s).sort.each { |dir| mkdir_p(dir) }
+      rm_rf(config.build_dirs[:src])
 
-      Dir.glob(["#{pkg_dir}/*", '.bundle', 'vendor',
-                "*.gemspec", 'Gemfile', 'Gemfile.lock'])
+      config.build_dirs.each do |_k, dir|
+        mkdir_p(dir)
+      end
+
+      Dir.glob(config.src_globs)
          .sort
-         .each { |path| cp_r(path, build_dirs[:src]) }
+         .each { |path| cp_r(path, config.build_dirs[:src]) }
     end
 
     # install dependencies
     task :install do
       Bundler.with_clean_env do
-        Dir.chdir(build_dirs.fetch(:src)) do
-          sh(Cliver.detect!(:bundle), 'install',
+        Dir.chdir(config.build_dirs.fetch(:src)) do
+          sh(config.bundler, 'install',
              '--path', 'vendor/bundle', '--clean',
              '--without', 'development', 'doc', 'test')
         end
@@ -56,14 +52,18 @@ namespace :gem do
 
     # compile executables
     task :compile do
+      pp "in compile"
       Bundler.with_clean_env do
-        project.gem.spec.executables.each do |executable|
-          Dir.chdir(build_dirs.fetch(:src)) do
-            sh(ENV.to_h, Cliver.detect!(:rubyc),
+        config.executables.each do |executable|
+          Dir.chdir(config.build_dirs.fetch(:src)) do
+            tmp_dir = project.path(config.build_dirs.fetch(:tmp))
+            bin_dir = project.path(config.build_dirs.fetch(:bin), executable)
+
+            sh(ENV.to_h, config.compiler,
                "#{project.gem.spec.bindir}/#{executable}",
-               '-d', "#{project.path(build_dirs.fetch(:tmp))}",
-               '-r', ".",
-               '-o', "#{project.path(build_dirs.fetch(:bin)).join(executable)}")
+               '-r', '.',
+               '-d', "#{tmp_dir}",
+               '-o', "#{bin_dir}")
           end
         end
       end
