@@ -2,13 +2,16 @@
 
 require 'swag_dev/project'
 require 'swag_dev/project/tasks/gem'
-require 'rake/clean'
 
-project      = SwagDev.project
-template     = 'gemspec.tpl'
-dependencies = [template] + (project.gem.spec&.files).to_a
+project = SwagDev.project
+config  = project.sham!('tasks/gem/gemspec')
 
-file "#{project.name}.gemspec": FileList.new(*dependencies) do
+namespace :gem do
+  desc 'Update gemspec'
+  task gemspec: "#{project.name}.gemspec"
+end
+
+file "#{project.name}.gemspec": FileList.new(*config.dependencies) do
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin].each do |required|
     require required.to_s
   end
@@ -19,8 +22,8 @@ file "#{project.name}.gemspec": FileList.new(*dependencies) do
   )
 
   files = OpenStruct.new(
-    templated: Pathname.new(template),
-    generated: Pathname.new(Dir.pwd).join("#{project.name}.gemspec")
+    templated: project.path(config.template),
+    generated: project.path("#{project.name}.gemspec")
   )
 
   spec_id = files.templated
