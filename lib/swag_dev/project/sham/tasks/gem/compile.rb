@@ -16,7 +16,7 @@ src_globs = ["#{pkg_dir}/*",
 SwagDev::Project::Sham.define('tasks/gem/compile') do |c|
   c.attributes do
     {
-      executables: project.gem.spec.executables.to_a,
+      executables: (project.gem.spec&.executables).to_a,
       compiler:    Cliver.detect!(:rubyc),
       bundler:     Cliver.detect!(:bundle),
       src_globs:   src_globs,
