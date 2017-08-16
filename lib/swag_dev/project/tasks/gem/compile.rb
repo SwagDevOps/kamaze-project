@@ -12,10 +12,10 @@ config.build_dirs = config.build_dirs.to_h
 CLOBBER.include(config.build_dir) if config.build_dir
 
 namespace :gem do
-  desc "compile executable%s #{config.executables}" % {
+  (desc "compile executable%s #{config.executables}" % {
     true  => nil,
     false => 's'
-  }[1 == config.executables.size]
+  }[1 == config.executables.size]) unless config.executables.empty?
   task compile: [
          'gem:package',
          'gem:compile:prepare',
@@ -52,13 +52,12 @@ namespace :gem do
 
     # compile executables
     task :compile do
-      pp "in compile"
-      Bundler.with_clean_env do
-        config.executables.each do |executable|
-          Dir.chdir(config.build_dirs.fetch(:src)) do
-            tmp_dir = project.path(config.build_dirs.fetch(:tmp))
-            bin_dir = project.path(config.build_dirs.fetch(:bin), executable)
+      config.executables.each do |executable|
+        Dir.chdir(project.path(config.build_dirs.fetch(:src))) do
+          tmp_dir = project.path(config.build_dirs.fetch(:tmp))
+          bin_dir = project.path(config.build_dirs.fetch(:bin), executable)
 
+          Bundler.with_clean_env do
             sh(ENV.to_h, config.compiler,
                "#{project.gem.spec.bindir}/#{executable}",
                '-r', '.',
