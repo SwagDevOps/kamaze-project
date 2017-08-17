@@ -64,7 +64,7 @@ class SwagDev::Project
   #
   # @return [YARD::CLI::Yardoc]
   def yardoc
-    helper.get('yardoc').cli
+    helper.get('yardoc').cli(working_dir)
   end
 
   # @return [Pathname]
