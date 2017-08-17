@@ -21,13 +21,13 @@ module SwagDev::Project::Concern::Sham
   # @param [Symbol] name
   # @yieldreturn [Sham::Config]
   # @return [self|SwagDev::Project::Struct|nil]
-  def sham(name, *args)
-    shammer_as(name).sham(name, *args) unless block_given?
+  def sham(name, *args, &block)
+    if block
+      shammer_as(name).public_send(:config, name, &block)
+      return self
+    end
 
-    shammable = shammer.config(name).shammable
-    yield(Sham::Config.new(shammable, name))
-
-    self
+    shammer_as(name).sham(name, *args)
   end
 
   # Retrieve a sham
