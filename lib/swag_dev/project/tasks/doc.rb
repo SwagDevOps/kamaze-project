@@ -3,22 +3,22 @@
 #
 # @see https://gist.github.com/chetan/1827484
 
-require 'swag_dev/project'
+require 'swag_dev/project/dsl'
 require 'rake/clean'
-
-project = SwagDev.project
-config = project.sham!('tasks/doc')
-output_dir = project.yardoc.options[:serializer]&.basepath
-config.dependencies.to_h.values.uniq.each { |req| require req }
+sham!('tasks/doc').dependencies.values.uniq.each do |req|
+  require req
+end
 
 # clobber -----------------------------------------------------------
 
-CLOBBER.include(output_dir) if output_dir
+if (output_dir = sham!('yardoc').output_dir)
+  CLOBBER.include(output_dir)
+end
 
 # Tasks -------------------------------------------------------------
 
 desc 'Generate documentation (using YARD)'
-task doc: config.dependencies.to_h.keys do
+task doc: sham!('tasks/doc').dependencies.keys do
   [:pathname, :yard, :securerandom].each { |req| require req.to_s }
 
   # internal task name
@@ -26,7 +26,7 @@ task doc: config.dependencies.to_h.keys do
 
   YARD::Rake::YardocTask.new(tname) do |t|
     t.options = proc do
-      config.yardopts.options + [
+      sham!('tasks/doc').yardopts.options + [
         '--title',
         '%s v%s' % [project.name, project.version_info[:version]]
       ]
@@ -35,7 +35,7 @@ task doc: config.dependencies.to_h.keys do
       true  => [],
     }[ENV['RAKE_DOC_WATCH'].to_i.zero?]
 
-    config.ignored_patterns.each do |regexp|
+    sham!('tasks/doc').ignored_patterns.each do |regexp|
       t.options += ['--exclude', regexp.inspect.gsub(%r{^/|/$}, '')]
     end
 
@@ -47,7 +47,9 @@ end
 
 namespace :doc do
   task :after do
-    proc do
+    lambda do |output_dir|
+      return unless output_dir
+
       threads = []
       Dir.glob("#{output_dir}/**/*.html").each do |f|
         threads << Thread.new do
@@ -58,8 +60,7 @@ namespace :doc do
           f.write(s)
         end
       end
-
       threads.map(&:join)
-    end
+    end.call(sham!('yardoc').output_dir)
   end
 end
