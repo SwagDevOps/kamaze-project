@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
+require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/gem'
-
-project = SwagDev.project
-config  = project.sham!('tasks/gem/gemspec')
 
 namespace :gem do
   desc 'Update gemspec'
-  task gemspec: "#{project.name}.gemspec"
+  task :gemspec do
+    fname = "#{project.name}.gemspec"
+
+    [:reenable, :invoke].each { |m| Rake::Task[fname].public_send(m) }
+  end
 end
 
-file "#{project.name}.gemspec": FileList.new(*config.dependencies) do
+file "#{project.name}.gemspec": sham!('tasks/gem/gemspec').files do
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin].each do |required|
     require required.to_s
   end
@@ -22,7 +23,7 @@ file "#{project.name}.gemspec": FileList.new(*config.dependencies) do
   )
 
   files = OpenStruct.new(
-    templated: project.path(config.template),
+    templated: project.path(sham!('tasks/gem/gemspec').template),
     generated: project.path("#{project.name}.gemspec")
   )
 
