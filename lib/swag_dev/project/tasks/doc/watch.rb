@@ -1,22 +1,18 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
+require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/doc'
 require 'pathname'
 require 'listen'
-
-project = SwagDev.project
-config = project.sham!('tasks/doc')
-config.dependencies.to_h.values.uniq.each { |req| require req }
 
 # Tasks -------------------------------------------------------------
 
 namespace :doc do
   desc 'Watch documentation changes'
-  task watch: config.dependencies.to_h.keys do
+  task watch: project.sham!('tasks/doc').dependencies.keys do
     options = {
       only:   /\.rb$/,
-      ignore: config.ignored_patterns
+      ignore: project.sham!('tasks/doc').ignored_patterns
     }
 
     # ENV['LISTEN_GEM_DEBUGGING'] = '2'
