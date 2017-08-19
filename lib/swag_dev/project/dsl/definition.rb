@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
+require 'swag_dev/cli'
 require 'swag_dev/project/dsl'
 
 # Module providing ``#project``, ``#sham``, ``#sham!``, etc.
@@ -20,5 +21,10 @@ module SwagDev::Project::Dsl::Definition
   # @see [SwagDev::Project::Concern::Sham.sham!]
   def sham!(name = nil, *args)
     project.sham!(name, *args)
+  end
+
+  # @return [SwagDev::Cli]
+  def console
+    SwagDev::Cli
   end
 end
