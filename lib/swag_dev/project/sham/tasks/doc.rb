@@ -14,8 +14,8 @@ SwagDev::Project::Sham.define('tasks/doc') do |c|
         'gem:gemspec' => 'swag_dev/project/tasks/gem'
       },
       ignored_patterns: [
-        %r{/\.#},
-        /_flymake\.rb$/,
+        '/\.#',
+        '_flymake\.rb$',
       ],
     }
   end

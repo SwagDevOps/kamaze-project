@@ -35,8 +35,8 @@ task doc: sham!('tasks/doc').dependencies.keys do
       true  => [],
     }[ENV['RAKE_DOC_WATCH'].to_i.zero?]
 
-    sham!('tasks/doc').ignored_patterns.each do |regexp|
-      t.options += ['--exclude', regexp.inspect.gsub(%r{^/|/$}, '')]
+    sham!('tasks/doc').ignored_patterns.each do |pattern|
+      t.options += ['--exclude', pattern]
     end
 
     t.after = proc { Rake::Task['doc:after'].invoke }
