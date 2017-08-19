@@ -15,17 +15,28 @@ namespace :doc do
       ignore: project.sham!('tasks/doc').ignored_patterns
     }
 
-    # ENV['LISTEN_GEM_DEBUGGING'] = '2'
-    # rubocop:disable Lint/HandleExceptions
+    timer = proc do
+      time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
+
+      console.writeln(STDOUT, time, :green, :bold)
+    end
+
+    ptask = proc do
+      timer.call
+
+      Rake::Task[:doc]
+        .prerequisites
+        .each { |pre| Rake::Task[pre].reenable }
+
+      Rake::Task[:doc].reenable
+      Rake::Task[:doc].invoke
+    end
+
     begin
-      paths = project.gem.spec.require_paths
-      ptask = proc do
-        env = { 'RAKE_DOC_WATCH' => '1' }
-
-        sh(env, 'rake', 'doc', verbose: false)
-      end
-
       if ptask.call
+        # ENV['LISTEN_GEM_DEBUGGING'] = '2'
+        paths = project.gem.spec.require_paths
+
         listener = Listen.to(*paths, options) { ptask.call }
         listener.start
 
@@ -33,6 +44,5 @@ namespace :doc do
       end
     rescue SystemExit, Interrupt
     end
-    # rubocop:enable Lint/HandleExceptions
   end
 end
