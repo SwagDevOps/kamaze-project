@@ -10,11 +10,6 @@ require 'listen'
 namespace :doc do
   desc 'Watch documentation changes'
   task watch: project.sham!('tasks/doc').dependencies.keys do
-    options = {
-      only:   /\.rb$/,
-      ignore: project.sham!('tasks/doc').ignored_patterns
-    }
-
     timer = proc do
       time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
@@ -35,7 +30,8 @@ namespace :doc do
     begin
       if ptask.call
         # ENV['LISTEN_GEM_DEBUGGING'] = '2'
-        paths = project.gem.spec.require_paths
+        paths   = project.gem.spec.require_paths
+        options = project.sham!('tasks/doc/watch').listen_options
 
         listener = Listen.to(*paths, options) { ptask.call }
         listener.start
