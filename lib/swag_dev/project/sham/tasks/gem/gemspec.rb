@@ -9,8 +9,8 @@ template = 'gemspec.tpl'
 SwagDev::Project::Sham.define('tasks/gem/gemspec') do |c|
   c.attributes do
     {
-      template: template,
-      files:    [template] + (project.gem.spec&.files).to_a,
+      template:     template,
+      files:        [template, 'Gemfile'] + (project.gem.spec&.files).to_a,
     }
   end
 end
