@@ -2,7 +2,9 @@
 
 require 'swag_dev/project'
 require 'swag_dev/cli'
-require 'swag_dev/project/dsl'
+
+module SwagDev::Project::Dsl
+end
 
 # Module providing ``#project``, ``#sham``, ``#sham!``, etc.
 module SwagDev::Project::Dsl::Definition
