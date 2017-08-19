@@ -13,9 +13,8 @@ namespace :gem do
 end
 
 file "#{project.name}.gemspec": sham!('tasks/gem/gemspec').files do
-  [:ostruct, :pathname, :gemspec_deps_gen, :tenjin].each do |required|
-    require required.to_s
-  end
+  [:ostruct, :pathname, :gemspec_deps_gen, :tenjin]
+    .each { |req| require req.to_s }
 
   tools = OpenStruct.new(
     deps_gen: GemspecDepsGen.new,
