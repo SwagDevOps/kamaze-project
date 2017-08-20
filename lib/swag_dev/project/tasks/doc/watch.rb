@@ -2,42 +2,52 @@
 
 require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/doc'
-require 'pathname'
-require 'listen'
-
-# Tasks -------------------------------------------------------------
 
 namespace :doc do
   desc 'Watch documentation changes'
   task watch: project.sham!('tasks/doc').dependencies.keys do
+    # Display time
+    #
+    # @return [Boolean]
     timer = proc do
       time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
-      console.stdout.writeln(time, :green, :bold)
+      !!(console.stdout.writeln(time, :green, :bold))
     end
 
+    # Execute ``:doc`` task (with prerequisites)
+    #
+    # @return [Boolean]
     ptask = proc do
       timer.call
 
       Rake::Task[:doc]
         .prerequisites
         .each { |pre| Rake::Task[pre].reenable }
+      [:reenable, :invoke]
+        .each { |m| Rake::Task[:doc].public_send(m) }
 
-      Rake::Task[:doc].reenable
-      Rake::Task[:doc].invoke
+      true
+    end
+
+    # Setup listen
+    ltask = proc do
+      # ENV['LISTEN_GEM_DEBUGGING'] = '2'
+      paths   = project.gem.spec.require_paths
+      options = project.sham!('tasks/doc/watch').listen_options
+
+      return unless ptask.call
+
+      listener = Listen.to(*paths, options) { ptask.call }
+      listener.start
+
+      sleep
     end
 
     begin
-      if ptask.call
-        # ENV['LISTEN_GEM_DEBUGGING'] = '2'
-        paths   = project.gem.spec.require_paths
-        options = project.sham!('tasks/doc/watch').listen_options
+      require 'listen'
 
-        listener = Listen.to(*paths, options) { ptask.call }
-        listener.start
-
-        sleep
-      end
+      ltask.call
     rescue SystemExit, Interrupt
     end
   end
