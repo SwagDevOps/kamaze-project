@@ -13,7 +13,7 @@ namespace :doc do
     timer = proc do
       time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
-      console.writeln(STDOUT, time, :green, :bold)
+      console.stdout.writeln(time, :green, :bold)
     end
 
     ptask = proc do

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
-require 'swag_dev/cli'
 
 module SwagDev::Project::Dsl
 end
@@ -27,6 +26,8 @@ module SwagDev::Project::Dsl::Definition
 
   # @return [SwagDev::Cli]
   def console
-    SwagDev::Cli
+    require 'swag_dev/console'
+
+    SwagDev::Console
   end
 end
