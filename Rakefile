@@ -4,7 +4,7 @@ require 'rubygems'
 require 'bundler/setup'
 require "#{__dir__}/lib/swag_dev-project"
 
-['gem', 'gem/compile', 'doc', 'doc/watch'].each do |req|
+[:gem, 'gem/compile', :doc, 'doc/watch', :shell].each do |req|
   require "swag_dev/project/tasks/#{req}"
 end
 
