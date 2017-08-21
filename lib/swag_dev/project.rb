@@ -5,12 +5,14 @@ require 'pathname'
 module SwagDev
   class Project
     [
+      'concern/env',
       'concern/helper',
       'concern/sham',
       'concern/versionable',
       'gem'
     ].each { |req| require "swag_dev/project/#{req}" }
 
+    include Concern::Env
     include Concern::Helper
     include Concern::Sham
     include Concern::Versionable
@@ -51,6 +53,8 @@ class SwagDev::Project
   attr_reader :subject
 
   def initialize(working_dir = Dir.pwd)
+    env_load(working_dir)
+
     @working_dir = Pathname.new(working_dir)
     @name = ENV.fetch('PROJECT_NAME').to_sym
     @subject = subject!
