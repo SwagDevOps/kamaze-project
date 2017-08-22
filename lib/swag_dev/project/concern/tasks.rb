@@ -24,7 +24,7 @@ module SwagDev::Project::Concern::Tasks
     @tasks ||= []
 
     @tasks.empty? ? @tasks = tasks : @tasks += tasks
-    @tasks.map!(&:to_sym).sort!.uniq!
+    @tasks.map!(&:to_sym).uniq!
 
     tasks
   end
