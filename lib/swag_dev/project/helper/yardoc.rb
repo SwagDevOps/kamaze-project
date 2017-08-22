@@ -2,6 +2,7 @@
 
 require 'swag_dev/project/helper'
 require 'yard'
+require 'shellwords'
 
 # Helper based on ``YARD``
 class SwagDev::Project::Helper::Yardoc
