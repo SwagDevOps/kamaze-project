@@ -33,9 +33,15 @@ module SwagDev::Project::Concern::Tasks
 
   # Load tasks
   #
+  # Tasks are loaded only if ``Rake::DSL`` is defined
+  #
   # @return [self]
   def tasks_load!
-    self.tasks.each { |req| require "swag_dev/project/tasks/#{req}" }
+    if Kernel.const_defined?('Rake::DSL')
+      self.tasks.each do |req|
+        require "swag_dev/project/tasks/#{req}"
+      end
+    end
 
     self
   end
