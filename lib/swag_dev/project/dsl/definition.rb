@@ -10,8 +10,8 @@ module SwagDev::Project::Dsl::Definition
   protected
 
   # @return [SwagDev::Project]
-  def project
-    SwagDev.project
+  def project(&block)
+    SwagDev.project(&block).load!
   end
 
   # @see [SwagDev::Project::Concern::Sham.sham]
