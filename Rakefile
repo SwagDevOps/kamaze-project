@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
-require 'rubygems'
-require 'bundler/setup'
 require "#{__dir__}/lib/swag_dev-project"
+require 'swag_dev/project/dsl'
 
-[:gem, 'gem/compile', :doc, 'doc/watch', :shell].each do |req|
-  require "swag_dev/project/tasks/#{req}"
+project do |c|
+  c.tasks = [
+    :doc, 'doc/watch',
+    :gem, 'gem/compile',
+    :shell
+  ].shuffle
 end
 
 task default: [:gem]
