@@ -72,7 +72,7 @@ class SwagDev::Project
     self.name ||= ENV.fetch('PROJECT_NAME')
     self.working_dir ||= Dir.pwd
 
-    @subject = subject!
+    self.subject ||= subject!
     @version_info = ({ version: subject.VERSION.to_s }
                                        .merge(subject.version_info)).freeze
     @gem = Gem.new(@name, working_dir)
@@ -109,6 +109,17 @@ class SwagDev::Project
   # Set working dir
   def working_dir=(working_dir)
     @working_dir = Pathname.new(working_dir).realpath
+  end
+
+  # Set subject
+  #
+  # @param [Class] subject
+  def subject=(subject)
+    unless subject.is_a?(Class)
+      # @todo raise error
+    end
+
+    @subject = subject
   end
 
   # Main class (subject of project)

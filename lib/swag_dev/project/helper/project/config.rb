@@ -13,6 +13,7 @@ class SwagDev::Project::Helper::Project::Config < SwagDev::Project::Config
       tasks: nil,
       working_dir: Dir.pwd,
       name: nil,
+      subject: nil,
     }
   end
 end
