@@ -15,6 +15,8 @@ class SwagDev::Project::Helper::Inflector
   # @param [String] loadable
   # @return [Object]
   def resolve(loadable)
+    loadable = loadable.to_s.empty? ? nil : loadable.to_s
+
     require loadable
 
     @inflector.constantize(@inflector.classify(loadable))
