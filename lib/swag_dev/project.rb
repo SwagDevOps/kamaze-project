@@ -60,14 +60,18 @@ class SwagDev::Project
   attr_reader :subject
 
   def initialize(&block)
-    yield(self) if block
+    if block
+      config = helper.get('project/config')
 
-    @working_dir = Pathname.new(@working_dir || Dir.pwd).realpath
-    @working_dir.freeze
+      yield(config)
+      config.configure(self)
+    end
 
     env_load(working_dir)
 
-    @name = ENV.fetch('PROJECT_NAME').to_sym
+    self.name ||= ENV.fetch('PROJECT_NAME')
+    self.working_dir ||= Dir.pwd
+
     @subject = subject!
     @version_info = ({ version: subject.VERSION.to_s }
                                        .merge(subject.version_info)).freeze
@@ -90,12 +94,29 @@ class SwagDev::Project
 
   protected
 
+  def configure(&block)
+    config = helper.get(:config)
+
+    yield(config)
+    config.configure(self)
+  end
+
+  # Set name
+  def name=(name)
+    @name = name.to_s.empty? ? nil : name.to_s.to_sym
+  end
+
+  # Set working dir
+  def working_dir=(working_dir)
+    @working_dir = Pathname.new(working_dir).realpath
+  end
+
   # Main class (subject of project)
   #
   # @return [Class]
   def subject!
-    name = self.name.to_s.gsub('-', '/')
+    resolvable = name.to_s.gsub('-', '/')
 
-    helper.get(:inflector).resolve(name)
+    helper.get(:inflector).resolve(resolvable)
   end
 end
