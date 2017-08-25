@@ -13,10 +13,12 @@ module SwagDev::Project::Concern::Versionable
 
   # Class methods for ``Ylem::Concern::Versionable``
   module ClassMethods
+    # @return [Hash]
     def version_info
       unless const_defined?(:VERSION)
         require 'version_info'
         include VersionInfo
+
         # @todo deternmine format from extension?
         VersionInfo.file_format = :yaml
 
@@ -24,7 +26,10 @@ module SwagDev::Project::Concern::Versionable
         self.VERSION.load
       end
 
-      self.VERSION.to_hash.freeze
+      self.VERSION
+          .to_h
+          .merge(version: self.VERSION.to_s)
+          .freeze
     end
 
     protected
