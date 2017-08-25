@@ -23,7 +23,7 @@ SwagDev::Project::Sham.define('tasks/gem/compile') do |c|
       build_dir:   build_dir,
       build_dirs:  { src: nil, tmp: nil, bin: nil }.map do |k, str|
         [k, build_dir.join(k.to_s)]
-      end
+      end.to_h
     }
   end
 end
