@@ -9,14 +9,17 @@ module SwagDev
       'concern/helper',
       'concern/sham',
       'concern/tasks',
+      'concern/gem',
+      'concern/yardoc',
       'concern/versionable',
-      'gem'
     ].each { |req| require "swag_dev/project/#{req}" }
 
     include Concern::Env
     include Concern::Helper
     include Concern::Sham
     include Concern::Tasks
+    include Concern::Gem
+    include Concern::Yardoc
     include Concern::Versionable
   end
 
@@ -44,16 +47,6 @@ class SwagDev::Project
   # @return [Hash]
   attr_reader :version_info
 
-  # Project gem
-  #
-  # @return [SwagDev::Project::Gem]
-  attr_reader :gem
-
-  # Get an instance of ``YARD::CLI::Yardoc`` based on current environment
-  #
-  # @return [YARD::CLI::Yardoc]
-  attr_reader :yardoc
-
   # Project subject, main class
   #
   # @return [Class]
@@ -71,11 +64,12 @@ class SwagDev::Project
 
     self.name ||= ENV.fetch('PROJECT_NAME')
     self.working_dir ||= Dir.pwd
-
     self.subject ||= subject!
-    @version_info = ({ version: subject.VERSION.to_s }
-                                       .merge(subject.version_info)).freeze
-    @gem = Gem.new(@name, working_dir)
+  end
+
+  # @return [Hash]
+  def version_info
+    subject.version_info
   end
 
   # @return [Pathname]
@@ -87,12 +81,12 @@ class SwagDev::Project
   #
   # @return [self]
   def load!
-    @yardoc ||= helper.get('yardoc').cli(working_dir)
-
     tasks_load!
   end
 
   protected
+
+  alias gem_name name
 
   def configure(&block)
     config = helper.get(:config)
