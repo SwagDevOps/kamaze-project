@@ -3,12 +3,10 @@
 require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/doc'
 
-project.sham!('tasks/doc')
-
 # Display time
 #
 # @return [Boolean]
-timer = proc do
+time = proc do
   time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
   !!(console.stdout.writeln(time, :green, :bold))
@@ -17,14 +15,10 @@ end
 # Execute ``:doc`` task (with prerequisites)
 #
 # @return [Boolean]
-prepare = proc do
-  timer.call
+main = proc do
+  time.call
 
-  Rake::Task[:doc]
-    .prerequisites
-    .each { |pre| Rake::Task[pre].reenable }
-  [:reenable, :invoke]
-    .each { |m| Rake::Task[:doc].public_send(m) }
+  [:reenable, :invoke].each { |m| Rake::Task[:doc].public_send(m) }
 
   true
 end
@@ -33,11 +27,11 @@ end
 listen = proc do
   # ENV['LISTEN_GEM_DEBUGGING'] = '2'
   paths   = project.gem.spec.require_paths
-  options = project.sham!('tasks/doc/watch').listen_options
+  options = sham!.listen_options
 
-  return unless prepare.call
+  return unless main.call
 
-  listener = Listen.to(*paths, options) { ptask.call }
+  listener = Listen.to(*paths, options) { main.call }
   listener.start
 
   sleep
@@ -45,7 +39,7 @@ end
 
 namespace :doc do
   desc 'Watch documentation changes'
-  task(watch: [] + project.sham!('tasks/doc').dependencies.keys) do
+  task :watch do
     begin
       require 'listen'
 

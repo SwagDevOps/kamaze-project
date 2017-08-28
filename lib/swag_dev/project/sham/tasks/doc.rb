@@ -9,10 +9,8 @@ require 'shellwords'
 SwagDev::Project::Sham.define('tasks/doc') do |c|
   c.attributes do
     {
-      yardopts:   SwagDev.project.sham!(:yardopts),
-      dependencies: {
-        'gem:gemspec' => 'swag_dev/project/tasks/gem'
-      },
+      yardopts: SwagDev.project.sham!(:yardopts),
+      yardoc: SwagDev.project.sham!(:yardoc),
       ignored_patterns: [
         '/\.#',
         '_flymake\.rb$',

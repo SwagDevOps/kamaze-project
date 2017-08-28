@@ -5,20 +5,15 @@
 
 require 'swag_dev/project/dsl'
 require 'rake/clean'
-sham!('tasks/doc').dependencies.values.uniq.each do |req|
-  require req
-end
 
 # clobber -----------------------------------------------------------
 
-if (output_dir = sham!('yardoc').output_dir)
-  CLOBBER.include(output_dir)
-end
+CLOBBER.include(sham!.yardoc.output_dir)
 
 # Tasks -------------------------------------------------------------
 
 desc 'Generate documentation (using YARD)'
-task doc: sham!('tasks/doc').dependencies.keys do
+task doc: [] do
   [:pathname, :yard, :securerandom].each { |req| require req.to_s }
 
   # internal task name
@@ -26,7 +21,7 @@ task doc: sham!('tasks/doc').dependencies.keys do
 
   YARD::Rake::YardocTask.new(tname) do |t|
     t.options = proc do
-      sham!('tasks/doc').yardopts.options + [
+      sham!.yardopts.options + [
         '--title',
         '%s v%s' % [project.name, project.version_info[:version]]
       ]
@@ -35,7 +30,7 @@ task doc: sham!('tasks/doc').dependencies.keys do
       true  => [],
     }[ENV['RAKE_DOC_WATCH'].to_i.zero?]
 
-    sham!('tasks/doc').ignored_patterns.each do |pattern|
+    sham!.ignored_patterns.each do |pattern|
       t.options += ['--exclude', pattern]
     end
 
@@ -61,6 +56,6 @@ namespace :doc do
         end
       end
       threads.map(&:join)
-    end.call(sham!('yardoc').output_dir)
+    end.call(sham!.yardoc.output_dir)
   end
 end
