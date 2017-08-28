@@ -28,7 +28,7 @@ module SwagDev::Project::Dsl::Definition
     project.sham!(name, *args)
   end
 
-  # Get sham (default name) depending on caller
+  # Get sham (default) name, depending on caller
   #
   # @api private
   # @return [String]
