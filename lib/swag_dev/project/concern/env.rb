@@ -12,7 +12,9 @@ module SwagDev::Project::Concern::Env
   #
   # @return [self]
   def env_load(pwd = Dir.pwd)
-    @env_loaded = Dotenv.load(Pathname.new(pwd).join('.env'))
+    pwd = Pathname.new(pwd).realpath
+
+    @env_loaded = Dotenv.load(pwd.join('.env'))
 
     self
   end
