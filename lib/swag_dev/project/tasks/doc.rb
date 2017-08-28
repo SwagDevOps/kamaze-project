@@ -21,10 +21,14 @@ task doc: [] do
 
   YARD::Rake::YardocTask.new(tname) do |t|
     t.options = proc do
-      sham!.yardopts.options + [
-        '--title',
-        '%s v%s' % [project.name, project.version_info[:version]]
-      ]
+      if sham!.yardopts.options.include?('--title')
+        sham!.yardopts.options
+      else
+        sham!.yardopts.options + [
+          '--title',
+          '%s v%s' % [project.name, project.version_info[:version]]
+        ]
+      end
     end.call + {
       false => ['--no-stats'],
       true  => [],
