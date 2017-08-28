@@ -60,10 +60,11 @@ class SwagDev::Project
       config.configure(self)
     end
 
+    self.working_dir ||= Dir.pwd
+
     env_load(working_dir)
 
     self.name ||= ENV.fetch('PROJECT_NAME')
-    self.working_dir ||= Dir.pwd
     self.subject ||= subject!
   end
 
@@ -87,13 +88,6 @@ class SwagDev::Project
   protected
 
   alias gem_name name
-
-  def configure(&block)
-    config = helper.get(:config)
-
-    yield(config)
-    config.configure(self)
-  end
 
   # Set name
   def name=(name)
