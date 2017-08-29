@@ -7,9 +7,9 @@ require 'swag_dev/project/tasks/doc'
 #
 # @return [Boolean]
 time = proc do
-  time = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
+  stime = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
-  !!(console.stdout.writeln(time, :green, :bold))
+  !!(console.stdout.writeln(stime, :green, :bold))
 end
 
 # Execute ``:doc`` task (with prerequisites)
@@ -37,14 +37,12 @@ listen = proc do
   sleep
 end
 
-namespace :doc do
-  desc 'Watch documentation changes'
-  task :watch do
-    begin
-      require 'listen'
+desc 'Watch documentation changes'
+task :'doc:watch' do
+  require 'listen'
 
-      listen.call
-    rescue SystemExit, Interrupt
-    end
+  begin
+    listen.call
+  rescue SystemExit, Interrupt
   end
 end
