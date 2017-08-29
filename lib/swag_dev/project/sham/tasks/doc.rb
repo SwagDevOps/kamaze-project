@@ -11,6 +11,7 @@ SwagDev::Project::Sham.define('tasks/doc') do |c|
     {
       yardopts: SwagDev.project.sham!(:yardopts),
       yardoc: SwagDev.project.sham!(:yardoc),
+      prerequisites: ['gem:gemspec'],
       ignored_patterns: [
         '/\.#',
         '_flymake\.rb$',
