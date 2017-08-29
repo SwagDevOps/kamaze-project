@@ -3,18 +3,14 @@
 require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/gem'
 
-namespace :gem do
-  desc 'Update gemspec'
-  task :gemspec do
-    fname = "#{project.name}.gemspec"
+desc 'Update gemspec'
+task 'gem:gemspec': FileList.new(["#{project.name}.gemspec"] + sham!.files)
 
-    [:reenable, :invoke].each { |m| Rake::Task[fname].public_send(m) }
-  end
-end
-
-file "#{project.name}.gemspec": sham!('tasks/gem/gemspec').files do
+file "#{project.name}.gemspec": FileList.new(sham!.files) do |task|
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin]
     .each { |req| require req.to_s }
+
+  console.stdout.writeln("Updating `#{task.name}'...", :green)
 
   tools = OpenStruct.new(
     deps_gen: GemspecDepsGen.new,
@@ -22,8 +18,8 @@ file "#{project.name}.gemspec": sham!('tasks/gem/gemspec').files do
   )
 
   files = OpenStruct.new(
-    templated: project.path(sham!('tasks/gem/gemspec').template),
-    generated: project.path("#{project.name}.gemspec")
+    templated: project.path(sham!.template),
+    generated: project.path("#{task.name}")
   )
 
   spec_id = files.templated

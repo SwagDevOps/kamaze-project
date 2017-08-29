@@ -1,70 +1,57 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
+require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/gem'
 require 'rake/clean'
-require 'cliver'
 
-project = SwagDev.project
-config  = project.sham!('tasks/gem/compile')
-config.build_dirs = config.build_dirs.to_h
+CLOBBER.include(sham!.build_dirs.values)
 
-CLOBBER.include(config.build_dir) if config.build_dir
+(desc "compile executable%s #{sham!.executables}" % {
+        true  => nil,
+        false => 's'
+      }[1 == sham!.executables.size]) unless sham!.executables.empty?
+task 'gem:compile': [
+       'gem:package',
+       'gem:compile:prepare',
+       'gem:compile:install',
+       'gem:compile:compile',
+     ]
 
-namespace :gem do
-  (desc "compile executable%s #{config.executables}" % {
-    true  => nil,
-    false => 's'
-  }[1 == config.executables.size]) unless config.executables.empty?
-  task compile: [
-         'gem:package',
-         'gem:compile:prepare',
-         'gem:compile:install',
-         'gem:compile:compile',
-       ]
+# prepare directories for compiler
+task :'gem:compile:prepare' do
+  rm_rf(sham!.build_dirs[:src])
+
+  sham!.build_dirs.each { |_k, dir| mkdir_p(dir) }
+
+  Dir.glob(sham!.src_globs)
+     .sort
+     .each { |path| cp_r(path, sham!.build_dirs[:src]) }
 end
 
-namespace :gem do
-  namespace :compile do
-    # prepare directories for compiler
-    task :prepare do
-      rm_rf(config.build_dirs[:src])
-
-      config.build_dirs.each do |_k, dir|
-        mkdir_p(dir)
-      end
-
-      Dir.glob(config.src_globs)
-         .sort
-         .each { |path| cp_r(path, config.build_dirs[:src]) }
+# install dependencies
+task :'gem:compile:install' do
+  Bundler.with_clean_env do
+    Dir.chdir(sham!.build_dirs.fetch(:src)) do
+      sh(sham!.bundler, 'install',
+         '--path', 'vendor/bundle', '--clean',
+         '--without', 'development', 'doc', 'test')
     end
+  end
+end
 
-    # install dependencies
-    task :install do
+# compile executables
+task :'gem:compile:compile' do
+  sham!.executables.each do |executable|
+    Dir.chdir(project.path(sham!.build_dirs.fetch(:src))) do
+      tmp_dir = project.path(sham!.build_dirs.fetch(:tmp))
+      bin_dir = project.path(sham!.build_dirs.fetch(:bin), executable)
+
       Bundler.with_clean_env do
-        Dir.chdir(config.build_dirs.fetch(:src)) do
-          sh(config.bundler, 'install',
-             '--path', 'vendor/bundle', '--clean',
-             '--without', 'development', 'doc', 'test')
-        end
-      end
-    end
-
-    # compile executables
-    task :compile do
-      config.executables.each do |executable|
-        Dir.chdir(project.path(config.build_dirs.fetch(:src))) do
-          tmp_dir = project.path(config.build_dirs.fetch(:tmp))
-          bin_dir = project.path(config.build_dirs.fetch(:bin), executable)
-
-          Bundler.with_clean_env do
-            sh(ENV.to_h, config.compiler,
-               "#{project.gem.spec.bindir}/#{executable}",
-               '-r', '.',
-               '-d', "#{tmp_dir}",
-               '-o', "#{bin_dir}")
-          end
-        end
+        sh(ENV.to_h, sham!.compiler,
+           "#{project.gem.spec.bindir}/#{executable}",
+           '-r', '.',
+           '-d', "#{tmp_dir}",
+           '-o', "#{bin_dir}")
       end
     end
   end
