@@ -39,7 +39,7 @@ class SwagDev::Project::Helper::Debug
 
         Kernel.const_defined?(target) ? target : default
       end.call,
-      default,
+      default
     ].map { |n| helper.get('inflector').constantize(n) }.freeze
   end
 
@@ -54,7 +54,7 @@ class SwagDev::Project::Helper::Debug
       require 'pry/color_printer'
     rescue LoadError => e
       # rubocop:disable Performance/Caller
-      warn('%s: %s' % [caller[0], e.message]) if @warned.nil?
+      warn(format('%s: %s', caller[0], e.message)) if @warned.nil?
       # rubocop:enable Performance/Caller
       @warned = true
     end
