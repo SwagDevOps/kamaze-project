@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 # -*- coding: utf-8 -*-
 
-require 'swag_dev/project'
+require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/gem'
 
+# Code mostly based on gem executable
+#
 # @see http://guides.rubygems.org/publishing/
 # @see rubygems-tasks
-#
-# Code mostly base on gem executable
 desc 'Push gem up to the gem server'
 task 'gem:push': ['gem:package'] do
   ['rubygems', 'rubygems/gem_runner', 'rubygems/exceptions'].each do |req|
