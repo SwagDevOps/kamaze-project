@@ -6,16 +6,18 @@ require 'rake/clean'
 
 CLOBBER.include(sham!.build_dirs.values)
 
-(desc "compile executable%s #{sham!.executables}" % {
-        true  => nil,
-        false => 's'
-      }[1 == sham!.executables.size]) unless sham!.executables.empty?
+unless sham!.executables.empty?
+  (desc "compile executable%s #{sham!.executables}" % {
+    true => nil,
+    false => 's'
+  }[1 == sham!.executables.size])
+end
 task 'gem:compile': [
-       'gem:package',
-       'gem:compile:prepare',
-       'gem:compile:install',
-       'gem:compile:compile',
-     ]
+  'gem:package',
+  'gem:compile:prepare',
+  'gem:compile:install',
+  'gem:compile:compile',
+]
 
 # prepare directories for compiler
 task :'gem:compile:prepare' do
@@ -50,8 +52,8 @@ task :'gem:compile:compile' do
         sh(ENV.to_h, sham!.compiler,
            "#{project.gem.spec.bindir}/#{executable}",
            '-r', '.',
-           '-d', "#{tmp_dir}",
-           '-o', "#{bin_dir}")
+           '-d', tmp_dir.to_s,
+           '-o', bin_dir.to_s)
       end
     end
   end

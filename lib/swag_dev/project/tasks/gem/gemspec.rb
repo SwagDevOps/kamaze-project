@@ -19,7 +19,7 @@ file "#{project.name}.gemspec": FileList.new(sham!.files) do |task|
 
   files = OpenStruct.new(
     templated: project.path(sham!.template),
-    generated: project.path("#{task.name}")
+    generated: project.path(task.name.to_s)
   )
 
   spec_id = files.templated

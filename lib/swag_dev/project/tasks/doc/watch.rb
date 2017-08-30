@@ -9,7 +9,7 @@ require 'swag_dev/project/tasks/doc'
 time = proc do
   stime = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
-  !!(console.stdout.writeln(stime, :green, :bold))
+  !!console.stdout.writeln(stime, :green, :bold)
 end
 
 # Execute ``:doc`` task (with prerequisites)
