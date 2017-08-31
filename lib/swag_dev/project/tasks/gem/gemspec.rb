@@ -10,8 +10,6 @@ file "#{project.name}.gemspec": FileList.new(sham!.files) do |task|
   [:ostruct, :pathname, :gemspec_deps_gen, :tenjin]
     .each { |req| require req.to_s }
 
-  console.stdout.writeln("Updating `#{task.name}'...", :green)
-
   tools = OpenStruct.new(
     deps_gen: GemspecDepsGen.new,
     template: Tenjin::Engine.new(cache: false)
