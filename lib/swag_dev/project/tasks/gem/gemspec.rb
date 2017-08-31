@@ -27,11 +27,11 @@ file "#{project.name}.gemspec": FileList.new(sham!.files) do |task|
                  .scan(/Gem::Specification\.new\s+do\s+\|([a-z]+)\|/)
                  .flatten.fetch(0)
 
-  context = {
-    name: project.name,
-    dependencies: tools.deps_gen
-                       .generate_project_dependencies(spec_id).strip,
-  }.merge(project.version_info)
+  context = project
+    .version_info
+    .merge(name:         project.name,
+           dependencies: tools.deps_gen
+                              .generate_project_dependencies(spec_id).strip)
 
   content = tools.template.render(files.templated.to_s, context)
   files.generated.write(content)
