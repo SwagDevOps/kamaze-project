@@ -44,9 +44,6 @@ class SwagDev::Project
   # @return [Symbol]
   attr_reader :name
 
-  # @return [Hash]
-  attr_reader :version_info
-
   # Project subject, main class
   #
   # @return [Class]
@@ -68,9 +65,14 @@ class SwagDev::Project
     self.subject ||= subject!
   end
 
+  # Get subject version_info
+  #
+  # @todo construct missing version_info (when subject does not have method)
   # @return [Hash]
   def version_info
-    subject.version_info
+    subject
+      .version_info
+      .merge(version: subject.const_get(:VERSION).to_s)
   end
 
   # @return [Pathname]
