@@ -8,7 +8,8 @@ project do |c|
     'cs/correct', 'cs/control',
     :doc, 'doc/watch',
     :gem, 'gem/compile',
-    :shell
+    :shell,
+    'version/edit',
   ].shuffle
 end
 
