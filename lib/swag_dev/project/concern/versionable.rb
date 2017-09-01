@@ -2,7 +2,6 @@
 
 require 'pathname'
 require 'active_support/concern'
-
 require 'swag_dev/project/concern'
 
 # Provides a standardized way to use ``VersionInfo``
