@@ -67,12 +67,14 @@ class SwagDev::Project
 
   # Get subject version_info
   #
-  # @todo construct missing version_info (when subject does not have method)
   # @return [Hash]
   def version_info
-    subject
-      .version_info
-      .merge(version: subject.const_get(:VERSION).to_s)
+    info = subject.respond_to?(:version_info) ? subject.version_info : {}
+
+    info.merge(
+      name: self.name,
+      version: subject.const_get(:VERSION).to_s
+    )
   end
 
   # @return [Pathname]
