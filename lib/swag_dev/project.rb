@@ -35,6 +35,18 @@ module SwagDev
   end
 end
 
+# Represent a project
+#
+# Sample of use:
+#
+# ```ruby
+# SwagDev::Project.new do do |c|
+#   c.working_dir = Dir.pwd
+#   c.subject     = SwagDev::Project
+#   c.name        = :'swag_dev-project'
+#   c.tasks       = [ :doc, :gem ]
+# end
+# ```
 class SwagDev::Project
   # @return [Pathname]
   attr_accessor :working_dir
@@ -69,12 +81,13 @@ class SwagDev::Project
   #
   # @return [Hash]
   def version_info
-    info = subject.respond_to?(:version_info) ? subject.version_info : {}
+    const = subject.const_get(:VERSION)
+    vinfo = const.respond_to?(:to_h) ? const.to_h : {}
 
-    info.merge(
+    vinfo.merge(
       name: self.name,
-      version: subject.const_get(:VERSION).to_s
-    )
+      version: const.to_s
+    ).freeze
   end
 
   # @return [Pathname]
