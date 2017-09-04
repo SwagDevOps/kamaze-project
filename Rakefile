@@ -4,12 +4,15 @@ require "#{__dir__}/lib/swag_dev-project"
 require 'swag_dev/project/dsl'
 
 project do |c|
-  c.tasks = [
-    'cs/correct', 'cs/control',
-    :doc, 'doc/watch',
-    :gem, 'gem/compile',
+  c.subject = SwagDev::Project
+  c.name    = 'swag_dev-project'
+  c.tasks   = [
+    :'cs:correct', :'cs:control',
+    :doc, :'doc:watch',
+    :gem, :'gem:compile',
     :shell,
-    'version/edit',
+    :test,
+    :'version:edit',
   ].shuffle
 end
 
