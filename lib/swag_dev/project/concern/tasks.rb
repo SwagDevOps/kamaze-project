@@ -13,7 +13,9 @@ module SwagDev::Project::Concern::Tasks
   #
   # @return [Array<Symbol>]
   def tasks
-    (@tasks = @tasks || []).clone
+    @tasks ||= []
+
+    @tasks.clone
   end
 
   # Set tasks
@@ -24,7 +26,9 @@ module SwagDev::Project::Concern::Tasks
     @tasks ||= []
 
     @tasks.empty? ? @tasks = tasks : @tasks += tasks
-    @tasks.map!(&:to_sym).uniq!
+
+    @tasks.map! { |tn| tn.to_s.gsub(/:+/, '/').to_sym }
+    @tasks.uniq!
 
     tasks
   end
