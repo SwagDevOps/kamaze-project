@@ -37,7 +37,7 @@ module SwagDev::Project::Concern::Tasks
 
   # Load tasks
   #
-  # Tasks are loaded only if ``Rake::DSL`` is defined
+  # Tasks are loaded only when ``Rake::DSL`` is defined
   #
   # @return [self]
   def tasks_load!
