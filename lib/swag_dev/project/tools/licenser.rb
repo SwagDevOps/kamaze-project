@@ -103,7 +103,10 @@ class SwagDev::Project::Tools::Licenser
   #
   # @return [Array<Pathname>]
   def files
-    @files.each.map { |file| Pathname.new(file) }.sort
+    @files.map { |file| Pathname.new(file) }
+          .delete_if { |file| !file.file? }
+          .sort.uniq
+          .map { |file| file.realpath }
   end
 
   # Get license, formatted (using comments)
