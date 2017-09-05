@@ -6,20 +6,41 @@ require 'swag_dev/project/tools'
 #
 # Samples of use:
 #
-# ~~~~
-# Licenser.process do |process|
-#    process.license  = project.version_info[:license]
-#    process.patterns = ['src/bin/*', 'src/**/**.rb']
-# end.apply
-# ~~~~
-#
-# ~~~~
-# Licenser.process do |process|
-#     process.files += Dir.glob('src/bin/*')
+# ```ruby
+# Licenser.process do |pr|
+#    pr.license  = project.version_info.fetch(:license_header)
+#    pr.patterns = ['bin/*', 'lib/**/**.rb']
 # end
-# ~~~~
+# ```
+#
+# ```ruby
+# Licenser.process do |pr|
+#     pr.files += Dir.glob('bin/*')
+# end
+# ```
+#
+# Sample of use (with DSL):
+#
+# ```ruby
+# require 'swag_dev/project/dsl'
+# require 'swag_dev/project/tools/licenser'
+#
+# project do |c|
+#   c.working_dir = "#{__dir__}/.."
+#   c.subject = SwagDev::Project
+#   c.name = 'swag_dev-project'
+#   c.tasks = []
+# end
+#
+# licenser = SwagDev::Project::Tools::Licenser.process do |process|
+#   process.working_dir = project.working_dir
+#   process.license     = project.version_info.fetch(:license_header)
+#   process.patterns    = ['bin/*', 'lib/**/**.rb']
+#   process.output      = STDOUT
+# end
+# ```
 class SwagDev::Project::Tools::Licenser
-  # License chapter
+  # License chapter/header
   #
   # @return [String]
   attr_accessor :license
@@ -37,7 +58,10 @@ class SwagDev::Project::Tools::Licenser
   # Where (default is current opened file) to write output
   #
   # @return [Pathname|IO|nil]
-  attr_reader   :output
+  attr_accessor :output
+
+  # @return [Pathname]
+  attr_accessor :working_dir
 
   class << self
     def process(&block)
@@ -48,20 +72,35 @@ class SwagDev::Project::Tools::Licenser
   def initialize
     yield self if block_given?
 
-    @patterns ||= []
-    @files    ||= [] # project.spec.files.reject { |f| !f.scan(/\.rb$/)[0] }
-    @license  ||= '' # project.version_info[:license_header]
+    @working_dir ||= Dir.pwd
+    @patterns    ||= []
+    @files       ||= []
+    @license     ||= '' # project.version_info.fetch(:license_header)
   end
 
+  # Get working-dir
+  #
+  # @return [Pathname]
+  def working_dir
+    Pathname.new(@working_dir || Dir.pwd)
+  end
+
+  # Set patterns
+  #
   # @param [Array<String>] patterns
   def patterns=(patterns)
     @files    ||= []
     @patterns ||= []
 
-    patterns.each { |pattern| @files += Dir.glob(pattern) }
+    patterns.each do |pattern|
+      @files += Dir.glob(working_dir.join(pattern))
+    end
+
     @patterns += patterns
   end
 
+  # Get files
+  #
   # @return [Array<Pathname>]
   def files
     @files.each.map { |file| Pathname.new(file) }.sort
@@ -78,6 +117,8 @@ class SwagDev::Project::Tools::Licenser
     end.join("\n")
   end
 
+  # Get license regexp
+  #
   # @return [Regexp]
   def license_regexp
     /#{Regexp.quote(license)}/mi
@@ -89,7 +130,9 @@ class SwagDev::Project::Tools::Licenser
   def process
     yield self if block_given?
 
-    files.each { |file| apply_license(file) }
+    files.each do |file|
+      apply_license(file)
+    end
 
     self
   end
