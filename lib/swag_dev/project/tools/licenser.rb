@@ -105,6 +105,7 @@ class SwagDev::Project::Tools::Licenser
   def files
     @files.map { |file| Pathname.new(file) }
           .delete_if { |file| !file.file? }
+          .delete_if { |file| file.basename.to_s[0] == '.' }
           .sort.uniq
           .map { |file| file.realpath }
   end
