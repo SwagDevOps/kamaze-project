@@ -26,12 +26,14 @@ class SwagDev::Project::Gem
   #
   # @return [Gem::Specification]
   def spec
-    Gem::Specification::load(spec_file.to_s)
+    Dir.chdir(working_dir) do
+      Gem::Specification::load(spec_file.to_s)
+    end
   end
 
   # @return [Pathname]
   def package
-    Pathname.new('pkg').join("#{spec.name}-#{spec.version}.gem")
+    working_dir.join('pkg', "#{spec.name}-#{spec.version}.gem")
   end
 
   # Get spec file path (should be absolute path)
