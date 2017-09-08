@@ -14,6 +14,7 @@ class SwagDev::Project::Helper::Project::Config < SwagDev::Project::Config
       working_dir: Dir.pwd,
       name: nil,
       subject: nil,
+      tools: {}
     }
   end
 end
