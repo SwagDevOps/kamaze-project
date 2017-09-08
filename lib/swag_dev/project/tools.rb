@@ -32,7 +32,7 @@ class SwagDev::Project::Tools
     # @todo permit ``SwagDev::Project`` to set its own tools
     #
     # @return [Hash]
-    # @see [SwagDev::Project::Helper::Inflector]
+    # @see SwagDev.Project.Helper.Inflector
     attr_reader :defaults
     attr_accessor :items
   end
