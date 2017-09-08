@@ -12,11 +12,17 @@ require 'swag_dev/project/concern/helper'
 # Tools are instantiated on demand,
 # each demand generates a fresh new tool instance, avoiding
 # the risk to reuse a previous altered version of a tool.
+#
+# Sample of use:
+#
+# ```ruby
+# project.tools.get(:licenser).process do |licenser|
+#   process.license     = project.version_info.fetch(:license_header)
+#   process.patterns    = ['bin/*', 'lib/**/**.rb']
+#   process.output      = STDOUT
+# end
+# ```
 class SwagDev::Project::Tools
-  @defaults = {
-    licenser: :'swag_dev/project/tools/licenser'
-  }
-
   class << self
     # Default tools
     #
@@ -28,10 +34,17 @@ class SwagDev::Project::Tools
     # @return [Hash]
     # @see [SwagDev::Project::Helper::Inflector]
     attr_reader :defaults
+    attr_accessor :items
   end
 
+  @defaults = {
+    licenser: :'swag_dev/project/tools/licenser'
+  }
+
+  @items = {}
+
   def initialize(items = {})
-    @items = self.class.defaults.clone.merge(items)
+    @items = self.class.defaults.clone.merge(self.class.items).merge(items)
     @cache = {}
   end
 
@@ -70,12 +83,9 @@ class SwagDev::Project::Tools
   # @return [Object]
   def make(name, klass)
     klass = helper.get(:inflector).resolve(klass) unless klass.is_a?(Class)
-    # use sham
-    attrs = self.sham("tools/#{name}").to_h
-    return klass.new unless attrs
 
     klass.new do |i|
-      attrs.each do |attr, value|
+      self.sham("tools/#{name}").to_h.each do |attr, value|
         i.public_send("#{attr}=", value)
       end
     end
