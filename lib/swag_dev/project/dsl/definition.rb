@@ -14,14 +14,14 @@ module SwagDev::Project::Dsl::Definition
     SwagDev.project(&block).load!
   end
 
-  # @see [SwagDev::Project::Concern::Sham.sham]
+  # @see SwagDev::Project::Concern::Sham#sham
   def sham(name = nil, *args, &block)
     name ||= task_sham_name unless block
 
     project.sham(name, *args, &block)
   end
 
-  # @see [SwagDev::Project::Concern::Sham.sham!]
+  # @see SwagDev::Project::Concern::Sham#sham!
   def sham!(name = nil, *args)
     name ||= task_sham_name
 
