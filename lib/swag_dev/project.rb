@@ -12,6 +12,7 @@ module SwagDev
       'concern/gem',
       'concern/yardoc',
       'concern/versionable',
+      'concern/tools',
     ].each { |req| require "swag_dev/project/#{req}" }
 
     include Concern::Env
@@ -21,6 +22,7 @@ module SwagDev
     include Concern::Gem
     include Concern::Yardoc
     include Concern::Versionable
+    include Concern::Tools
   end
 
   class << self
