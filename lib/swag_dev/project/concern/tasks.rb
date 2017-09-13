@@ -42,9 +42,9 @@ module SwagDev::Project::Concern::Tasks
   # @return [self]
   def tasks_load!
     if Kernel.const_defined?('Rake::DSL')
-      self.tasks.each do |req|
-        require "swag_dev/project/tasks/#{req}"
-      end
+      base = Pathname.new('swag_dev/project/tasks')
+
+      self.tasks.each { |req| require base.join(req.to_s).to_s }
     end
 
     self
