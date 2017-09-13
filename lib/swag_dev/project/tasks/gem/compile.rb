@@ -7,7 +7,7 @@ require 'rake/clean'
 CLOBBER.include(sham!.build_dirs.values)
 
 unless sham!.executables.empty?
-  (desc "compile executable%s #{sham!.executables}" % {
+  (desc "Compile executable%s #{sham!.executables}" % {
     true => nil,
     false => 's'
   }[1 == sham!.executables.size])
@@ -19,7 +19,7 @@ task 'gem:compile': [
   'gem:compile:compile',
 ]
 
-# prepare directories for compiler
+# prepare directories for compiler -----------------------------------
 task :'gem:compile:prepare' do
   rm_rf(sham!.build_dirs[:src])
 
@@ -30,7 +30,7 @@ task :'gem:compile:prepare' do
      .each { |path| cp_r(path, sham!.build_dirs[:src]) }
 end
 
-# install dependencies
+# install dependencies -----------------------------------------------
 task :'gem:compile:install' do
   Bundler.with_clean_env do
     Dir.chdir(sham!.build_dirs.fetch(:src)) do
@@ -41,7 +41,7 @@ task :'gem:compile:install' do
   end
 end
 
-# compile executables
+# compile executables ------------------------------------------------
 task :'gem:compile:compile' do
   sham!.executables.each do |executable|
     Dir.chdir(project.path(sham!.build_dirs.fetch(:src))) do
