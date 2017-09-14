@@ -11,6 +11,7 @@ project do |c|
     :doc, :'doc:watch',
     :gem, :'gem:compile',
     :shell,
+    :'sources:license',
     :test,
     :'version:edit',
   ].shuffle
