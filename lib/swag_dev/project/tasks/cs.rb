@@ -14,7 +14,12 @@
 #   percy-style: [ default.yml ]
 # ~~~~
 
+require 'swag_dev/project/dsl/definition'
+
+# rubocop:disable Style/Documentation
 module SwagDev::Project::Dsl::Definition
+  # rubocop:enable Style/Documentation
+
   # Make a rubocop ``RakeTask``
   #
   # @param [Array<String>] patterns
@@ -43,5 +48,19 @@ module SwagDev::Project::Dsl::Definition
     end
 
     Rake::Task[tname]
+  end
+
+  def cs_task_from_file(file)
+    require 'swag_dev/project/dsl'
+
+    type = Pathname.new(file).basename('.rb')
+    sham = sham!("tasks/cs/#{type}")
+
+    desc sham.description
+    task "cs:#{type}", [:path] => sham.prerequisites do |t, args|
+      patterns = args[:path] ? [args[:path]] : project.gem.spec.require_paths
+
+      rubocop(patterns, sham: sham).invoke
+    end
   end
 end
