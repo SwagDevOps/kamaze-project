@@ -4,11 +4,9 @@
 # @see https://gist.github.com/chetan/1827484
 
 require 'swag_dev/project/dsl'
+require 'swag_dev/project/tasks/gem' if sham!.prerequisites.grep(/^gem(:|$)/)
+require 'pathname'
 require 'rake/clean'
-
-if sham!.prerequisites.grep(/^gem(:|$)/)
-  require 'swag_dev/project/tasks/gem'
-end
 
 # clobber -----------------------------------------------------------
 
@@ -34,6 +32,9 @@ utf8fix = lambda do |output_dir|
 end
 
 doctask = proc do
+  require 'securerandom'
+  require 'yard'
+
   # internal task name
   tname = 'doc:t_%s' % SecureRandom.hex(8)
 
@@ -64,8 +65,6 @@ end
 
 desc 'Generate documentation (using YARD)'
 task doc: sham!.prerequisites do
-  [:pathname, :yard, :securerandom].each { |req| require req.to_s }
-
   doctask.call.execute
   utf8fix.call(sham!.yardoc.output_dir)
 end
