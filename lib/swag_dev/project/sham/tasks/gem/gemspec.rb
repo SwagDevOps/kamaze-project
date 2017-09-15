@@ -9,7 +9,7 @@ SwagDev::Project::Sham.define('tasks/gem/gemspec') do |c|
   c.attributes do
     {
       template: template,
-      files:    [template, 'Gemfile'] + libfiles,
+      files:    [template] + libfiles,
     }
   end
 end
