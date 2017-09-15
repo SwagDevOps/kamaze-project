@@ -18,8 +18,9 @@ gem 'dotenv', '~> 2.2'
 # supported tools
 gem 'pry', '~> 0.10'
 gem 'yard', '~> 0.9'
-gem 'rspec', '~> 3.6'
 gem 'rubocop', '~> 0.49'
+# 'rspec' is also supported, but we don't force to use it
+# 'listen' is used to "watch" but could be incompatible with some systems
 
 group :development do
   gem 'rake', '~> 12.0'
@@ -33,5 +34,5 @@ group :doc, :development do
 end
 
 group :test, :development do
-  gem 'factory_girl', '~> 4.8'
+  gem 'rspec', '~> 3.6'
 end
