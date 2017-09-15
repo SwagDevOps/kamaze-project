@@ -9,6 +9,7 @@
 /build/
 /coverage/
 /doc/
+/Gemfile
 /Gemfile.lock
 /pkg/
 /spec/reports/
