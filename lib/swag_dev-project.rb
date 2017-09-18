@@ -8,7 +8,15 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-if File.file?("#{__dir__}/../Gemfile.lock")
+locked = proc do
+  Dir.chdir("#{__dir__}/..") do
+    gemfiles = ['gems.rb', 'gems.locked', 'Gemfile', 'Gemfile.lock']
+
+    Dir.glob(gemfiles).size >= 2
+  end
+end.call
+
+if locked
   require 'rubygems'
   require 'bundler'
 
@@ -17,18 +25,16 @@ end
 
 $LOAD_PATH.unshift __dir__
 
-if File.file?("#{__dir__}/../Gemfile.lock")
-  if 'development' == ENV['PROJECT_MODE']
-    require 'bundler/setup'
+if locked and 'development' == ENV['PROJECT_MODE']
+  require 'bundler/setup'
 
-    def pp(*args)
-      proc do
-        require 'active_support/inflector'
-        require 'swag_dev/project/helper/debug'
+  def pp(*args)
+    proc do
+      require 'active_support/inflector'
+      require 'swag_dev/project/helper/debug'
 
-        ActiveSupport::Inflector.constantize('SwagDev::Project::Helper::Debug')
-      end.call.new.dump(*args)
-    end
+      ActiveSupport::Inflector.constantize('SwagDev::Project::Helper::Debug')
+    end.call.new.dump(*args)
   end
 end
 
