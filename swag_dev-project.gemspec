@@ -3,7 +3,7 @@
 #
 # Should follow the higher required_ruby_version
 # at the moment, gem with higher required_ruby_version is activesupport
-# but requires version >= 2.3.0 with safe navigation operator &.
+# but requires version >= 2.3.0 with safe navigation operator &
 
 Gem::Specification.new do |s|
   s.name        = 'swag_dev-project'
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
                      'lib/**/version_info.yml'
                     ].map { |pt| Dir.glob(pt) }.flatten
 
+  s.add_runtime_dependency "rake", ["~> 12.0"]
   s.add_runtime_dependency "activesupport", ["~> 5.1"]
   s.add_runtime_dependency "version_info", ["~> 1.9"]
   s.add_runtime_dependency "sham", ["~> 1.1"]
@@ -38,7 +39,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "pry", ["~> 0.10"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
   s.add_runtime_dependency "rubocop", ["~> 0.49"]
-  s.add_development_dependency "rake", ["~> 12.0"]
   s.add_development_dependency "listen", ["~> 3.1"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "github-markup", ["~> 1.6"]
