@@ -6,6 +6,7 @@ module SwagDev
   class Project
     [
       'concern/env',
+      'concern/mode',
       'concern/helper',
       'concern/sham',
       'concern/tasks',
@@ -16,6 +17,7 @@ module SwagDev
     ].each { |req| require "swag_dev/project/#{req}" }
 
     include Concern::Env
+    include Concern::Mode
     include Concern::Helper
     include Concern::Sham
     include Concern::Tasks
