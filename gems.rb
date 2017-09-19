@@ -4,6 +4,7 @@
 source 'https://rubygems.org'
 
 # base
+gem 'rake', '~> 12.0'
 gem 'activesupport', '~> 5.1'
 gem 'version_info', '~> 1.9'
 gem 'sham', '~> 1.1'
@@ -23,7 +24,6 @@ gem 'rubocop', '~> 0.49'
 # 'listen' is used to "watch" but could be incompatible with some systems
 
 group :development do
-  gem 'rake', '~> 12.0'
   gem 'listen', '~> 3.1'
 end
 
