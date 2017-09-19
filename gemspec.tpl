@@ -3,6 +3,7 @@
 #
 # Should follow the higher required_ruby_version
 # at the moment, gem with higher required_ruby_version is activesupport
+# but requires version >= 2.3.0 with safe navigation operator &
 
 Gem::Specification.new do |s|
   s.name        = '#{@name}'
@@ -16,7 +17,6 @@ Gem::Specification.new do |s|
   s.email       = '#{@email}'
   s.homepage    = '#{@homepage}'
 
-  # Require version >= 2.3.0 with safe navigation operator &.
   s.required_ruby_version = '>= 2.3.0'
   s.require_paths = ['lib']
   s.files         = ['.yardopts',
