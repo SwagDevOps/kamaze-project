@@ -38,7 +38,8 @@ class SwagDev::Project::Tools
   end
 
   @defaults = {
-    licenser: :'swag_dev/project/tools/licenser'
+    licenser:       :'swag_dev/project/tools/licenser',
+    process_locker: :'swag_dev/project/tools/process_locker'
   }
 
   @items = {}
@@ -48,33 +49,57 @@ class SwagDev::Project::Tools
     @cache = {}
   end
 
-  # Get an instance of «tool» from given name
+  # Get an instance from given name
   #
-  # @param [String] name
+  # @param [Symbol] name
   # @return [Object]
-  def get(name)
-    name = name.to_sym
+  # @raise [KeyError]
+  def fetch(name)
+    unless member?(name)
+      raise KeyError, "key not found: :#{name}"
+    end
 
-    (@cache[name] ||= proc do
-      klass = @items.fetch(name.to_sym)
-
-      make(name, klass)
-    end.call).clone
+    self[name]
   end
 
-  # Get items (considered as tools)
+  # Get an instance from given name
+  #
+  # @param [Symbol] name
+  # @return [Object]
+  def [](name)
+    (@cache[name] ||= proc do
+      klass = @items[name.to_sym]
+
+      make(name, klass) if klass
+    end.call)&.clone if member?(name)
+  end
+
+  alias get fetch
+
+  # Get all instance at once
   #
   # @return [Hash]
   def to_h
-    @items
+    results = @items.map do |name, klass|
+      [name, make(name, @cache[name] ||= klass)]
+    end
+
+    Hash[results]
+  end
+
+  # Returns ``true`` if the given key is present
+  #
+  # @return [Boolean]
+  def member?(key)
+    @items.member?(key.to_sym)
   end
 
   protected
 
   include SwagDev::Project::Concern::Helper
   include SwagDev::Project::Concern::Sham
-  SwagDev::Project::Concern::Sham
-    .instance_methods.each { |m| protected m }
+
+  SwagDev::Project::Concern::Sham.instance_methods.each { |m| protected m }
 
   # Instantiate a ``Class`` (as ``klass``) eventually using a named ``sham``
   #
