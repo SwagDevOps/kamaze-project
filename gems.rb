@@ -15,6 +15,7 @@ gem 'pastel', '~> 0.7'
 gem 'tty-editor', '~> 0.2'
 gem 'tty-screen', '~> 0.5'
 gem 'dotenv', '~> 2.2'
+gem 'process_lock', '~> 0.1'
 
 # supported tools
 gem 'pry', '~> 0.10'
