@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "tty-editor", ["~> 0.2"]
   s.add_runtime_dependency "tty-screen", ["~> 0.5"]
   s.add_runtime_dependency "dotenv", ["~> 2.2"]
+  s.add_runtime_dependency "process_lock", ["~> 0.1"]
   s.add_runtime_dependency "pry", ["~> 0.10"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
   s.add_runtime_dependency "rubocop", ["~> 0.49"]
