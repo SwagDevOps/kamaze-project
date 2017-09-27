@@ -65,7 +65,7 @@ class SwagDev::Project::Tools::ProcessLocker
 
   # Create a temporary file
   #
-  # @param [String]
+  # @param [String] lockname
   # @return [Pathname]
   def mktemp(lockname)
     lockname = Pathname.new(lockname.to_s).basename('.*')
