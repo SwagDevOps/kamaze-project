@@ -49,8 +49,11 @@ class SwagDev::Project::Helper::Debug
   def printers_load
     require 'pp'
 
+    Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
+
     begin
       require 'coderay'
+      require 'pry/pager'
       require 'pry/color_printer'
     rescue LoadError => e
       # rubocop:disable Performance/Caller
