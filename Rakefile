@@ -2,6 +2,9 @@
 
 require "#{__dir__}/lib/swag_dev-project"
 require 'swag_dev/project/dsl'
+require 'sys/proc'
+
+Sys::Proc.progname
 
 project do |c|
   c.subject = SwagDev::Project
