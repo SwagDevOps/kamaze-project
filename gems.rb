@@ -25,6 +25,7 @@ gem 'rubocop', '~> 0.49'
 # 'listen' is used to "watch" but could be incompatible with some systems
 
 group :development do
+  gem 'sys-proc', '~> 1.0.4'
   gem 'listen', '~> 3.1'
 end
 
