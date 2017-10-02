@@ -5,9 +5,11 @@ require 'swag_dev/project/tasks/gem'
 
 # tasks --------------------------------------------------------------
 
-# CLOBBER.include(sham!.build_dirs.values)
-
 packer = project.tools.fetch(:packer)
+
+# clobber build dir is probably not a good idea
+#
+# CLOBBER.include(packer.build_dir)
 
 unless packer.executables.empty?
   (desc "Compile executable%s #{packer.executables}" % {
