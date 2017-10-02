@@ -2,59 +2,21 @@
 
 require 'swag_dev/project/dsl'
 require 'swag_dev/project/tasks/gem'
-require 'rake/clean'
 
-CLOBBER.include(sham!.build_dirs.values)
+# tasks --------------------------------------------------------------
 
-unless sham!.executables.empty?
-  (desc "Compile executable%s #{sham!.executables}" % {
+# CLOBBER.include(sham!.build_dirs.values)
+
+packer = project.tools.fetch(:packer)
+
+unless packer.executables.empty?
+  (desc "Compile executable%s #{packer.executables}" % {
     true => nil,
     false => 's'
-  }[1 == sham!.executables.size])
+  }[1 == packer.executables.size])
 end
-task 'gem:compile': [
-  'gem:package',
-  'gem:compile:prepare',
-  'gem:compile:install',
-  'gem:compile:compile',
-]
-
-# prepare directories for compiler -----------------------------------
-task :'gem:compile:prepare' do
-  rm_rf(sham!.build_dirs[:src])
-
-  sham!.build_dirs.each { |_k, dir| mkdir_p(dir) }
-
-  Dir.glob(sham!.src_globs)
-     .sort
-     .each { |path| cp_r(path, sham!.build_dirs[:src]) }
-end
-
-# install dependencies -----------------------------------------------
-task :'gem:compile:install' do
-  Bundler.with_clean_env do
-    Dir.chdir(sham!.build_dirs.fetch(:src)) do
-      sh(sham!.bundler, 'install',
-         '--path', 'vendor/bundle', '--clean',
-         '--without', 'development', 'doc', 'test')
-    end
-  end
-end
-
-# compile executables ------------------------------------------------
-task :'gem:compile:compile' do
-  sham!.executables.each do |executable|
-    Dir.chdir(project.path(sham!.build_dirs.fetch(:src))) do
-      tmp_dir = project.path(sham!.build_dirs.fetch(:tmp))
-      bin_dir = project.path(sham!.build_dirs.fetch(:bin), executable)
-
-      Bundler.with_clean_env do
-        sh(ENV.to_h, sham!.compiler,
-           "#{project.gem.spec.bindir}/#{executable}",
-           '-r', '.',
-           '-d', tmp_dir.to_s,
-           '-o', bin_dir.to_s)
-      end
-    end
-  end
+task 'gem:compile': ['gem:package'] do
+  project.tools
+         .fetch(:process_locker)
+         .lock!('gem-compile') { packer.pack }
 end
