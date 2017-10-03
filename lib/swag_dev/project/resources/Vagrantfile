@@ -1,0 +1,53 @@
+# This file is used as a kind of template,
+# ``boxes`` variable is defined at runtime.
+#
+# Vagrant does not cohabitate well with bundler,
+# this setup avoid to load any project sources.
+#
+# @see SwagDev::Project::Tools::VagrantHelper
+Vagrant.configure(2) do |config|
+  boxes.each do |box, box_config|
+    if box_config['synced_folder']
+      config.vm.public_send(:synced_folder,
+      *(box_config['synced_folder'][0] || []),
+      **(box_config['synced_folder'][1] || {}))
+    end
+
+    machine_name = box
+    config.vm.define machine_name, autostart: false do |machine|
+      machine.vm.box = box_config.fetch('image')
+
+      (box_config['providers'] || {})
+        .each do |provider, provider_config|
+        config.vm.provider provider do |vb|
+          provider_config.each do |pc_type, pconfigs|
+            next unless ['vm', 'customize'].include?(pc_type)
+
+            pconfigs.each do |c|
+              c = ['customize', [c], {}] if pc_type == 'customize'
+
+              configurable = vb if pc_type == 'customize'
+              configurable = config.vm if pc_type == 'vm'
+
+              configurable.public_send(c[0], *(c[1]), **(c[2] || {}))
+            end
+          end
+        end
+      end
+
+      (box_config['provisions'] || {}).each do |provision|
+        machine.vm.public_send(:provision, *(provision[0]), **(provision[1]))
+      end
+
+      box_config.each do |k, v|
+        next unless ['provision', 'guest'].include?(k)
+
+        if v.is_a?(Array)
+          machine.vm.public_send('%s' % k, *(v[0]), **(v[1]))
+        else # settings
+          machine.vm.public_send('%s=' % k, v)
+        end
+      end
+    end
+  end
+end
