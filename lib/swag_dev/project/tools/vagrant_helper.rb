@@ -5,17 +5,17 @@ require 'base64'
 require 'pathname'
 require 'cliver'
 
-# Vagrant based
+# Vagrant based,
+# this class provides a easy and ready to use wrapper.
 #
 # Sample use in Rake task:
 #
-# ```
-# require 'project/vagrant_helper'
-# vagrant = Project::VagrantHelper
-#
-# if vagrant.boxes? and helper.executable
-#    file helper.installable => helper.installer do
-#    helper.install
+# ```ruby
+# vagrant = project.tools.fetch(:vagrant)
+# if vagrant.boxes? and vagrant.executable?
+#    file vagrant.vagrantfile => vagrant.source_files do
+#        vagrant.install
+#    end
 # end
 # ```
 class SwagDev::Project::Tools::VagrantHelper
@@ -102,12 +102,34 @@ class SwagDev::Project::Tools::VagrantHelper
     self
   end
 
+  # Get files used to generate ``boxes``
+  #
+  # @return [Array<Pathname>]
+  def box_files
+    Dir.glob(pwd.join('vagrant/*.yml')).map do |file|
+      Pathname.new(file)
+    end
+  end
+
+  # Get files related to "box files"
+  #
+  # @return [Array<Pathname>]
+  def source_files
+    box_files.map do |file|
+      Dir.glob("#{file.dirname}/**/**").map do |path|
+        path = Pathname.new(path)
+
+        path.file? ? path : nil
+      end.compact
+    end.flatten
+  end
+
   # Get boxes configuration
   #
   # @return [Hash]
   def boxes
     results = {}
-    Dir.glob(pwd.join('vagrant/*.yml')).each do |path|
+    box_files.each do |path|
       path = Pathname.new(path).realpath
       box_name = path.basename('.*').to_s
 
