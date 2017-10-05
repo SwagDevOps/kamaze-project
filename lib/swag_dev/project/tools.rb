@@ -41,6 +41,7 @@ class SwagDev::Project::Tools
     licenser:       :'swag_dev/project/tools/licenser',
     process_locker: :'swag_dev/project/tools/process_locker',
     packer:         :'swag_dev/project/tools/packer',
+    vagrant:        :'swag_dev/project/tools/vagrant',
   }
 
   @items = {}
