@@ -18,7 +18,7 @@ require 'cliver'
 #    end
 # end
 # ```
-class SwagDev::Project::Tools::VagrantHelper
+class SwagDev::Project::Tools::Vagrant
   # Path where resources are stored
   #
   # @return [Pathname]
