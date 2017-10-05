@@ -16,6 +16,7 @@ project do |c|
     :shell,
     :'sources:license',
     :test,
+    :vagrant,
     :'version:edit',
   ].shuffle
 end
