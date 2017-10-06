@@ -18,6 +18,9 @@ require 'cliver'
 #    end
 # end
 # ```
+#
+# @see http://yaml.org/YAML_for_ruby.html
+# @see https://friendsofvagrant.github.io/v1/docs/boxes.html
 class SwagDev::Project::Tools::Vagrant
   # Path where resources are stored
   #
@@ -59,6 +62,9 @@ class SwagDev::Project::Tools::Vagrant
     Cliver.detect(:vagrant)
   end
 
+  # Denote ``vagrant`` executable is present
+  #
+  # @return [Boolean]
   def executable?
     !!executable
   end
@@ -131,9 +137,9 @@ class SwagDev::Project::Tools::Vagrant
     results = {}
     box_files.each do |path|
       path = Pathname.new(path).realpath
-      box_name = path.basename('.*').to_s
+      name = path.basename('.yaml').to_s
 
-      results[box_name] = YAML.load_file(path)
+      results[name] = YAML.load_file(path)
     end
 
     results
@@ -146,13 +152,20 @@ class SwagDev::Project::Tools::Vagrant
     !boxes.empty?
   end
 
+  # Dump (boxes) config
+  #
+  # @return [String]
+  def dump
+    YAML.dump(boxes)
+  end
+
   protected
 
   # Get generated content for ``Vagrantfile``
   #
   # @return [String]
   def vagrantfile_content
-    boxes64 = Base64.strict_encode64(YAML.dump(boxes))
+    boxes64 = Base64.strict_encode64(dump)
 
     ['# frozen_string_literal: true',
      '# vim: ai ts=2 sts=2 et sw=2 ft=ruby',
