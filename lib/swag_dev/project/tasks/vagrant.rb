@@ -28,6 +28,14 @@ task 'vagrant:init': ['Vagrantfile']
   end
 end
 
+desc "Dump config"
+task 'vagrant:dump', [:output] => ['vagrant:init'] do |task, args|
+  out_file = Pathname.new(args[:output] || '/dev/stdout')
+  dump = vagrant.dump
+
+  Pathname.new(out_file).write(dump)
+end
+
 # :vagrant:vm --------------------------------------------------------
 
 vagrant.boxes.each do |box, box_config|
