@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/tools/packer'
+require 'swag_dev/project/tools/packer/filesystem/operator'
 require 'pathname'
 
 class SwagDev::Project::Tools::Packer
@@ -30,6 +31,7 @@ class SwagDev::Project::Tools::Packer::Filesystem
   def initialize
     @build_dir   = './build'
     @working_dir = Dir.pwd
+    @operator    = Operator.new(self)
   end
 
   # Get host config, retrieved from ``RbConfig::CONFIG``
@@ -126,7 +128,24 @@ class SwagDev::Project::Tools::Packer::Filesystem
     end
   end
 
+  def method_missing(method, *args, &block)
+    if respond_to_missing?(method)
+      operator.public_send(method, *args, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    return true if operator.respond_to?(method, include_private)
+
+    super(method, include_private)
+  end
+
   protected
+
+  # @return [SwagDev::Project::Tools::Packer::Filesystem::Operator]
+  attr_reader :operator
 
   # @return [SwagDev::Project]
   def project
