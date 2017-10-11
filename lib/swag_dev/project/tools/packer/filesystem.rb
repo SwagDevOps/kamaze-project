@@ -13,8 +13,6 @@ end
 # * ``build_dir`` root directory used during "compilation"
 # * ``build_dirs`` system specific paths for build dirs ``[:src, :tmp, :bin]``
 class SwagDev::Project::Tools::Packer::Filesystem
-  include FileUtils
-
   # Build dir (root directory)
   attr_writer :build_dir
 
