@@ -6,9 +6,12 @@ require 'pathname'
 class SwagDev::Project::Tools::Packer
 end
 
-# Represents filesystem used during compilation (or packing)
+# Filesystem description used for compilation (or packing)
 #
-# Some basic/trivial operations are provided
+# * ``pkg_dir`` used by ``Gem`` to create gem
+# * ``gem_dir`` gem (with version) packagables source files
+# * ``build_dir`` root directory used during "compilation"
+# * ``build_dirs`` system specific paths for build dirs ``[:src, :tmp, :bin]``
 class SwagDev::Project::Tools::Packer::Filesystem
   include FileUtils
 
