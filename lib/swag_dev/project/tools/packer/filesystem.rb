@@ -9,7 +9,7 @@ end
 # Represents filesystem used during compilation (or packing)
 #
 # Some basic/trivial operations are provided
-class SwagDev::Project::Tools::Packer::FileSystem
+class SwagDev::Project::Tools::Packer::Filesystem
   include FileUtils
 
   # Build dir (root directory)
