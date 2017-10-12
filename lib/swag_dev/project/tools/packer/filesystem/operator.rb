@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/tools/packer/filesystem'
+require 'fileutils'
+require 'rake/file_utils'
 
 class SwagDev::Project::Tools::Packer
   class Filesystem
@@ -11,6 +13,7 @@ end
 class SwagDev::Project::Tools::Packer::Filesystem::Operator
   include FileUtils
 
+  # @return [SwagDev::Project::Tools::Packer::Filesystem]
   attr_reader :fs
 
   # @param [SwagDev::Project::Tools::Packer::Filesystem]
@@ -28,6 +31,11 @@ class SwagDev::Project::Tools::Packer::Filesystem::Operator
     self
   end
 
+  # Prepare ``src`` dir
+  #
+  # Source files are refreshed (deleted and copied again)
+  #
+  # @see [SwagDev::Project::Tools::Packer::Filesystem#packables]
   # @return [self]
   def prepare_srcdir
     packables = fs.packables.map(&:realpath)
