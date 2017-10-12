@@ -41,6 +41,7 @@ class SwagDev::Project::Tools::Packer::Filesystem
     RbConfig::CONFIG
   end
 
+  # @return [Pathname]
   def build_dir
     Pathname.new(@build_dir)
   end
@@ -84,7 +85,9 @@ class SwagDev::Project::Tools::Packer::Filesystem
   # @return [Pathname]
   def buildables
     executables.to_a.map do |executable|
-      build_dirs.fetch(:bin).join(executable)
+      path = build_dirs.fetch(:bin).join(executable).to_s.gsub(%r{^./}, '')
+
+      Pathname.new(path)
     end
   end
 
