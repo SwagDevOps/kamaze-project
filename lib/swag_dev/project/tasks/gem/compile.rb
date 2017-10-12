@@ -5,20 +5,29 @@ require 'swag_dev/project/tasks/gem'
 
 # tasks --------------------------------------------------------------
 
-packer = project.tools.fetch(:packer)
+tools  = project.tools
+packer = tools.fetch(:packer)
 
-# clobber build dir is probably not a good idea
+# clobber ``build`` directory SHOULD NOT be a good idea
 #
 # CLOBBER.include(packer.build_dir)
 
-unless packer.executables.empty?
-  (desc "Compile executable%s #{packer.executables}" % {
-    true => nil,
-    false => 's'
-  }[1 == packer.executables.size])
+packer.build_dirs.each do |k, dir|
+  directory dir => ['gem:package'] do
+    mkdir_p(dir)
+  end
 end
-task 'gem:compile': ['gem:package'] do
-  project.tools
-         .fetch(:process_locker)
-         .lock!('gem-compile') { packer.pack }
+
+packer.buildables.each do |buildable|
+  CLOBBER.include(buildable)
+
+  desc "Compile #{buildable.basename}"
+  file buildable => packer.build_dirs.values do
+    tools.fetch(:process_locker).lock!('gem-compile') do
+      packer = tools.fetch(:packer)
+      # packer.__send__('compiler=', :true)
+
+      packer.pack(buildable)
+    end
+  end
 end
