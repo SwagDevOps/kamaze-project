@@ -2,6 +2,7 @@
 
 require 'swag_dev/project/tools'
 require 'swag_dev/project/tools/packer/filesystem'
+require 'swag_dev/project/tools/packer/command'
 require 'pathname'
 require 'cliver'
 
@@ -18,7 +19,7 @@ class SwagDev::Project::Tools::Packer
   # Binary (executable) used to pack the project
   #
   # @see https://github.com/pmq20/ruby-packer
-  attr_writer :compiler
+  attr_accessor :compiler
 
   def initialize
     @initialized = false
@@ -35,13 +36,6 @@ class SwagDev::Project::Tools::Packer
   # @return [Boolean]
   def initialized?
     @initialized
-  end
-
-  # Get compiler (binary executable)
-  #
-  # @return [Pathname]
-  def compiler
-    Pathname.new(Cliver.detect!(@compiler))
   end
 
   # Pack executables
@@ -76,31 +70,19 @@ class SwagDev::Project::Tools::Packer
 
   protected
 
-  # Make command to pack a given executable
-  #
-  # @param [String] executable
-  # @return [Array<String>]
-  def make_command(buildable)
-    buildable = Pathname.new(buildable)
-    tmp_dir = pwd.join(build_dirs.fetch(:tmp))
-
-    [compiler,
-     bin_dir.join(buildable.basename),
-     '-r', '.',
-     '-d', tmp_dir.to_s,
-     '-o', pwd.join(buildable)].map(&:to_s)
-  end
-
   # Build executable
   #
   # @param [String] executable
   # @return [Pathname]
   def build(buildable)
-    Dir.chdir(pwd.join(build_dirs.fetch(:src))) do
-      Bundler.with_clean_env do
-        sh(*([ENV.to_h] + make_command(buildable)))
-      end
-    end
+    Command.new do |command|
+      command.executable = compiler
+      command.pwd        = pwd
+      command.src_dir    = build_dirs.fetch(:src)
+      command.tmp_dir    = build_dirs.fetch(:tmp)
+      command.bin_dir    = bin_dir
+      command.buildable  = buildable
+    end.execute
 
     bin_dir.join(buildable)
   end
