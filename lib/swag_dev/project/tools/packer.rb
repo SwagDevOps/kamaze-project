@@ -70,9 +70,9 @@ class SwagDev::Project::Tools::Packer
 
   protected
 
-  # Build executable
+  # Build buildable
   #
-  # @param [String] executable
+  # @param [String] buildable
   # @return [Pathname]
   def build(buildable)
     Command.new do |command|
