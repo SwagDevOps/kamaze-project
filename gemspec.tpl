@@ -19,11 +19,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.3.0'
   s.require_paths = ['lib']
-  s.files         = ['.yardopts',
-                     'bin/*',
-                     'lib/**/*.rb',
-                     'lib/**/version_info.yml'
-                    ].map { |pt| Dir.glob(pt) }.flatten
+  s.files         = [
+    '.yardopts',
+    'bin/*',
+    'lib/**/*.rb',
+    'lib/**/resources/**',
+    'lib/**/version_info.yml'
+  ].map { |m| Dir.glob(m) }.flatten
+   .map { |f| File.file?(f) ? f : nil }.compact
 
   #{@dependencies}
 end
