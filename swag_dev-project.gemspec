@@ -19,11 +19,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.3.0'
   s.require_paths = ['lib']
-  s.files         = ['.yardopts',
-                     'bin/*',
-                     'lib/**/*.rb',
-                     'lib/**/version_info.yml'
-                    ].map { |pt| Dir.glob(pt) }.flatten
+  s.files         = [
+    '.yardopts',
+    'bin/*',
+    'lib/**/*.rb',
+    'lib/**/resources/**',
+    'lib/**/version_info.yml'
+  ].map { |m| Dir.glob(m) }.flatten
+   .map { |f| File.file?(f) ? f : nil }.compact
 
   s.add_runtime_dependency "rake", ["~> 12.0"]
   s.add_runtime_dependency "activesupport", ["~> 5.1"]
@@ -40,6 +43,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "pry", ["~> 0.10"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
   s.add_runtime_dependency "rubocop", ["~> 0.49"]
+  s.add_development_dependency "sys-proc", [">= 1.0.4", "~> 1.0"]
   s.add_development_dependency "listen", ["~> 3.1"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "github-markup", ["~> 1.6"]
