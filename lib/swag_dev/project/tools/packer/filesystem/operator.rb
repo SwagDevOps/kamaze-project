@@ -10,13 +10,18 @@ class SwagDev::Project::Tools::Packer
 end
 
 # Filesystem operator (manipulator)
+#
+# This class is intended to manipulate a ``Filesystem``.
+#
+# @see SwagDev::Project::Tools::Packer::Filesystem
 class SwagDev::Project::Tools::Packer::Filesystem::Operator
   include FileUtils
 
   # @return [SwagDev::Project::Tools::Packer::Filesystem]
   attr_reader :fs
 
-  # @param [SwagDev::Project::Tools::Packer::Filesystem]
+  # @param [SwagDev::Project::Tools::Packer::Filesystem] filesystem
+  # @see fs
   def initialize(filesystem)
     @fs = filesystem
   end
