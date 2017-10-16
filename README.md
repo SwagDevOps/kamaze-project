@@ -39,7 +39,7 @@ SHOULD be the same as the name of the (eventually) generated gem package.
 ## Environment
 
 When ``project`` is instantiated,
-a ``dotenv`` (``.env``) file can be read, evaluated and loaded.
+a ``dotenv`` (``.env``) file CAN be read, evaluated and loaded.
 This could be useful to set specific environment variables,
 such as automake's flag variables:
 
@@ -53,9 +53,9 @@ On the other hand, ``.env`` file COULD define the ``project`` name:
 export PROJECT_NAME='swag_dev-project
 ```
 
-When ``project`` name is defined on instantiation this environment variable
-is ignored, and has no effect. Furthermore a ``mode`` SHOULD be defined,
-using environment:
+When ``project`` name is defined, on instantiation, the ``PROJECT_NAME``
+environment variable is ignored, and has no effect.
+Furthermore a ``mode`` SHOULD be defined, using environment:
 
 ```sh
 export PROJECT_MODE='development'
@@ -63,7 +63,7 @@ export PROJECT_MODE='development'
 
 ## Dependencies (``gems``)
 
-Some dependencies are considered as optional as seen inspecting the
+Some dependencies are considered as optional, as seen inspecting the
 ``gems.rb`` file.
 For example, ``rspec`` is considered as a ``development`` dependency
 of this gem, but ``rspec`` is required by the ``test`` task.
