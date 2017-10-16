@@ -42,6 +42,7 @@ class SwagDev::Project::Tools
     process_locker: :'swag_dev/project/tools/process_locker',
     packer:         :'swag_dev/project/tools/packer',
     vagrant:        :'swag_dev/project/tools/vagrant',
+    gemspec_writer: :'swag_dev/project/tools/gemspec/writer',
   }
 
   @items = {}
