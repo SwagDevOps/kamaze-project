@@ -18,7 +18,7 @@ gem 'dotenv', '~> 2.2'
 gem 'process_lock', '~> 0.1'
 
 # supported tools
-gem 'pry', '~> 0.10'
+gem 'pry', '~> 0.11'
 gem 'yard', '~> 0.9'
 gem 'rubocop', '~> 0.49'
 # 'rspec' is also supported, but we don't force to use it
