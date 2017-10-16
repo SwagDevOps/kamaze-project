@@ -116,7 +116,7 @@ DEPENDENCIES
   redcarpet (~> 3.4)
   rspec (~> 3.6)
   rubocop (~> 0.50)
-  sham (~> 1.1)
+  sham (~> 1.2)
   sys-proc (~> 1.0, >= 1.0.4)
   tenjin (~> 0.7)
   tty-editor (~> 0.2)
