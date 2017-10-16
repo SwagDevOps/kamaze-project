@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-#
+
 # bundle install --path vendor/bundle
+
 source 'https://rubygems.org'
 
 # base
