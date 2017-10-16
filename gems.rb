@@ -20,7 +20,7 @@ gem 'process_lock', '~> 0.1'
 # supported tools
 gem 'pry', '~> 0.11'
 gem 'yard', '~> 0.9'
-gem 'rubocop', '~> 0.49'
+gem 'rubocop', '~> 0.50'
 # 'rspec' is also supported, but we don't force to use it
 # 'listen' is used to "watch" but could be incompatible with some systems
 
