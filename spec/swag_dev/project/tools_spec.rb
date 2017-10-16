@@ -16,3 +16,21 @@ describe SwagDev::Project::Tools do
     end
   end
 end
+
+describe SwagDev::Project::Tools do
+  context '#to_h' do
+    it { expect(subject.to_h).to be_a(Hash) }
+  end
+
+  context '#to_h.keys' do
+    [
+      :gemspec_writer,
+      :licenser,
+      :process_locker,
+      :packer,
+      :vagrant,
+    ].each do |k|
+      it { expect(subject.to_h.keys).to include(k) }
+    end
+  end
+end
