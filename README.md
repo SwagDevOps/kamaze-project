@@ -33,8 +33,7 @@ end
 ```
 
 A ``project`` has a __name__ and a __subject__.
-Project [name](http://guides.rubygems.org/specification-reference/#name)
-SHOULD be the same as the name of the (eventually) generated gem package.
+Project ``name`` SHOULD be the same as the name of the (eventually) generated gem package [name][rubygems/specification#name].
 
 ## Environment
 
@@ -68,4 +67,7 @@ Some dependencies are considered as optional, as seen inspecting the
 For example, ``rspec`` is considered as a ``development`` dependency
 of this gem, but ``rspec`` is required by the ``test`` task.
 The ``listen`` gem is optional, this gem is only used for "``watch`` tasks"
-and has [several system incompatibilities](https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations).
+and has [several system incompatibilities][guard/listen#issues-limitations].
+
+[rubygems/specification#name]: http://guides.rubygems.org/specification-reference/#name
+[guard/listen#issues-limitations]: https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations
