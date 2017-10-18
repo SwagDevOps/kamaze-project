@@ -25,6 +25,7 @@ describe SwagDev::Project::Tools do
   context '#to_h.keys' do
     [
       :gemspec_writer,
+      :gemspec_reader,
       :licenser,
       :process_locker,
       :packer,
