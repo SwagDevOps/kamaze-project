@@ -68,4 +68,4 @@ Some dependencies are considered as optional, as seen inspecting the
 For example, ``rspec`` is considered as a ``development`` dependency
 of this gem, but ``rspec`` is required by the ``test`` task.
 The ``listen`` gem is optional, this gem is only used for "``watch`` tasks"
-and has [several system incompatibilities](https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md).
+and has [several system incompatibilities](https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations).
