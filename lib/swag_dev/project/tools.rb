@@ -43,6 +43,7 @@ class SwagDev::Project::Tools
     packer:         :'swag_dev/project/tools/packer',
     vagrant:        :'swag_dev/project/tools/vagrant',
     gemspec_writer: :'swag_dev/project/tools/gemspec/writer',
+    gemspec_reader: :'swag_dev/project/tools/gemspec/reader',
   }
 
   @items = {}
