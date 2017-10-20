@@ -87,7 +87,7 @@ class SwagDev::Project::Tools::Gemspec::Builder
   #
   # @return [SwagDev::Project::Tools::Gemspec::Reader]
   def gemspec_reader
-    @gemspec_reader || project.tools(:gemspec_reader)
+    @gemspec_reader || project.tools.fetch(:gemspec_reader)
   end
 
   # Get specification
