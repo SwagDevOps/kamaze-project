@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/tools/gemspec/builder'
+require 'swag_dev/project/tools/gemspec/builder/filesystem/operator'
 require 'pathname'
 
 class SwagDev::Project::Tools::Gemspec::Builder
 end
 
-# Filesystem description used for building
+# Filesystem description used during build
 class SwagDev::Project::Tools::Gemspec::Builder::Filesystem
   # Build dir (root directory)
   attr_writer :build_dir
@@ -26,13 +27,15 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem
 
     yield self if block_given?
 
-    # @operator  = Operator.new(self)
+    @operator = Operator.new(self)
 
     [:project, :gemspec_reader, :build_dir, :working_dir].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
   end
 
+  # Get build dir (root directory)
+  #
   # @return [Pathname]
   def build_dir
     Pathname.new(@build_dir)
@@ -59,6 +62,8 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem
 
   alias pwd working_dir
 
+  # Get gem name (versioned)
+  #
   # @return [String]
   def gem_name
     path = gemspec_reader.read(:hash).fetch(:full_gem_path)
@@ -88,11 +93,27 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem
     end
   end
 
+  def method_missing(method, *args, &block)
+    if respond_to_missing?(method)
+      operator.public_send(method, *args, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    return true if operator.respond_to?(method, include_private)
+
+    super(method, include_private)
+  end
+
   protected
 
-  # @return [SwagDev::Project::Tools::Packer::Filesystem::Operator]
-  # attr_reader :operator
+  # @return [SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator]
+  attr_reader :operator
 
+  # Get project
+  #
   # @return [Object|SwagDev::Project]
   def project
     @project || SwagDev.project
