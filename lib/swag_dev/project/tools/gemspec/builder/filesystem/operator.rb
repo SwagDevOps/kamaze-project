@@ -18,18 +18,23 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
   # @return [SwagDev::Project::Tools::Gemspec::Builder::Filesystem]
   attr_reader :fs
 
+  # #return [Hash]
+  attr_reader :options
+
   # @param [SwagDev::Project::Tools::Gemspec::Builder::Filesystem] filesystem
+  # @param [Hash] options
   # @see fs
-  def initialize(filesystem)
+  def initialize(filesystem, options = {})
     @fs = filesystem
+    @options = { verbose: true }.merge(options.to_h)
   end
 
-  # Prepare packing
+  # Prepare build
   #
   # @return [self]
   def prepare
-    # fs.build_dirs.each_value { |dir| mkdir_p(dir) }
-    # prepare_srcdir
+    fs.build_dirs.each_value { |dir| mkdir_p(dir, options) }
+    prepare_srcdir
 
     self
   end
@@ -41,17 +46,18 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
   # @see [SwagDev::Project::Tools::Packer::Filesystem#packables]
   # @return [self]
   def prepare_srcdir
-    return self
+    src_dir = fs.build_dirs[:src]
 
-    packables = fs.packables.map(&:realpath)
+    fs.source_files.map { |path| path.dirname }
+      .uniq
+      .delete_if { |path| path.to_s == '.' }
+      .sort
+      .each { |dir| mkdir_p(src_dir.join(dir), options) }
 
-    mkdir_p(fs.build_dirs[:src])
-    Dir.chdir(fs.build_dirs[:src]) do
-      rm_rf(Dir.glob('*'))
-
-      packables.each { |path| cp_r(path, '.') }
+    fs.source_files.map do |path|
+      ln(path, src_dir.join(path), options.merge(force: true))
     end
 
-    self
+    return self
   end
 end
