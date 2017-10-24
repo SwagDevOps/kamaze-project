@@ -38,12 +38,13 @@ class SwagDev::Project::Tools
   end
 
   @defaults = {
-    licenser:       :'swag_dev/project/tools/licenser',
-    process_locker: :'swag_dev/project/tools/process_locker',
-    packer:         :'swag_dev/project/tools/packer',
-    vagrant:        :'swag_dev/project/tools/vagrant',
-    gemspec_writer: :'swag_dev/project/tools/gemspec/writer',
-    gemspec_reader: :'swag_dev/project/tools/gemspec/reader',
+    licenser:        :'swag_dev/project/tools/licenser',
+    process_locker:  :'swag_dev/project/tools/process_locker',
+    packer:          :'swag_dev/project/tools/packer',
+    vagrant:         :'swag_dev/project/tools/vagrant',
+    gemspec_writer:  :'swag_dev/project/tools/gemspec/writer',
+    gemspec_reader:  :'swag_dev/project/tools/gemspec/reader',
+    gemspec_builder: :'swag_dev/project/tools/gemspec/reader',
   }
 
   @items = {}
