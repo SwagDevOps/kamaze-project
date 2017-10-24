@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     '.yardopts',
     'bin/*',
     'lib/**/*.rb',
-    'lib/**/resources/**',
+    'lib/**/resources/**/**',
     'lib/**/version_info.yml'
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
