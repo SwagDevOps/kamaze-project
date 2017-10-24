@@ -4,6 +4,7 @@
 require 'swag_dev/project'
 require 'swag_dev/project/concern/sham'
 require 'swag_dev/project/concern/helper'
+require 'yaml'
 
 # Tools provider
 #
@@ -24,6 +25,8 @@ require 'swag_dev/project/concern/helper'
 # ```
 class SwagDev::Project::Tools
   class << self
+    attr_accessor :items
+
     # Default tools
     #
     # Tools default values can be ``Class`` or ``String`` (or ``Symbol``),
@@ -33,19 +36,12 @@ class SwagDev::Project::Tools
     #
     # @return [Hash]
     # @see SwagDev.Project.Helper.Inflector
-    attr_reader :defaults
-    attr_accessor :items
-  end
+    def defaults
+      defaults = YAML.load_file("#{__dir__}/resources/config/tools.yml")
 
-  @defaults = {
-    licenser:        :'swag_dev/project/tools/licenser',
-    process_locker:  :'swag_dev/project/tools/process_locker',
-    packer:          :'swag_dev/project/tools/packer',
-    vagrant:         :'swag_dev/project/tools/vagrant',
-    gemspec_writer:  :'swag_dev/project/tools/gemspec/writer',
-    gemspec_reader:  :'swag_dev/project/tools/gemspec/reader',
-    gemspec_builder: :'swag_dev/project/tools/gemspec/reader',
-  }
+      Hash[defaults.collect { |k, v| [k.to_sym, v] }]
+    end
+  end
 
   @items = {}
 
