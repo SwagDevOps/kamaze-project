@@ -4,5 +4,6 @@
 --charset utf-8
 --protected
 --embed-mixins
+--tag type:"type" --hide-tag type
 --readme README.md
 --exclude /lib/swag_dev/project/tasks/
