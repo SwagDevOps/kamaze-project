@@ -38,4 +38,5 @@ end
 
 group :test, :development do
   gem 'rspec', '~> 3.6'
+  gem 'factory_girl', '~> 4.9'
 end
