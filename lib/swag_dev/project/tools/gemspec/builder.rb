@@ -2,6 +2,7 @@
 
 require 'swag_dev/project/tools/gemspec'
 require 'swag_dev/project/tools/gemspec/builder/filesystem'
+require 'swag_dev/project/tools/gemspec/builder/command'
 require 'rubygems'
 
 # Package a ``gem`` from its ``gemspec`` file
@@ -71,6 +72,30 @@ class SwagDev::Project::Tools::Gemspec::Builder
     end
 
     super(method, include_private)
+  end
+
+  # Get buildable (relative path)
+  #
+  # @return [Pathname]
+  def buildable
+    full_name = gemspec_reader.read(Hash).fetch(:full_name)
+    file_path = fs.build_dirs
+                  .fetch(:gem)
+                  .join("#{full_name}.gem")
+                  .to_s
+                  .gsub(%r{^\./}, '')
+
+    Pathname.new(file_path)
+  end
+
+  def build
+    Command.new do |command|
+      command.executable    = :gem
+      command.pwd           = pwd
+      command.src_dir       = build_dirs.fetch(:src)
+      command.buildable     = buildable
+      command.specification = gemspec_reader.read
+    end.execute
   end
 
   protected
