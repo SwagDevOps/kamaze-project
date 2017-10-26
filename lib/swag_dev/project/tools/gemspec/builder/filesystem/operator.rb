@@ -46,7 +46,9 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
   # @see [SwagDev::Project::Tools::Packer::Filesystem#packables]
   # @return [self]
   def prepare_srcdir
-    src_dir = fs.build_dirs[:src]
+    src_dir = fs.build_dirs.fetch(:src)
+
+    purge_srcdir
 
     fs.source_files.map { |path| path.dirname }
       .uniq
@@ -59,5 +61,13 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
     end
 
     return self
+  end
+
+  def purge_srcdir
+    src_dir = fs.build_dirs.fetch(:src)
+
+    src_dir.children
+           .map { |path| src_dir.realpath.join(path) }
+           .each { |path| rm_rf(path, options) }
   end
 end
