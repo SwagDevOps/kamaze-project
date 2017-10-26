@@ -23,14 +23,7 @@ describe SwagDev::Project::Tools do
   end
 
   context '#to_h.keys' do
-    [
-      :gemspec_writer,
-      :gemspec_reader,
-      :licenser,
-      :process_locker,
-      :packer,
-      :vagrant,
-    ].each do |k|
+    build('project/tools').keys.each do |k|
       it { expect(subject.to_h.keys).to include(k) }
     end
   end
