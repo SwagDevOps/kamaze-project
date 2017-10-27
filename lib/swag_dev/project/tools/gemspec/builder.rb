@@ -89,6 +89,8 @@ class SwagDev::Project::Tools::Gemspec::Builder
   end
 
   def build
+    fs.prepare
+
     Command.new do |command|
       command.executable    = :gem
       command.pwd           = pwd
