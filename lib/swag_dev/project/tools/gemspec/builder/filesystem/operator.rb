@@ -48,26 +48,36 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
   def prepare_srcdir
     src_dir = fs.build_dirs.fetch(:src)
 
-    purge_srcdir
+    purge(src_dir)
 
-    fs.source_files.map { |path| path.dirname }
-      .uniq
-      .delete_if { |path| path.to_s == '.' }
-      .sort
+    fs.source_files
+      .map { |path| Pathname.new(path) }
+      .map { |path| path.dirname }
+      .delete_if { |path| ['.', '..'].include?(path.to_s) }
+      .uniq.sort
       .each { |dir| mkdir_p(src_dir.join(dir), options) }
 
     fs.source_files.map do |path|
-      ln(path, src_dir.join(path), options.merge(force: true))
+      ln(path.realpath, src_dir.join(path), options)
     end
 
     return self
   end
 
-  def purge_srcdir
-    src_dir = fs.build_dirs.fetch(:src)
+  protected
 
-    src_dir.children
-           .map { |path| src_dir.realpath.join(path) }
-           .each { |path| rm_rf(path, options) }
+  # Purge a directory
+  #
+  # @param [Pathname] dir
+  # @return [Pathname]
+  def purge(dir)
+    dir = Pathname.new(dir)
+
+    Dir.glob("#{dir}/**/**", File::FNM_DOTMATCH)
+       .map { |path| Pathname.new(path) }
+       .delete_if { |path| !path.file? }
+       .each { |path| rm(path, options) }
+
+    dir
   end
 end
