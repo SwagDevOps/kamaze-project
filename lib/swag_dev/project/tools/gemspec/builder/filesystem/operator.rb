@@ -50,34 +50,70 @@ class SwagDev::Project::Tools::Gemspec::Builder::Filesystem::Operator
 
     purge(src_dir)
 
-    fs.source_files
-      .map { |path| Pathname.new(path) }
-      .map { |path| path.dirname }
-      .delete_if { |path| ['.', '..'].include?(path.to_s) }
-      .uniq.sort
-      .each { |dir| mkdir_p(src_dir.join(dir), options) }
+    tree(fs.source_files).each do |dir|
+      mkdir_p(src_dir.join(dir), options)
+    end
 
     fs.source_files.map do |path|
       ln(path.realpath, src_dir.join(path), options)
     end
 
-    return self
+    remove_empty_dirs(src_dir)
+
+    self
   end
 
   protected
+
+  # Remove empty directories recursively from a given directory
+  #
+  # @param [Pathname] dir
+  # @return [Pathname]
+  def remove_empty_dirs(dir)
+    Dir.glob("#{dir}/**/**", File::FNM_DOTMATCH)
+       .map { |path| Pathname.new(path) }
+       .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
+       .delete_if { |path| !path.directory? }
+       .keep_if { |d| ls(d).empty? }
+       .each { |path| rm_rf(path, options) }
+
+    Pathname.new(dir)
+  end
 
   # Purge a directory
   #
   # @param [Pathname] dir
   # @return [Pathname]
   def purge(dir)
-    dir = Pathname.new(dir)
-
     Dir.glob("#{dir}/**/**", File::FNM_DOTMATCH)
        .map { |path| Pathname.new(path) }
        .delete_if { |path| !path.file? }
        .each { |path| rm(path, options) }
 
-    dir
+    Pathname.new(dir)
+  end
+
+  # utils ------------------------------------------------------------
+
+  # Extract directories paths
+  #
+  # @param [Array<String>] entries
+  # @return [Array<Pathname>]
+  def tree(entries)
+    entries
+      .map { |path| Pathname.new(path) }
+      .map(&:dirname)
+      .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
+      .uniq.sort
+  end
+
+  # List entries
+  #
+  # @param [String] dir
+  # @return [Array<Pathname>]
+  def ls(dir)
+    Pathname.new(dir).entries
+            .map { |path| Pathname.new(path) }
+            .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
   end
 end
