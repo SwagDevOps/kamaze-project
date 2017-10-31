@@ -58,7 +58,12 @@ module SwagDev::Project::Dsl::Definition
 
     desc sham.description
     task "cs:#{type}", [:path] => sham.prerequisites do |t, args|
-      patterns = args[:path] ? [args[:path]] : project.gem.spec.require_paths
+      patterns = project.gem.spec.require_paths
+      if args[:path]
+        patterns = Dir.glob(args[:path])
+
+        raise "#{args[:path]}: does not match any files" if patterns.empty?
+      end
 
       rubocop(patterns, sham: sham).invoke
     end
