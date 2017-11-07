@@ -12,22 +12,30 @@ class SwagDev::Project::Tools::Packager
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
   attr_reader :fs
 
-  # @type [Array<String|Pathname>]
-  attr_accessor :files
-
   def initialize
     @initialized = false
-
     yield self if block_given?
-
-    @files ||= []
-    @fs = filesystem
-
+    @fs ||= filesystem
     [:files].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
-
     @initialized = true
+  end
+
+  # Set files used during packaging
+  #
+  # @param [Array<String|Pathname>]
+  def files=(files)
+    @fs = filesystem(files)
+
+    files
+  end
+
+  # Get files
+  #
+  # @return [Array<Pathname>]
+  def files
+    fs.source_files
   end
 
   # Denote class is initialized
@@ -58,9 +66,9 @@ class SwagDev::Project::Tools::Packager
   # Initialize a new filesystem
   #
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
-  def filesystem
+  def filesystem(files = [])
     self.class.const_get(:Filesystem).new do |fs|
-      fs.source_files = self.files
+      fs.source_files = files
     end
   end
 end
