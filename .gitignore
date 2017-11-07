@@ -1,11 +1,10 @@
 *.gem
 *.swp
 *~
-/.bundle/
-/.envrc
-/.vagrant/
-/.yardoc
 /_yardoc/
+/.*
+!/.gitignore
+!/.env
 /build/
 /coverage/
 /doc/
