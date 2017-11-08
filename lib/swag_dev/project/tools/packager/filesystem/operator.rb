@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/packager/filesystem'
+require_relative '../filesystem'
 require 'fileutils'
 require 'rake/file_utils'
-
-class SwagDev::Project::Tools::Packager
-  class Filesystem
-  end
-end
 
 # Filesystem operator (manipulator)
 #
@@ -27,6 +22,13 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   def initialize(filesystem, options = {})
     @fs = filesystem
     @options = { verbose: true }.merge(options.to_h)
+
+    # Pass included methods to protected
+    (FileUtils.public_methods - self.public_methods).each do |m|
+      if self.public_methods.include?(m)
+        self.singleton_class.class_eval { protected m }
+      end
+    end
   end
 
   # Prepare build

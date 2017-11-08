@@ -1,7 +1,22 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/tools'
-require 'swag_dev/project/tools/packager/filesystem'
+
+# rubocop:disable Style/Documentation
+class SwagDev::Project::Tools::Packager
+  class Filesystem
+    class Operator
+    end
+
+    module Utils
+    end
+  end
+
+  require_relative 'packager/filesystem'
+  require_relative 'packager/filesystem/operator'
+end
+
+# rubocop:enable Style/Documentation
 
 # Provides a packager
 #
@@ -27,8 +42,6 @@ class SwagDev::Project::Tools::Packager
   # @param [Array<String|Pathname>]
   def files=(files)
     @fs = filesystem(files)
-
-    files
   end
 
   # Get files

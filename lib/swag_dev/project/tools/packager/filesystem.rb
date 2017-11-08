@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/packager'
-require 'swag_dev/project/tools/packager/filesystem/operator'
+require_relative '../packager'
+require_relative 'filesystem/operator'
 require 'pathname'
-
-class SwagDev::Project::Tools::Packager
-end
 
 # Filesystem description used during build/packaging
 #
