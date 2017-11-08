@@ -45,51 +45,33 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare_srcdir
-    src_dir = fs.build_dirs.fetch(:src)
+    src_dir = purge(fs.build_dirs.fetch(:src))
 
-    purge(src_dir)
-
-    tree(fs.source_files).each do |dir|
+    tree_dirs(fs.source_files).each do |dir|
       mkdir_p(src_dir.join(dir), options)
     end
 
     fs.source_files.map do |path|
-      ln(path.realpath, src_dir.join(path), options)
-    end
+      origin = path.realpath # resolves symlinks
 
-    remove_empty_dirs(src_dir)
+      cp(origin, src_dir.join(path), options.merge(preserve: true))
+    end
 
     self
   end
 
   protected
 
-  # Remove empty directories recursively from a given directory
-  #
-  # @param [Pathname] dir
-  # @return [Pathname]
-  def remove_empty_dirs(dir)
-    Dir.glob("#{dir}/**/**", File::FNM_DOTMATCH)
-       .map { |path| ::Pathname.new(path) }
-       .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
-       .delete_if { |path| !path.directory? }
-       .keep_if { |d| ls(d).empty? }
-       .each { |path| rm_rf(path, options) }
-
-    ::Pathname.new(dir)
-  end
-
   # Purge a directory
   #
   # @param [Pathname] dir
   # @return [Pathname]
   def purge(dir)
-    Dir.glob("#{dir}/**/**", File::FNM_DOTMATCH)
-       .map { |path| Pathname.new(path) }
-       .delete_if { |path| !path.file? }
-       .each { |path| rm(path, options) }
+    dir = ::Pathname.new(dir)
 
-    Pathname.new(dir)
+    ls(dir).each { |entry| rm_rf(dir.join(entry)) } if dir.exist?
+
+    dir
   end
 
   # utils ------------------------------------------------------------
@@ -98,7 +80,7 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   #
   # @param [Array<String>] entries
   # @return [Array<Pathname>]
-  def tree(entries)
+  def tree_dirs(entries)
     entries
       .map { |path| ::Pathname.new(path) }
       .map(&:dirname)
