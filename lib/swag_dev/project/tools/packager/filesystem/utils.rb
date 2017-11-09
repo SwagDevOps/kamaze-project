@@ -29,6 +29,20 @@ module SwagDev::Project::Tools::Packager::Filesystem::Utils
     dir
   end
 
+  # Make dirs from given basedir using entries (filepaths)
+  #
+  # @param [String|Pathname] basedir
+  # @param [Array<>] entries
+  # @param [Hash] options
+  # @return [Pathname]
+  def skel_dirs(basedir, entries, options = {})
+    basedir = ::Pathname.new(basedir)
+
+    map_dirs(entries).each { |dir| mkdir_p(basedir.join(dir), options) }
+
+    basedir
+  end
+
   # List entries
   #
   # @param [String] dir
@@ -48,5 +62,10 @@ module SwagDev::Project::Tools::Packager::Filesystem::Utils
          .map(&:dirname)
          .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
          .uniq.sort
+  end
+
+  # @return [Array<Symbol>]
+  def utils_methods
+    FileUtils.public_methods - self.public_methods
   end
 end
