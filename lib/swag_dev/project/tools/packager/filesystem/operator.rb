@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
+require 'pathname'
+require_relative 'utils'
 require_relative '../filesystem'
-require 'fileutils'
-require 'rake/file_utils'
 
 # Filesystem operator (manipulator)
 #
 # This class is intended to manipulate a ``Filesystem``.
 class SwagDev::Project::Tools::Packager::Filesystem::Operator
-  include FileUtils
+  include SwagDev::Project::Tools::Packager::Filesystem::Utils
 
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
   attr_reader :fs
@@ -24,7 +24,7 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
     @options = { verbose: true }.merge(options.to_h)
 
     # Pass included methods to protected
-    (FileUtils.public_methods - self.public_methods).each do |m|
+    utils_methods.each do |m|
       if self.public_methods.include?(m)
         self.singleton_class.class_eval { protected m }
       end
@@ -47,11 +47,10 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare_srcdir
-    src_dir = purge(fs.build_dirs.fetch(:src))
+    src_dir = ::Pathname.new(fs.build_dirs.fetch(:src))
 
-    tree_dirs(fs.source_files).each do |dir|
-      mkdir_p(src_dir.join(dir), options)
-    end
+    purge(src_dir, options)
+    skel_dirs(src_dir, fs.source_files, options)
 
     fs.source_files.map do |path|
       origin = path.realpath # resolves symlinks
@@ -60,43 +59,5 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
     end
 
     self
-  end
-
-  protected
-
-  # Purge a directory
-  #
-  # @param [Pathname] dir
-  # @return [Pathname]
-  def purge(dir)
-    dir = ::Pathname.new(dir)
-
-    ls(dir).each { |entry| rm_rf(dir.join(entry)) } if dir.exist?
-
-    dir
-  end
-
-  # utils ------------------------------------------------------------
-
-  # Extract directories paths
-  #
-  # @param [Array<String>] entries
-  # @return [Array<Pathname>]
-  def tree_dirs(entries)
-    entries
-      .map { |path| ::Pathname.new(path) }
-      .map(&:dirname)
-      .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
-      .uniq.sort
-  end
-
-  # List entries
-  #
-  # @param [String] dir
-  # @return [Array<Pathname>]
-  def ls(dir)
-    ::Pathname.new(dir).entries
-              .map { |path| ::Pathname.new(path) }
-              .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
   end
 end
