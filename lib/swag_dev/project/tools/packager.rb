@@ -13,10 +13,9 @@ class SwagDev::Project::Tools::Packager
   end
 
   require_relative 'packager/filesystem'
+  require_relative 'packager/filesystem/utils'
   require_relative 'packager/filesystem/operator'
-end
-
-# rubocop:enable Style/Documentation
+end # rubocop:enable Style/Documentation
 
 # Provides a packager
 #
@@ -30,25 +29,8 @@ class SwagDev::Project::Tools::Packager
   def initialize
     @initialized = false
     yield self if block_given?
-    @fs ||= filesystem
-    [:files].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
+    @fs ||= self.class.const_get(:Filesystem).new
     @initialized = true
-  end
-
-  # Set files used during packaging
-  #
-  # @param [Array<String|Pathname>]
-  def files=(files)
-    @fs = filesystem(files)
-  end
-
-  # Get files
-  #
-  # @return [Array<Pathname>]
-  def files
-    fs.source_files
   end
 
   # Denote class is initialized
@@ -60,28 +42,47 @@ class SwagDev::Project::Tools::Packager
 
   def method_missing(method, *args, &block)
     if respond_to_missing?(method)
-      fs.public_send(method, *args, &block)
-    else
-      super
+      unless initialized?
+        mutable = fs.mutable_attribute?(method)
+
+        return fs.__send__(method, *args, &block) if mutable
+      end
+
+      return fs.public_send(method, *args, &block)
     end
+
+    super
   end
 
   def respond_to_missing?(method, include_private = false)
-    unless initialized? and method.to_s[-1] == '='
-      return true if fs.respond_to?(method, include_private)
+    if method.to_s[-1] == '='
+      unless initialized?
+        return true if fs.mutable_attribute?(method)
+      end
     end
+
+    return true if fs.respond_to?(method, include_private)
 
     super(method, include_private)
   end
 
   protected
 
-  # Initialize a new filesystem
+  # Hide mutable attributes from filesystem
   #
-  # @return [SwagDev::Project::Tools::Packager::Filesystem]
-  def filesystem(files = [])
-    self.class.const_get(:Filesystem).new do |fs|
-      fs.source_files = files
-    end
+  # @return [Array]
+  def mutable_attributes
+    []
+  end
+
+  # Allow access to some protected attributes
+  #
+  # @return [self]
+  def initialized_wrap
+    @initialized = false
+    yield self if block_given?
+    @initialized = true
+
+    self
   end
 end

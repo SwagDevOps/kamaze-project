@@ -107,6 +107,22 @@ class SwagDev::Project::Tools::Packager::Filesystem
     super(method, include_private)
   end
 
+  def mutable_attributes
+    [
+      :working_dir,
+      :source_files,
+      :build_basedir,
+      :build_name,
+      :build_labels
+    ]
+  end
+
+  def mutable_attribute?(attr)
+    attr = attr.to_s.gsub(/=$?/, '').to_sym
+
+    mutable_attributes.include?(attr)
+  end
+
   protected
 
   # Get operator
@@ -122,13 +138,7 @@ class SwagDev::Project::Tools::Packager::Filesystem
   #
   # @return [self]
   def alter_attributes!
-    [
-      :working_dir,
-      :source_files,
-      :build_basedir,
-      :build_name,
-      :build_labels
-    ].each do |m|
+    mutable_attributes.each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
 
