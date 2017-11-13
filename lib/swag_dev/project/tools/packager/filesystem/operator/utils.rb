@@ -4,10 +4,10 @@ require 'pathname'
 require 'fileutils'
 require 'rake/file_utils'
 
-require_relative '../filesystem'
+require_relative '../operator'
 
 # Utilities related to files/paths manipulations
-module SwagDev::Project::Tools::Packager::Filesystem::Utils
+module SwagDev::Project::Tools::Packager::Filesystem::Operator::Utils
   include FileUtils
 
   protected

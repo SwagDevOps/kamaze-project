@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'pathname'
-require_relative 'utils'
 require_relative '../filesystem'
+require_relative 'operator/utils'
 
 # Filesystem operator (manipulator)
 #
 # This class is intended to manipulate a ``Filesystem``.
 class SwagDev::Project::Tools::Packager::Filesystem::Operator
-  include SwagDev::Project::Tools::Packager::Filesystem::Utils
+  include Utils
 
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
   attr_reader :fs

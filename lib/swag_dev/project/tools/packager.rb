@@ -6,15 +6,14 @@ require 'swag_dev/project/tools'
 class SwagDev::Project::Tools::Packager
   class Filesystem
     class Operator
-    end
-
-    module Utils
+      module Utils
+      end
     end
   end
 
   require_relative 'packager/filesystem'
-  require_relative 'packager/filesystem/utils'
   require_relative 'packager/filesystem/operator'
+  require_relative 'packager/filesystem/operator/utils'
 end # rubocop:enable Style/Documentation
 
 # Provides a packager
