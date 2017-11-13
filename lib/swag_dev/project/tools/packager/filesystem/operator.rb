@@ -8,7 +8,7 @@ require_relative 'operator/utils'
 #
 # This class is intended to manipulate a ``Filesystem``.
 class SwagDev::Project::Tools::Packager::Filesystem::Operator
-  include Utils
+  include self.const_get(:Utils)
 
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
   attr_reader :fs
