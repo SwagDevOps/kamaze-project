@@ -31,11 +31,11 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
     end
   end
 
-  # Prepare build
+  # Prepare package
   #
   # @return [self]
   def prepare
-    fs.build_dirs.each_value { |dir| mkdir_p(dir, options) }
+    fs.package_dirs.each_value { |dir| mkdir_p(dir, options) }
     prepare_srcdir
 
     self
@@ -47,7 +47,7 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare_srcdir
-    src_dir = ::Pathname.new(fs.build_dirs.fetch(:src))
+    src_dir = ::Pathname.new(fs.package_dirs.fetch(:src))
 
     purge(src_dir, options)
     skel_dirs(src_dir, fs.source_files, options)

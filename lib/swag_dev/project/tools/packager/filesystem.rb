@@ -4,22 +4,22 @@ require_relative '../packager'
 require_relative 'filesystem/operator'
 require 'pathname'
 
-# Filesystem description used during build/packaging
+# Filesystem description used during packaging
 #
 # Filesystem has an Operator, which is intended to manipulate
 # described files and directories.
-# Build (issued from packaging) has a name, see ``build_name``,
-# build name SHOULD be constitued with two (path) parts.
-# Build dirs are labeled, as a default, only ``:src`` is provided.
+# Package has a name, see ``package_name``,
+# package name SHOULD be constitued with two (_path_) parts.
+# Package dirs are labeled, as a default, only ``:src`` is provided.
 # Labels are used to constitute the complete directory path
 # (relative to ``pwd``).
 class SwagDev::Project::Tools::Packager::Filesystem
-  # Build dir (root directory)
+  # Package dir (root directory)
   #
   # Relative to current pwd
   #
   # @type [String]
-  attr_writer :build_basedir
+  attr_writer :package_basedir
 
   # Working directory
   #
@@ -29,51 +29,51 @@ class SwagDev::Project::Tools::Packager::Filesystem
   # @type [Array<String|Pathname>]
   attr_writer :source_files
 
-  # Name given to the build
+  # Name given to the package
   #
   # @type [String]
-  attr_accessor :build_name
+  attr_accessor :package_name
 
-  # Labels for build stages
+  # Labels for packaging stages
   #
   # @type [Array<Symbol>]
-  attr_writer :build_labels
+  attr_writer :package_labels
 
   def initialize
-    @build_basedir = 'build'
-    @build_name    = 'sample/package'
+    @package_basedir = 'build'
+    @package_name    = 'sample/package'
 
-    @working_dir   = Dir.pwd
-    @operator      = self.operator
-    @build_labels  = [:src]
+    @working_dir     = Dir.pwd
+    @operator        = self.operator
+    @package_labels  = [:src]
 
     yield self if block_given?
 
     @source_files ||= []
 
-    alter_attributes!
+    mute_attributes!(mutable_attributes)
   end
 
-  # Get build dir (root directory)
+  # Get packaging dir (root directory)
   #
   # @return [Pathname]
-  def build_basedir
-    ::Pathname.new(@build_basedir)
+  def package_basedir
+    ::Pathname.new(@package_basedir)
   end
 
-  # Get build dir identified by its name
+  # Get package dir identified by its name
   #
   # @return [Pathname]
-  def build_dir
-    build_basedir.join(build_name)
+  def package_dir
+    package_basedir.join(package_name)
   end
 
-  # Get (named) paths for build dirs (as: src, tmp and bin)
+  # Get (named) paths (as: src, tmp and bin)
   #
   # @return [Hash]
-  def build_dirs
-    @build_labels.map do |k, str|
-      [k, build_dir.join(k.to_s)]
+  def package_dirs
+    @package_labels.map do |k, str|
+      [k, package_dir.join(k.to_s)]
     end.to_h
   end
 
@@ -111,9 +111,9 @@ class SwagDev::Project::Tools::Packager::Filesystem
     [
       :working_dir,
       :source_files,
-      :build_basedir,
-      :build_name,
-      :build_labels
+      :package_basedir,
+      :package_name,
+      :package_labels
     ]
   end
 
@@ -137,8 +137,8 @@ class SwagDev::Project::Tools::Packager::Filesystem
   # Pass some attributes to protected
   #
   # @return [self]
-  def alter_attributes!
-    mutable_attributes.each do |m|
+  def mute_attributes!(attributes)
+    attributes.each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
 
