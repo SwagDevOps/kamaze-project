@@ -28,7 +28,10 @@ class SwagDev::Project::Tools::Packager
   def initialize
     @initialized = false
     yield self if block_given?
+
     @fs ||= self.class.const_get(:Filesystem).new
+    setup
+
     @initialized = true
   end
 
@@ -67,21 +70,14 @@ class SwagDev::Project::Tools::Packager
 
   protected
 
+  # Execute additionnal setup
+  def setup
+  end
+
   # Hide mutable attributes from filesystem
   #
   # @return [Array]
   def mutable_attributes
     []
-  end
-
-  # Allow access to some protected attributes
-  #
-  # @return [self]
-  def initialized_wrap
-    @initialized = false
-    yield self if block_given?
-    @initialized = true
-
-    self
   end
 end
