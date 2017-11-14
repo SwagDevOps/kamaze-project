@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/gemspec'
-require 'swag_dev/project/tools/gemspec/builder/filesystem'
-require 'swag_dev/project/tools/gemspec/builder/command'
+require 'swag_dev/project/tools/packager'
 require 'rubygems'
+require_relative '../gemspec'
+require_relative 'reader'
+
+packager_class = SwagDev::Project::Tools::Packager
 
 # Package a ``gem`` from its ``gemspec`` file
 #
@@ -23,55 +25,32 @@ require 'rubygems'
 # [edit gem contents]
 # gem build my_gem-1.0.gemspec
 # ```
-class SwagDev::Project::Tools::Gemspec::Builder
+#
+# Sample of use:
+#
+# ```ruby
+# builder = SwagDev.projetc.tools.fetch(:gemspec_builder)
+# builder.build
+# ```
+class SwagDev::Project::Tools::Gemspec::Builder < packager_class
   # @type [SwagDev::Project]
   attr_writer :project
 
   # @type [SwagDev::Project::Tools::Gemspec::Reader]
   attr_writer :gemspec_reader
 
-  # Get filesystem
-  #
-  # @return [SwagDev::Project::Tools::Gemspec::Builder::Filesystem]
-  attr_reader :fs
+  def build
+    require_relative 'builder/command'
 
-  def initialize
-    @initialized = false
+    prepare
 
-    yield self if block_given?
-
-    @fs = Filesystem.new do |fs|
-      fs.gemspec_reader = self.gemspec_reader
-      fs.project = self.project
-    end
-
-    @initialized = true
-    [:project, :gemspec_reader].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
-  end
-
-  # Denote class is initialized
-  #
-  # @return [Boolean]
-  def initialized?
-    @initialized
-  end
-
-  def method_missing(method, *args, &block)
-    if respond_to_missing?(method)
-      fs.public_send(method, *args, &block)
-    else
-      super
-    end
-  end
-
-  def respond_to_missing?(method, include_private = false)
-    unless initialized? and method.to_s[-1] == '='
-      return true if fs.respond_to?(method, include_private)
-    end
-
-    super(method, include_private)
+    Command.new do |command|
+      command.executable    = :gem
+      command.pwd           = pwd
+      command.src_dir       = package_dirs.fetch(:src)
+      command.buildable     = buildable
+      command.specification = gemspec_reader.read
+    end.execute
   end
 
   # Get buildable (relative path)
@@ -79,48 +58,51 @@ class SwagDev::Project::Tools::Gemspec::Builder
   # @return [Pathname]
   def buildable
     full_name = gemspec_reader.read(Hash).fetch(:full_name)
-    file_path = fs.build_dirs
+    file_path = fs.package_dirs
                   .fetch(:gem)
                   .join("#{full_name}.gem")
                   .to_s
                   .gsub(%r{^\./}, '')
 
-    Pathname.new(file_path)
-  end
-
-  def build
-    fs.prepare
-
-    Command.new do |command|
-      command.executable    = :gem
-      command.pwd           = pwd
-      command.src_dir       = build_dirs.fetch(:src)
-      command.buildable     = buildable
-      command.specification = gemspec_reader.read
-    end.execute
+    ::Pathname.new(file_path)
   end
 
   protected
 
-  # Get project
+  # @type [SwagDev::Project]
+  attr_reader :project
+
+  # @type [SwagDev::Project::Tools::Gemspec::Reader]
+  attr_reader :gemspec_reader
+
+  # Get package(d) files
   #
-  # @see SwagDev.project
-  # @return [Object|SwagDev::Project]
-  def project
-    @project || SwagDev.project
+  # @return [Array<String>]
+  def package_files
+    (Dir.glob([
+                '*.gemspec',
+                'Gemfile', 'Gemfile.lock',
+                'gems.rb', 'gems.locked',
+              ]) + (gemspec_reader.read&.files)).to_a.sort
   end
 
-  # Get reader
-  #
-  # @return [SwagDev::Project::Tools::Gemspec::Reader]
-  def gemspec_reader
-    @gemspec_reader || project.tools.fetch(:gemspec_reader)
+  def setup
+    @project        ||= SwagDev.project
+    @gemspec_reader ||= project.tools.fetch(:gemspec_reader)
+
+    self.source_files   = package_files if self.source_files.to_a.empty?
+    self.package_labels = [:src, :gem]
+    self.package_name   = "ruby/gem-#{Gem::VERSION}"
+
+    [:project, :gemspec_reader].each do |m|
+      self.singleton_class.class_eval { protected "#{m}=" }
+    end
   end
 
   # Get specification
   #
   # @return [Gem::Specification]
   def specification
-    project.tools(:gemspec_reader).read
+    gemspec_reader.read
   end
 end

@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/gemspec/builder'
 require 'pathname'
 require 'cliver'
 require 'fileutils'
 require 'rake/file_utils'
-
-class SwagDev::Project::Tools::Gemspec::Builder
-end
+require_relative '../builder'
 
 # Command used to build a gem (from a gemspec file)
 #
