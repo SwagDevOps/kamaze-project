@@ -39,17 +39,28 @@ class SwagDev::Project::Tools::Packager::Filesystem
   # @type [Array<Symbol>]
   attr_writer :package_labels
 
+  # Labels for purgeables dirs (during prepare)
+  #
+  # @type [Array<Symbol>]
+  attr_writer :purgeables
+
+  # @type [Boolean]
+  attr_writer :verbose
+
   def initialize
     @package_basedir = 'build'
     @package_name    = 'sample/package'
 
     @working_dir     = Dir.pwd
-    @operator        = self.operator
     @package_labels  = [:src]
+
+    @verbose         = true
+    @operator        = self.operator
 
     yield self if block_given?
 
     @source_files ||= []
+    @purgeables   ||= []
 
     mute_attributes!(mutable_attributes)
   end
@@ -72,8 +83,17 @@ class SwagDev::Project::Tools::Packager::Filesystem
   #
   # @return [Hash]
   def package_dirs
-    @package_labels.map do |k, str|
+    @package_labels.map do |k|
       [k, package_dir.join(k.to_s)]
+    end.to_h
+  end
+
+  # Get purgeable (named) paths
+  #
+  # @return [Hash]
+  def purgeable_dirs
+    @purgeables.map do |k|
+      [k, package_dirs[k]] if package_dirs[k]
     end.to_h
   end
 
@@ -109,12 +129,14 @@ class SwagDev::Project::Tools::Packager::Filesystem
 
   def mutable_attributes
     [
+      :verbose,
+      :purgeables,
       :working_dir,
       :source_files,
       :package_basedir,
       :package_name,
       :package_labels
-    ]
+    ].sort
   end
 
   def mutable_attribute?(attr)
@@ -125,13 +147,16 @@ class SwagDev::Project::Tools::Packager::Filesystem
 
   protected
 
+  # @return [Boolean]
+  attr_reader :verbose
+
   # Get operator
   #
   # @return [SwagDev::Project::Tools::Packager::Filesystem::Operator]
   def operator
-    @operator ||= self.class.const_get(:Operator).new(self)
+    const_class = self.class.const_get(:Operator)
 
-    @operator
+    const_class.new(self, verbose: verbose)
   end
 
   # Pass some attributes to protected
