@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/packager'
 require 'rubygems'
 require_relative '../gemspec'
 require_relative 'reader'
-
-packager_class = SwagDev::Project::Tools::Packager
 
 # Package a ``gem`` from its ``gemspec`` file
 #
@@ -14,25 +11,25 @@ packager_class = SwagDev::Project::Tools::Packager
 # The best way to build a gem is to use a Rakefile and the Gem::PackageTask
 # which ships with RubyGems.
 #
-# The gemspec can either be created by hand or extracted from an existing gem
-# with gem spec:
+# The gemspec can either be created by hand or
+# extracted from an existing gem with gem spec:
 #
 # ```sh
 # gem unpack my_gem-1.0.gem
 # # Unpacked gem: '.../my_gem-1.0'
 # gem spec my_gem-1.0.gem --ruby > my_gem-1.0/my_gem-1.0.gemspec
 # cd my_gem-1.0
-# [edit gem contents]
+# # edit gem contents...
 # gem build my_gem-1.0.gemspec
 # ```
 #
 # Sample of use:
 #
 # ```ruby
-# builder = SwagDev.projetc.tools.fetch(:gemspec_builder)
+# builder = SwagDev.project.tools.fetch(:gemspec_builder)
 # builder.build
 # ```
-class SwagDev::Project::Tools::Gemspec::Builder < packager_class
+class SwagDev::Project::Tools::Gemspec::Builder
   # @type [SwagDev::Project]
   attr_writer :project
 
@@ -47,6 +44,7 @@ class SwagDev::Project::Tools::Gemspec::Builder < packager_class
     Command.new do |command|
       command.executable    = :gem
       command.pwd           = pwd
+      command.verbose       = verbose?
       command.src_dir       = package_dirs.fetch(:src)
       command.buildable     = buildable
       command.specification = gemspec_reader.read
@@ -90,8 +88,10 @@ class SwagDev::Project::Tools::Gemspec::Builder < packager_class
     @project        ||= SwagDev.project
     @gemspec_reader ||= project.tools.fetch(:gemspec_reader)
 
+    self.verbose        = false
     self.source_files   = package_files if self.source_files.to_a.empty?
     self.package_labels = [:src, :gem]
+    self.purgeables     = [:gem]
     self.package_name   = "ruby/gem-#{Gem::VERSION}"
 
     [:project, :gemspec_reader].each do |m|
