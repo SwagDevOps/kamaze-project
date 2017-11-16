@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-[:gemspec, :package, :install].each do |req|
-  require "swag_dev/project/tasks/gem/#{req}"
-end
+require 'swag_dev/project'
+[:gemspec, :package, :install]
+  .each { |req| require_relative "gem/#{req}" }
 
 desc 'Build all the packages'
 task gem: ['gem:gemspec', 'gem:package']
