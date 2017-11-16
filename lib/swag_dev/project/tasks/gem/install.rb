@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 # -*- coding: utf-8 -*-
 
-require 'swag_dev/project/dsl'
-require 'swag_dev/project/tasks/gem'
+require 'cliver'
+require_relative '../gem'
+
+project = SwagDev.project
+builder = project.tools.fetch(:gemspec_builder)
 
 desc 'Install gem'
 task 'gem:install': ['gem:package'] do
-  require 'cliver'
-
   sh(*[Cliver.detect(:sudo),
        Cliver.detect!(:gem),
        :install,
