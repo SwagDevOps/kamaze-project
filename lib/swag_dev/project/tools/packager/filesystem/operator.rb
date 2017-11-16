@@ -8,13 +8,10 @@ require_relative 'operator/utils'
 #
 # This class is intended to manipulate a ``Filesystem``.
 class SwagDev::Project::Tools::Packager::Filesystem::Operator
-  include self.const_get(:Utils)
+  include Utils
 
   # @return [SwagDev::Project::Tools::Packager::Filesystem]
   attr_reader :fs
-
-  # #return [Hash]
-  attr_reader :options
 
   # @param [SwagDev::Project::Tools::Packager::Filesystem] filesystem
   # @param [Hash] options
@@ -36,7 +33,15 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
   # @return [self]
   def prepare
     fs.package_dirs.each_value { |dir| mkdir_p(dir, options) }
-    prepare_srcdir
+
+    self.purge_purgeables.prepare_srcdir
+  end
+
+  # Purge purgeables elements
+  #
+  # @return [self]
+  def purge_purgeables
+    fs.purgeable_dirs.each_value { |dir| purge(dir, options) }
 
     self
   end
@@ -60,4 +65,13 @@ class SwagDev::Project::Tools::Packager::Filesystem::Operator
 
     self
   end
+
+  def verbose?
+    options[:verbose] == true
+  end
+
+  protected
+
+  # @return [Hash]
+  attr_reader :options
 end
