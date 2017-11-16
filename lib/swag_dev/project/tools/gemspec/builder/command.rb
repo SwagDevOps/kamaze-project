@@ -29,16 +29,22 @@ class SwagDev::Project::Tools::Gemspec::Builder::Command
   # Original path where main program is executed
   attr_writer :pwd
 
+  # Verbosity for ``Rake::FileUtilsExt.verbose_flag``
+  #
+  # @type [Boolean]
+  attr_accessor :verbose
+
   class InitializationError < RuntimeError
   end
 
   def initialize
     @pwd ||= Dir.pwd
     @executable ||= :gem
+    @verbose = true
 
     yield self
 
-    [:specification, :executable, :buildable, :pwd, :src_dir]
+    [:specification, :executable, :buildable, :pwd, :src_dir, :verbose]
       .each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
 
@@ -77,7 +83,7 @@ class SwagDev::Project::Tools::Gemspec::Builder::Command
 
   def execute
     Dir.chdir(pwd.join(gem_dir)) do
-      Bundler.with_clean_env { sh(*(self.to_a)) }
+      Bundler.with_clean_env { sh(*(self.to_a), verbose: verbose) }
     end
   end
 
