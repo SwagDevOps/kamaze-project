@@ -6,10 +6,12 @@ require_relative '../gem'
 project = SwagDev.project
 builder = project.tools.fetch(:gemspec_builder)
 
-# CLOBBER.include('pkg')
+CLOBBER.include(builder.package_dir)
 
-task 'gem:package': (builder.source_files + [builder.buildable]).to_a do
+file builder.buildable => builder.source_files.to_a.map(&:to_s) do
   builder.build
 
   Rake::Task['clobber'].reenable
 end
+
+task 'gem:package': [builder.buildable]
