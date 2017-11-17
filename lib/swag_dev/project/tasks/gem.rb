@@ -5,4 +5,4 @@ require 'swag_dev/project'
   .each { |req| require_relative "gem/#{req}" }
 
 desc 'Build all the packages'
-task gem: ['gem:gemspec', 'gem:package']
+task gem: ['gem:gemspec', 'gem:build']

@@ -14,4 +14,4 @@ file builder.buildable => builder.source_files.to_a.map(&:to_s) do
   Rake::Task['clobber'].reenable
 end
 
-task 'gem:package': [builder.buildable]
+task 'gem:build': [builder.buildable]

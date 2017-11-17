@@ -8,7 +8,7 @@ project = SwagDev.project
 builder = project.tools.fetch(:gemspec_builder)
 
 desc 'Install gem'
-task 'gem:install': ['gem:package'] do
+task 'gem:install': ['gem:build'] do
   sh(*[Cliver.detect(:sudo),
        Cliver.detect!(:gem),
        :install,
