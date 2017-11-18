@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rubygems'
+require 'rubygems/gem_runner'
+
 require_relative '../gemspec'
 require_relative 'reader'
 
@@ -36,19 +38,13 @@ class SwagDev::Project::Tools::Gemspec::Builder
   # @type [SwagDev::Project::Tools::Gemspec::Reader]
   attr_writer :gemspec_reader
 
+  # @return [self]
   def build
-    require_relative 'builder/command'
+    Dir.chdir(buildable.dirname) do
+      Gem::GemRunner.new.run(build_args)
+    end
 
-    prepare
-
-    Command.new do |command|
-      command.executable    = :gem
-      command.pwd           = pwd
-      command.verbose       = verbose?
-      command.src_dir       = package_dirs.fetch(:src)
-      command.buildable     = buildable
-      command.specification = gemspec_reader.read
-    end.execute
+    self
   end
 
   # Get buildable (relative path)
@@ -100,6 +96,21 @@ class SwagDev::Project::Tools::Gemspec::Builder
 
     [:project, :gemspec_reader].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
+    end
+  end
+
+  # Get args used by ``gem`` command
+  #
+  # @return [Array<String>]
+  def build_args
+    Dir.chdir(pwd) do
+      [
+        :build,
+        '--norc',
+        '%s.gemspec' % package_dirs.fetch(:src).realpath
+                                   .join(buildable.basename('.*')).to_s
+                                   .gsub(/-([0-9 \.])+$/, '')
+      ].map(&:to_s)
     end
   end
 
