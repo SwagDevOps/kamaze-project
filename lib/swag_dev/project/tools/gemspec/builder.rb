@@ -40,6 +40,8 @@ class SwagDev::Project::Tools::Gemspec::Builder
 
   # @return [self]
   def build
+    prepare
+
     Dir.chdir(buildable.dirname) do
       Gem::GemRunner.new.run(build_args)
     end
