@@ -81,7 +81,7 @@ class SwagDev::Project::Tools::Gemspec::Builder
                 '*.gemspec',
                 'Gemfile', 'Gemfile.lock',
                 'gems.rb', 'gems.locked',
-              ]) + (gemspec_reader.read&.files)).to_a.sort
+              ]) + (gemspec_reader.read&.files).to_a).sort
   end
 
   def setup
