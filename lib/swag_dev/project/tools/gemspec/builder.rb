@@ -65,6 +65,10 @@ class SwagDev::Project::Tools::Gemspec::Builder
     ::Pathname.new(file_path)
   end
 
+  def buildable?
+    gemspec_reader.read(Hash).include?(:full_name)
+  end
+
   protected
 
   # @type [SwagDev::Project]
