@@ -55,7 +55,7 @@ module SwagDev::Project::Tools::Packager::Filesystem::Operator::Utils
 
   # Extract directories from given paths
   #
-  # @param [Array<String>] entries
+  # @param [Array<String>] paths
   # @return [Array<Pathname>]
   def map_dirs(paths)
     paths.map { |path| ::Pathname.new(path) }
