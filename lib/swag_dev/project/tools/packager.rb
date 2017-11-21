@@ -19,6 +19,7 @@ end # rubocop:enable Style/Documentation
 # Provides a packager
 #
 # Packager is intended to provide basic packaging operations
+# @abstract
 class SwagDev::Project::Tools::Packager
   # Get filesystem
   #
