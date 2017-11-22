@@ -14,15 +14,17 @@ FactoryBot.define do
                                 '[]': [1],
                                 'member?' => [1] })
 
-    # keys COULD be in a different from the given class
+    # keys COULD be in a different order from the given class
     #
     # Usable in context '#to_h' (keys)
-    keys([:gemspec_writer,
-          :gemspec_reader,
-          :gemspec_builder,
-          :gemspec_packer,
-          :licenser,
-          :process_locker,
-          :vagrant])
+    keys([
+           :gemspec_builder,
+           :gemspec_packer,
+           :gemspec_reader,
+           :gemspec_writer,
+           :licenser,
+           :process_locker,
+           :vagrant,
+         ].shuffle)
   end
 end
