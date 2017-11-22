@@ -18,7 +18,7 @@ class SwagDev::Project::Helper::Debug
   # @param [Fixnum] width
   # @see http://ruby-doc.org/stdlib-2.2.0/libdoc/pp/rdoc/PP.html
   def dump(obj, out = STDOUT, width = nil)
-    width ||= TTY::Screen.new.width || 79
+    width ||= TTY::Screen.width || 79
     printer = out.isatty ? 0 : 1
 
     printers[printer].pp(obj, out, width)
