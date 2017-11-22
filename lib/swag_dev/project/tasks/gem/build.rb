@@ -8,6 +8,7 @@ builder = project.tools.fetch(:gemspec_builder)
 
 CLOBBER.include(builder.package_dir)
 
+# @todo move to upper level (gem)
 project.tools.fetch(:gemspec_writer).write unless builder.buildable?
 
 file builder.buildable => builder.source_files.to_a.map(&:to_s) do
