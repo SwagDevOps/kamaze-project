@@ -20,9 +20,9 @@ FactoryBot.define do
     keys([:gemspec_writer,
           :gemspec_reader,
           :gemspec_builder,
+          :gemspec_packer,
           :licenser,
           :process_locker,
-          :packer,
           :vagrant])
   end
 end
