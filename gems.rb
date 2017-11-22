@@ -14,7 +14,7 @@ gem 'gemspec_deps_gen', '= 1.1.2'
 gem 'tenjin', '~> 0.7'
 gem 'pastel', '~> 0.7'
 gem 'tty-editor', '~> 0.2'
-gem 'tty-screen', '~> 0.5'
+gem 'tty-screen', '~> 0.6', '>= 0.6.2'
 gem 'dotenv', '~> 2.2'
 gem 'process_lock', '~> 0.1'
 

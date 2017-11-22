@@ -123,7 +123,7 @@ DEPENDENCIES
   sys-proc (~> 1.0, >= 1.0.4)
   tenjin (~> 0.7)
   tty-editor (~> 0.2)
-  tty-screen (~> 0.5)
+  tty-screen (~> 0.6, >= 0.6.2)
   version_info (~> 1.9)
   yard (~> 0.9)
 
