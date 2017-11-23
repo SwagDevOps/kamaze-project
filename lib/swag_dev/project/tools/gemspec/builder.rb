@@ -5,30 +5,18 @@ require 'rubygems/gem_runner'
 
 require_relative 'packager'
 
-# Package a ``gem`` from its ``gemspec`` file
+# Package a ``gem`` from its own ``gemspec`` file
 #
-# The build command allows you to create a gem from a ruby gemspec.
+# The build command allows you to create a ``gem`` from a ruby ``gemspec``.
 #
 # The best way to build a gem is to use a Rakefile and the Gem::PackageTask
-# which ships with RubyGems.
-#
-# The gemspec can either be created by hand or
-# extracted from an existing gem with gem spec:
-#
-# ```sh
-# gem unpack my_gem-1.0.gem
-# # Unpacked gem: '.../my_gem-1.0'
-# gem spec my_gem-1.0.gem --ruby > my_gem-1.0/my_gem-1.0.gemspec
-# cd my_gem-1.0
-# # edit gem contents...
-# gem build my_gem-1.0.gemspec
-# ```
+# which ships with RubyGems. But, you can also use this class ;).
 #
 # Sample of use:
 #
 # ```ruby
 # builder = SwagDev.project.tools.fetch(:gemspec_builder)
-# builder.build
+# builder.build if builder.ready?
 # ```
 class SwagDev::Project::Tools::Gemspec::Builder
   # @return [self]
