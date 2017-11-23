@@ -3,6 +3,7 @@
 --markup markdown
 --charset utf-8
 --protected
+--private
 --embed-mixins
 --tag type:"type" --hide-tag type
 --readme README.md
