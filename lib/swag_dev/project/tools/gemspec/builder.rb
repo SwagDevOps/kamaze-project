@@ -3,8 +3,7 @@
 require 'rubygems'
 require 'rubygems/gem_runner'
 
-require_relative '../gemspec'
-require_relative 'reader'
+require_relative 'packager'
 
 # Package a ``gem`` from its ``gemspec`` file
 #
@@ -32,12 +31,6 @@ require_relative 'reader'
 # builder.build
 # ```
 class SwagDev::Project::Tools::Gemspec::Builder
-  # @type [SwagDev::Project]
-  attr_writer :project
-
-  # @type [SwagDev::Project::Tools::Gemspec::Reader]
-  attr_writer :gemspec_reader
-
   # @return [self]
   def build
     prepare
@@ -63,42 +56,16 @@ class SwagDev::Project::Tools::Gemspec::Builder
     ::Pathname.new(file_path)
   end
 
-  def buildable?
-    gemspec_reader.read(Hash).include?(:full_name)
-  end
+  alias buildable? ready?
 
   protected
 
-  # @type [SwagDev::Project]
-  attr_reader :project
-
-  # @type [SwagDev::Project::Tools::Gemspec::Reader]
-  attr_reader :gemspec_reader
-
-  # Get package(d) files
-  #
-  # @return [Array<String>]
-  def package_files
-    (Dir.glob([
-                '*.gemspec',
-                'Gemfile', 'Gemfile.lock',
-                'gems.rb', 'gems.locked',
-              ]) + (gemspec_reader.read&.files).to_a).sort
-  end
-
   def setup
-    @project        ||= SwagDev.project
-    @gemspec_reader ||= project.tools.fetch(:gemspec_reader)
+    super
 
-    self.verbose        = false
-    self.source_files   = package_files if self.source_files.to_a.empty?
     self.package_labels = [:src, :gem]
     self.purgeables     = [:gem]
     self.package_name   = "ruby/gem-#{Gem::VERSION}"
-
-    [:project, :gemspec_reader].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
   end
 
   # Get args used by ``gem`` command
@@ -114,12 +81,5 @@ class SwagDev::Project::Tools::Gemspec::Builder
                                    .gsub(/-([0-9 \.])+$/, '')
       ].map(&:to_s)
     end
-  end
-
-  # Get specification
-  #
-  # @return [Gem::Specification]
-  def specification
-    gemspec_reader.read
   end
 end
