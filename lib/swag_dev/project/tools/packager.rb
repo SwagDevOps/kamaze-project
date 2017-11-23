@@ -34,6 +34,7 @@ class SwagDev::Project::Tools::Packager
     setup
 
     @initialized = true
+    attrs_mute!
   end
 
   # Denote class is initialized
@@ -75,10 +76,18 @@ class SwagDev::Project::Tools::Packager
   def setup
   end
 
-  # Hide mutable attributes from filesystem
+  # Mutable attributes
+  #
+  # Mutable attributes become ``protected`` after initialization
   #
   # @return [Array]
   def mutable_attributes
     []
+  end
+
+  def attrs_mute!
+    mutable_attributes.each do |m|
+      self.singleton_class.class_eval { protected "#{m}=" }
+    end
   end
 end
