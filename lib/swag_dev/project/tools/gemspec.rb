@@ -5,6 +5,12 @@ require 'swag_dev/project/tools/packager'
 
 # Module providng several tools based on gemspec reader/writer
 module SwagDev::Project::Tools::Gemspec
+  class Reader
+  end
+
+  class Writer
+  end
+
   # @abstract
   class Packager < SwagDev::Project::Tools::Packager
   end
@@ -15,8 +21,9 @@ module SwagDev::Project::Tools::Gemspec
   class Packer < Packager
   end
 
-  private_constant :Packager
-
-  [:reader, :writer,
+  [:packager,
+   :reader, :writer,
    :builder, :packer].each { |req| require_relative "gemspec/#{req}" }
+
+  private_constant :Packager
 end
