@@ -6,13 +6,13 @@ require_relative '../gem'
 tools  = SwagDev.project.tools
 packer = tools.fetch(:gemspec_packer)
 
-packer.buildables.each do |buildable|
-  CLOBBER.include(buildable)
+packer.packables.each do |packable|
+  CLOBBER.include(packable)
 
-  desc "Compile executable: #{buildable.basename}"
-  file buildable => packer.source_files.to_a.map(&:to_s) do
+  desc "Compile executable: #{packable.basename}"
+  file packable => packer.source_files.to_a.map(&:to_s) do
     tools.fetch(:process_locker).lock!(:gemspec_packer) do
-      packer.pack(buildable)
+      packer.pack(packable)
 
       Rake::Task['clobber'].reenable
     end

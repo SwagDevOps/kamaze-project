@@ -19,7 +19,7 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   attr_accessor :executable
 
   # Filepath to the product issued by command
-  attr_accessor :buildable
+  attr_accessor :packable
 
   # The directory for temporary files
   attr_accessor :tmp_dir
@@ -42,12 +42,10 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
     @pwd ||= Dir.pwd
     @executable ||= :rubyc
 
-    attributes_process
+    process_attrs
 
     @pwd = ::Pathname.new(@pwd)
     @executable = ::Pathname.new(Cliver.detect!(@executable))
-
-    pp @pwd
   end
 
   # Get path to "compiled" input file
@@ -61,13 +59,13 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
 
   # @return [Array<String>]
   def to_a
-    buildable = ::Pathname.new(self.buildable)
+    packable = ::Pathname.new(self.packable)
 
     [executable,
-     bin_dir.join(buildable.basename),
+     bin_dir.join(packable.basename),
      '-r', '.',
      '-d', pwd.join(tmp_dir),
-     '-o', pwd.join(buildable)].map(&:to_s)
+     '-o', pwd.join(packable)].map(&:to_s)
   end
 
   def execute
@@ -83,8 +81,8 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   # Process attributes
   #
   # @raise InitializationError
-  def attributes_process
-    [:executable, :buildable, :pwd, :tmp_dir, :bin_dir].each do |m|
+  def process_attrs
+    [:executable, :packable, :pwd, :tmp_dir, :bin_dir].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
 
       if self.__send__(m).nil?
