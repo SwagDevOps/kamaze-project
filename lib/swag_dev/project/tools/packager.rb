@@ -44,6 +44,15 @@ class SwagDev::Project::Tools::Packager
     @initialized
   end
 
+  # Mutable attributes
+  #
+  # Mutable attributes become ``protected`` after initialization
+  #
+  # @return [Array]
+  def mutable_attributes
+    []
+  end
+
   def method_missing(method, *args, &block)
     if respond_to_missing?(method)
       unless initialized?
@@ -74,15 +83,6 @@ class SwagDev::Project::Tools::Packager
 
   # Execute additionnal setup
   def setup
-  end
-
-  # Mutable attributes
-  #
-  # Mutable attributes become ``protected`` after initialization
-  #
-  # @return [Array]
-  def mutable_attributes
-    []
   end
 
   def attrs_mute!
