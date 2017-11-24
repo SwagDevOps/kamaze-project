@@ -22,6 +22,10 @@ class SwagDev::Project::Tools::Gemspec::Packager
   # @type [SwagDev::Project::Tools::Gemspec::Reader]
   attr_accessor :gemspec_reader
 
+  def mutable_attributes
+    [:gemspec_reader, :project]
+  end
+
   # Denote ready
   #
   # Test to detect if specification seems to be complete,
@@ -58,9 +62,5 @@ class SwagDev::Project::Tools::Gemspec::Packager
   # @return [Gem::Specification]
   def specification
     gemspec_reader.read
-  end
-
-  def mutable_attributes
-    [:gemspec_reader, :project]
   end
 end
