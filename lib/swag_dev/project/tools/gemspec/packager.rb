@@ -3,6 +3,18 @@
 require_relative '../gemspec'
 require_relative 'reader'
 
+# Provide a specialized packager, for ``gemspec`` based projects
+#
+# A ``gemspec`` reader class is used,
+# it can be retrieved through ``project`` tools.
+# This dynamic behaviour is the default one, but a specific reader or
+# a ``project`` can be defined during initialization.
+#
+# Gem ``specification`` (``Gem::Specification``) is retrieved through
+# the gemspec reader. The gemspec reader
+# can be dynamically retrieved through the project.
+#
+# @abstract
 class SwagDev::Project::Tools::Gemspec::Packager
   # @type [SwagDev::Project]
   attr_accessor :project
@@ -10,6 +22,12 @@ class SwagDev::Project::Tools::Gemspec::Packager
   # @type [SwagDev::Project::Tools::Gemspec::Reader]
   attr_accessor :gemspec_reader
 
+  # Denote ready
+  #
+  # Test to detect if specification seems to be complete,
+  # incomplete specification denotes a missing gemspec file
+  #
+  # @return [Boolean]
   def ready?
     gemspec_reader.read(Hash).include?(:full_name)
   end
