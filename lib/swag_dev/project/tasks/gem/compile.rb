@@ -6,6 +6,12 @@ require_relative '../gem'
 tools  = SwagDev.project.tools
 packer = tools.fetch(:gemspec_packer)
 
+# Generate gemspec file (when missing) -------------------------------
+
+tools.fetch(:gemspec_writer).write unless packer.ready?
+
+# Tasks --------------------------------------------------------------
+
 packer.packables.each do |packable|
   CLOBBER.include(packable)
 
