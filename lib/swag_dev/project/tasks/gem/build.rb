@@ -3,13 +3,16 @@
 require 'rake/clean'
 require_relative '../gem'
 
-project = SwagDev.project
-builder = project.tools.fetch(:gemspec_builder)
+tools   = SwagDev.project.tools
+builder = tools.fetch(:gemspec_builder)
 
 CLOBBER.include(builder.package_dir)
 
-# @todo move to upper level (gem)
-project.tools.fetch(:gemspec_writer).write unless builder.buildable?
+# Generate gemspec file (when missing) -------------------------------
+
+tools.fetch(:gemspec_writer).write unless builder.buildable?
+
+# Tasks --------------------------------------------------------------
 
 file builder.buildable => builder.source_files.to_a.map(&:to_s) do
   builder.build
