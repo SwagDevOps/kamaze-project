@@ -9,12 +9,6 @@ require_relative 'packer/command'
 #
 # @see https://github.com/pmq20/ruby-packer
 class SwagDev::Project::Tools::Gemspec::Packer
-  # @type [SwagDev::Project]
-  attr_writer :project
-
-  # @type [SwagDev::Project::Tools::Gemspec::Reader]
-  attr_writer :gemspec_reader
-
   # Binary (executable) used to pack the project
   #
   # @see https://github.com/pmq20/ruby-packer
@@ -31,16 +25,6 @@ class SwagDev::Project::Tools::Gemspec::Packer
 
       ::Pathname.new(path)
     end
-  end
-
-  # Denote ready
-  #
-  # Test to detect if specification seems to be complete,
-  # incomplete specification denotes a missing gemspec file
-  #
-  # @return [Boolean]
-  def ready?
-    gemspec_reader.read(Hash).include?(:full_name)
   end
 
   # Get host config, retrieved from ``RbConfig::CONFIG``
@@ -63,41 +47,21 @@ class SwagDev::Project::Tools::Gemspec::Packer
     bin_dir.join(packable)
   end
 
-  protected
-
-  # @type [SwagDev::Project]
-  attr_reader :project
-
-  # @type [SwagDev::Project::Tools::Gemspec::Reader]
-  attr_reader :gemspec_reader
-
-  # Get package(d) files
-  #
-  # @return [Array<String>]
-  def package_files
-    (Dir.glob([
-                '*.gemspec',
-                'Gemfile', 'Gemfile.lock',
-                'gems.rb', 'gems.locked',
-              ]) + (gemspec_reader.read&.files).to_a).sort
+  def mutable_attributes
+    super + [:compiler]
   end
 
-  def setup
-    @project        ||= SwagDev.project
-    @gemspec_reader ||= project.tools.fetch(:gemspec_reader)
+  protected
 
-    self.verbose        = false
-    self.source_files   = package_files if self.source_files.to_a.empty?
+  def setup
+    super
+
     self.package_labels = [:src, :tmp, :bin]
     self.purgeables     = [:bin]
     self.package_name   = '%s/%s' % [
       config.fetch(:host_os),
       config.fetch(:host_cpu)
     ]
-
-    [:project, :gemspec_reader, :compiler].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
   end
 
   # Get command for (packing) a given packable
@@ -115,12 +79,5 @@ class SwagDev::Project::Tools::Gemspec::Packer
       command.bin_dir    = bin_dir
       command.packable   = packable
     end
-  end
-
-  # Get specification
-  #
-  # @return [Gem::Specification]
-  def specification
-    gemspec_reader.read
   end
 end
