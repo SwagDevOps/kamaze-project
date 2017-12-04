@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../gemspec'
-require_relative 'reader'
+require_relative 'concern/reading'
 
 # Provide a specialized packager, for ``gemspec`` based projects
 #
@@ -16,14 +16,10 @@ require_relative 'reader'
 #
 # @abstract
 class SwagDev::Project::Tools::Gemspec::Packager
-  # @type [SwagDev::Project]
-  attr_accessor :project
-
-  # @type [SwagDev::Project::Tools::Gemspec::Reader]
-  attr_accessor :gemspec_reader
+  include SwagDev::Project::Tools::Gemspec::Concern::Reading
 
   def mutable_attributes
-    [:gemspec_reader, :project]
+    [:gemspec_reader]
   end
 
   # Denote ready
@@ -50,8 +46,7 @@ class SwagDev::Project::Tools::Gemspec::Packager
   end
 
   def setup
-    @project        ||= SwagDev.project
-    @gemspec_reader ||= project.tools.fetch(:gemspec_reader)
+    @gemspec_reader ||= SwagDev.project.tools.fetch(:gemspec_reader)
 
     self.verbose      = false
     self.source_files = package_files if self.source_files.to_a.empty?
