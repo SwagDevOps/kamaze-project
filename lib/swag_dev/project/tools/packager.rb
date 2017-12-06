@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
+require_relative '../tools'
+require_relative 'base_tool'
 
 # rubocop:disable Style/Documentation
-class SwagDev::Project::Tools::Packager
-  class Filesystem
-    class Operator
-      module Utils
+class SwagDev::Project::Tools
+  class Packager < BaseTool
+    class Filesystem
+      class Operator
+        module Utils
+        end
       end
     end
-  end
 
-  require_relative 'packager/filesystem'
-  require_relative 'packager/filesystem/operator'
-  require_relative 'packager/filesystem/operator/utils'
+    require_relative 'packager/filesystem'
+    require_relative 'packager/filesystem/operator'
+    require_relative 'packager/filesystem/operator/utils'
+  end
 end # rubocop:enable Style/Documentation
 
 # Provides a packager
@@ -44,15 +47,6 @@ class SwagDev::Project::Tools::Packager
     @initialized
   end
 
-  # Mutable attributes
-  #
-  # Mutable attributes become ``protected`` after initialization
-  #
-  # @return [Array]
-  def mutable_attributes
-    []
-  end
-
   def method_missing(method, *args, &block)
     if respond_to_missing?(method)
       unless initialized?
@@ -77,17 +71,5 @@ class SwagDev::Project::Tools::Packager
     return true if fs.respond_to?(method, include_private)
 
     super(method, include_private)
-  end
-
-  protected
-
-  # Execute additionnal setup
-  def setup
-  end
-
-  def attrs_mute!
-    mutable_attributes.each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
   end
 end
