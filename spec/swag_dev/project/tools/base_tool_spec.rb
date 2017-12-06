@@ -9,6 +9,10 @@ describe SwagDev::Project::Tools::BaseTool do
     counts.each do |n|
       it { expect(subject).to respond_to(method).with(n).arguments }
     end
+
+    # setup method is provided for inheritance
+    # this method is used during instance initialization
+    it { expect(subject.__send__(:setup)).to be_nil }
   end
 end
 
