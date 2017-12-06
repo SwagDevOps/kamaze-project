@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
+require 'swag_dev/project/tools/base_tool'
 
 describe SwagDev::Project::Tools::BaseTool do
   build('project/tools/base_tool')
