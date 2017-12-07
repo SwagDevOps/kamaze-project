@@ -10,4 +10,25 @@ describe SwagDev::Project::Tools::Yardoc do
       it { expect(subject).to respond_to(method).with(n).arguments }
     end
   end
+
+  it { expect(subject).to be_a(SwagDev::Project::Tools::BaseTool) }
+end
+
+describe SwagDev::Project::Tools::Yardoc do
+  context '#mutable_attributes' do
+    it { expect(subject.mutable_attributes).to be_empty }
+  end
+
+  context '#output_dir' do
+    it { expect(subject.output_dir).to be_a(::Pathname) }
+    it { expect(subject.output_dir).to eq(Pathname.new('doc')) }
+  end
+
+  context '#excluded' do
+    it { expect(subject.excluded).to be_a(Array) }
+  end
+
+  context '#options' do
+    it { expect(subject.options).to be_a(Hash) }
+  end
 end
