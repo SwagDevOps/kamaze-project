@@ -38,6 +38,8 @@ class SwagDev::Project::Tools::Yardoc
     core.excluded
   end
 
+  alias call run
+
   protected
 
   def setup
