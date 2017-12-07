@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/tools/yardoc'
+require 'pathname'
 
 describe SwagDev::Project::Tools::Yardoc do
   build('project/tools/yardoc')
@@ -20,7 +21,7 @@ describe SwagDev::Project::Tools::Yardoc do
   end
 
   context '#output_dir' do
-    it { expect(subject.output_dir).to be_a(::Pathname) }
+    it { expect(subject.output_dir).to be_a(Pathname) }
     it { expect(subject.output_dir).to eq(Pathname.new('doc')) }
   end
 
