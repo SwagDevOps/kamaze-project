@@ -6,6 +6,7 @@ FactoryBot.define do
     # Describe instance methods
     describe_instance_methods({
                                 options: [0],
+                                'options=': [1],
                                 run: [0],
                                 call: [0],
                                 output_dir: [0],
