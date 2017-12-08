@@ -32,4 +32,8 @@ describe SwagDev::Project::Tools::Yardoc do
   context '#options' do
     it { expect(subject.options).to be_a(Hash) }
   end
+
+  context '#paths' do
+    it { expect(subject.paths).to be_a(Array) }
+  end
 end
