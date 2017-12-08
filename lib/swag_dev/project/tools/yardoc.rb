@@ -31,6 +31,17 @@ class SwagDev::Project::Tools::Yardoc
     ::Pathname.new(path)
   end
 
+  # Get paths (based on ``YARD::CLI::Yardoc#files``)
+  #
+  # @return [Array<Pathname>]
+  def paths
+    core.files.to_a.flatten.map do |file|
+      Dir.glob(file)
+         .map { |f| ::Pathname.new(f) }
+         .map { |fpath| fpath.dirname }.uniq.sort[0]
+    end.flatten.uniq.sort
+  end
+
   # Ignores files matching path match (regexp)
   #
   # @return [Array<String>]
