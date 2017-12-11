@@ -35,5 +35,6 @@ describe SwagDev::Project::Tools::Yardoc do
 
   context '#paths' do
     it { expect(subject.paths).to be_a(Array) }
+    it { expect(subject.paths).to eq([Pathname.new('lib')]) }
   end
 end
