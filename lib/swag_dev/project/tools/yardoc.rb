@@ -36,9 +36,11 @@ class SwagDev::Project::Tools::Yardoc
   # @return [Array<Pathname>]
   def paths
     core.files.to_a.flatten.map do |file|
-      Dir.glob(file)
-         .map { |f| ::Pathname.new(f) }
-         .map { |fpath| fpath.dirname }.uniq.sort[0]
+      Dir.glob(file).map do |f|
+        f.gsub!('./', '')
+
+        ::Pathname.new(f).dirname
+      end.uniq.sort[0]
     end.flatten.uniq.sort
   end
 
