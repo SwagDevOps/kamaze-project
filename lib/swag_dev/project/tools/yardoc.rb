@@ -35,13 +35,24 @@ class SwagDev::Project::Tools::Yardoc
   #
   # @return [Array<Pathname>]
   def paths
-    core.files.to_a.flatten.map do |file|
-      Dir.glob(file).map do |f|
-        f.gsub!('./', '')
-
-        ::Pathname.new(f).dirname
-      end.uniq.sort[0]
+    files.map do |file|
+      Dir.glob(file)
+         .map { |f| ::Pathname.new(f).dirname }
+         .uniq.sort[0]
     end.flatten.uniq.sort
+  end
+
+  # Get files
+  #
+  # Mostly patterns,
+  # addition of ``files`` with ``options.files``
+  # SHOULD include ``README`` (as type) file, when ``.yardopts`` defined
+  #
+  # @return [Array<String>]
+  def files
+    (core.files.to_a + core.options.files.to_a.map(&:filename))
+                           .flatten
+                           .map { |f| f.gsub('./', '') }
   end
 
   # Ignores files matching path match (regexp)
