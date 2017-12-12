@@ -12,6 +12,7 @@ FactoryBot.define do
                                 output_dir: [0],
                                 excluded: [0],
                                 paths: [0],
+                                files: [0],
                               })
   end
 end
