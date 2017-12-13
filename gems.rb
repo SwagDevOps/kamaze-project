@@ -27,7 +27,10 @@ gem 'rubocop', '~> 0.50'
 
 group :development do
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
-  gem 'listen', '~> 3.1'
+  # prevent listen 2.8 and greater from being used
+  #
+  # @see https://github.com/guard/listen/wiki/Duplicate-directory-errors
+  gem 'listen', '~> 2.7.12'
 end
 
 group :doc, :development do
