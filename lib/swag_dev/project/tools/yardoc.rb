@@ -4,11 +4,18 @@ require_relative '../tools'
 require_relative 'base_tool'
 require 'pathname'
 require 'yard'
+require 'logger'
+
+# rubocop:disable Style/Documentation
 
 class SwagDev::Project::Tools
   class Yardoc < BaseTool
   end
+
+  require_relative 'yardoc/file'
 end
+
+# rubocop:enable Style/Documentation
 
 # Tool to run ``CLI::Yardoc`` and generate documentation
 #
@@ -17,6 +24,10 @@ class SwagDev::Project::Tools::Yardoc
   # @type [Hash]
   # @return [Hash]
   attr_accessor :options
+
+  # @type [Fixnum]
+  # @return [Fixnum]
+  attr_accessor :log_level
 
   def run
     core.run
@@ -31,28 +42,27 @@ class SwagDev::Project::Tools::Yardoc
     ::Pathname.new(path)
   end
 
-  # Get paths (based on ``YARD::CLI::Yardoc#files``)
+  # Get paths
   #
   # @return [Array<Pathname>]
   def paths
     files.map do |file|
-      Dir.glob(file)
-         .map { |f| ::Pathname.new(f).dirname }
-         .uniq.sort[0]
-    end.flatten.uniq.sort
+      file.to_a.sort[0]
+    end.flatten.compact.uniq.sort
   end
 
   # Get files
   #
   # Mostly patterns,
   # addition of ``files`` with ``options.files``
-  # SHOULD include ``README`` (as type) file, when ``.yardopts`` defined
+  # SHOULD include ``README`` file, when ``.yardopts`` defined
   #
-  # @return [Array<String>]
+  # @return [Array<SwagDev::Project::Tools::Yardoc::File>]
   def files
-    (core.files.to_a + core.options.files.to_a.map(&:filename))
-                           .flatten
-                           .map { |f| f.gsub('./', '') }
+    [
+      core.files.to_a.flatten.map { |f| File.new(f, true) },
+      core.options.files.to_a.map { |f| File.new(f.filename, false) }
+    ].flatten
   end
 
   # Ignores files matching path match (regexp)
@@ -68,11 +78,14 @@ class SwagDev::Project::Tools::Yardoc
 
   def setup
     @options ||= {}
+    @log_level ||= Logger::ERROR
   end
 
   # @return [YARD::CLI::Yardoc]
   def core
     yard = YARD::CLI::Yardoc.new
+    yard.__send__(:log).level = Logger::ERROR if yard.respond_to?(:log, true)
+
     yard.parse_arguments([])
     options.to_h.each { |k, v| yard.options[k.to_sym] = v }
 
