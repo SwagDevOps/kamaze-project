@@ -7,6 +7,6 @@
 --embed-mixins
 --tag type:"type" --hide-tag type
 --readme README.md
---exclude /lib/swag_dev/project/tasks/
+--exclude 'lib/swag_dev/project/tasks/.*'
 --exclude '_flymake\\.rb$'
 --exclude '/\\.#'
