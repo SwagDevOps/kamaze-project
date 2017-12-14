@@ -37,7 +37,7 @@ class SwagDev::Project::Tools::Yardoc::File
     @glob
   end
 
-  def to_s_
+  def to_s
     filepath
   end
 
