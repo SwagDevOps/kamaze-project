@@ -13,6 +13,7 @@ class SwagDev::Project::Tools
   end
 
   require_relative 'yardoc/file'
+  require_relative 'yardoc/watchable'
 end
 
 # rubocop:enable Style/Documentation
@@ -21,6 +22,8 @@ end
 #
 # @see https://github.com/lsegal/yard/blob/49d885f29075cfef4cb954bb9247b6fbc8318cac/lib/yard/rake/yardoc_task.rb
 class SwagDev::Project::Tools::Yardoc
+  include Watchable
+
   # @type [Hash]
   # @return [Hash]
   attr_accessor :options
@@ -33,43 +36,13 @@ class SwagDev::Project::Tools::Yardoc
     core.run
   end
 
-  # The output directory. (defaults to ``./doc``)
+  # Get output directory (default SHOULD be ``doc``)
   #
   # @return [Pathname]
   def output_dir
     path = core.options.serializer.basepath.gsub(%r{^\./+}, '')
 
     ::Pathname.new(path)
-  end
-
-  # Get paths
-  #
-  # @return [Array<Pathname>]
-  def paths
-    files.map do |file|
-      file.to_a.sort[0]
-    end.flatten.compact.uniq.sort
-  end
-
-  # Get files
-  #
-  # Mostly patterns,
-  # addition of ``files`` with ``options.files``
-  # SHOULD include ``README`` file, when ``.yardopts`` defined
-  #
-  # @return [Array<SwagDev::Project::Tools::Yardoc::File>]
-  def files
-    [
-      core.files.to_a.flatten.map { |f| File.new(f, true) },
-      core.options.files.to_a.map { |f| File.new(f.filename, false) }
-    ].flatten
-  end
-
-  # Ignores files matching path match (regexp)
-  #
-  # @return [Array<String>]
-  def excluded
-    core.excluded
   end
 
   alias call run
