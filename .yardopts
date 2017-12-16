@@ -1,4 +1,5 @@
 lib/**/*.rb
+--no-progress
 --markup-provider redcarpet
 --markup markdown
 --charset utf-8
