@@ -24,6 +24,8 @@ end
 class SwagDev::Project::Tools::Yardoc
   include Watchable
 
+  # Options used by {YARD::CLI::Yardoc}
+  #
   # @type [Hash]
   # @return [Hash]
   attr_accessor :options
@@ -32,8 +34,27 @@ class SwagDev::Project::Tools::Yardoc
   # @return [Fixnum]
   attr_accessor :log_level
 
+  # Options to pass to {YARD::CLI::Stats}
+  #
+  # @return [Array<String>] the options passed to the stats utility
+  attr_accessor :stats_options
+
   def run
-    core.run
+    core.run('--no-stats')
+    YARD::CLI::Stats.run(*stats_options)
+  end
+
+  def watch(wait = false)
+    require_relative 'yardoc/watcher'
+
+    Watcher.new do |watcher|
+      watcher.paths = paths
+      watcher.patterns = patterns
+      watcher.options = {
+        only:   %r{\.rb|md$},
+        ignore: excluded.map { |pattern| %r{#{pattern}} }
+      }
+    end.watch(wait)
   end
 
   # Get output directory (default SHOULD be ``doc``)
@@ -52,6 +73,7 @@ class SwagDev::Project::Tools::Yardoc
   def setup
     @options ||= {}
     @log_level ||= Logger::ERROR
+    @stats_options ||= (@stats_options || []) + ['--use-cache']
   end
 
   # @return [YARD::CLI::Yardoc]
