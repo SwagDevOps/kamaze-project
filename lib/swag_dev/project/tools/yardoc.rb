@@ -51,8 +51,8 @@ class SwagDev::Project::Tools::Yardoc
       watcher.paths = paths
       watcher.patterns = patterns
       watcher.options = {
-        only:   %r{\.rb|md$},
-        ignore: excluded.map { |pattern| %r{#{pattern}} }
+        only:   /\.rb|md$/,
+        ignore: excluded.map { |pattern| /#{pattern}/ }
       }
     end.watch(wait)
   end
