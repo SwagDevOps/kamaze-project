@@ -15,9 +15,9 @@ This gem keeps ease of use in mind.
 Sample of use:
 
 ```ruby
-require 'swag_dev/project/dsl'
+require 'swag_dev/project'
 
-project do |c|
+SwagDev.project do |c|
   c.subject = SwagDev::Project
   c.name    = :'swag_dev-project'
   c.tasks   = [
