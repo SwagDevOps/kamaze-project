@@ -1,4 +1,4 @@
-./lib/**/*.rb
+lib/**/*.rb
 --markup-provider redcarpet
 --markup markdown
 --charset utf-8
@@ -8,5 +8,6 @@
 --tag type:"type" --hide-tag type
 --readme README.md
 --exclude 'lib/swag_dev/project/tasks/.*'
+--exclude 'lib/.*/_bootstrap\\.rb$'
 --exclude '_flymake\\.rb$'
 --exclude '/\\.#'
