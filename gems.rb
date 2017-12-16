@@ -23,14 +23,11 @@ gem 'pry', '~> 0.11'
 gem 'yard', '~> 0.9'
 gem 'rubocop', '~> 0.50'
 # 'rspec' is also supported, but we don't force to use it
-# 'listen' is used to "watch" but could be incompatible with some systems
 
 group :development do
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
-  # prevent listen 2.8 and greater from being used
-  #
-  # @see https://github.com/guard/listen/wiki/Duplicate-directory-errors
-  gem 'listen', '~> 2.7.12'
+  # 'listen' is used to "watch" but could be incompatible with some systems
+  gem 'listen', '~> 3.1'
 end
 
 group :doc, :development do
