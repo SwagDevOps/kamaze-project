@@ -44,19 +44,6 @@ class SwagDev::Project::Tools::Yardoc
     YARD::CLI::Stats.run(*stats_options)
   end
 
-  def watch(wait = false)
-    require_relative 'yardoc/watcher'
-
-    Watcher.new do |watcher|
-      watcher.paths = paths
-      watcher.patterns = patterns
-      watcher.options = {
-        only:   /\.rb|md$/,
-        ignore: excluded.map { |pattern| /#{pattern}/ }
-      }
-    end.watch(wait)
-  end
-
   # Get output directory (default SHOULD be ``doc``)
   #
   # @return [Pathname]
