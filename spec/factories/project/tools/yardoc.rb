@@ -7,6 +7,8 @@ FactoryBot.define do
     describe_instance_methods({
                                 options: [0],
                                 'options=': [1],
+                                stats_options: [0],
+                                'stats_options=': [1],
                                 log_level: [0],
                                 'log_level=': [1],
                                 run: [0],
