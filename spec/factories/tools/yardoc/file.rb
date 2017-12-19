@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory 'project/tools/yardoc/file', class: FactoryStruct do
+  factory 'tools/yardoc/file', class: FactoryStruct do
     # Describe instance methods
     describe_instance_methods({
                                 paths: [0],

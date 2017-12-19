@@ -3,7 +3,7 @@
 require 'swag_dev/project/tools/yardoc/watcher'
 
 describe SwagDev::Project::Tools::Yardoc::Watcher do
-  build('project/tools/yardoc/watcher')
+  build('tools/yardoc/watcher')
     .describe_instance_methods
     .each do |method, counts|
     counts.each do |n|
@@ -14,9 +14,9 @@ end
 
 10.times do
   describe SwagDev::Project::Tools::Yardoc::Watcher do
-    let(:paths) { build('project/tools/yardoc/watcher').random_paths }
-    let(:patterns) { build('project/tools/yardoc/watcher').random_patterns }
-    let(:options) { build('project/tools/yardoc/watcher').random_options }
+    let(:paths) { build('tools/yardoc/watcher').random_paths }
+    let(:patterns) { build('tools/yardoc/watcher').random_patterns }
+    let(:options) { build('tools/yardoc/watcher').random_options }
 
     subject do
       described_class.new do |watcher|

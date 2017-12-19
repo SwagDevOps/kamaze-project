@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory 'project/tools', class: FactoryStruct do
+  factory 'tools', class: FactoryStruct do
     # Describe instance methods
     #
     # { method_name: arguments_count [Array] }

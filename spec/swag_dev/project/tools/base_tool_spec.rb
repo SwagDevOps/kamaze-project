@@ -3,7 +3,7 @@
 require 'swag_dev/project/tools/base_tool'
 
 describe SwagDev::Project::Tools::BaseTool do
-  build('project/tools/base_tool')
+  build('tools/base_tool')
     .describe_instance_methods
     .each do |method, counts|
     counts.each do |n|

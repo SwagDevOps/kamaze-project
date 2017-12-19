@@ -4,7 +4,7 @@ require 'swag_dev/project/tools/yardoc'
 require 'pathname'
 
 describe SwagDev::Project::Tools::Yardoc do
-  build('project/tools/yardoc')
+  build('tools/yardoc')
     .describe_instance_methods
     .each do |method, counts|
     counts.each do |n|

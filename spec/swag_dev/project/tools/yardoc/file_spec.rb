@@ -6,7 +6,7 @@ require 'pathname'
 describe SwagDev::Project::Tools::Yardoc::File do
   subject { described_class.new('sample.ext', false) }
 
-  build('project/tools/yardoc/file')
+  build('tools/yardoc/file')
     .describe_instance_methods
     .each do |method, counts|
     counts.each do |n|

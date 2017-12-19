@@ -3,7 +3,7 @@
 require 'swag_dev/project/tools'
 
 describe SwagDev::Project::Tools do
-  build('project/tools')
+  build('tools')
     .describe_instance_methods
     .each do |method, counts|
     counts.each do |n|
@@ -18,7 +18,7 @@ describe SwagDev::Project::Tools do
   end
 
   context '#to_h.keys' do
-    build('project/tools').keys.each do |k|
+    build('tools').keys.each do |k|
       it { expect(subject.to_h.keys).to include(k) }
     end
   end

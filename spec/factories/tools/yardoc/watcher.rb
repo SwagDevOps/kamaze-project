@@ -4,7 +4,7 @@
 require 'securerandom'
 
 FactoryBot.define do
-  factory 'project/tools/yardoc/watcher', class: FactoryStruct do
+  factory 'tools/yardoc/watcher', class: FactoryStruct do
     # Describe instance methods
     describe_instance_methods({
                                 paths: [0],
