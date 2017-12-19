@@ -137,7 +137,7 @@ class SwagDev::Project::Tools::Vagrant
     results = {}
     box_files.each do |path|
       path = Pathname.new(path).realpath
-      name = path.basename('.yaml').to_s
+      name = path.basename('.yml').to_s
 
       results[name] = YAML.load_file(path)
     end
