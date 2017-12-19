@@ -12,15 +12,37 @@ FactoryBot.define do
                                 patterns: [0],
                                 watch: [0, 1],
                               })
-    # @todo test method usable during initialization
+
+    # sequences usable during initialization
     #
-    # 'paths=': [1], 'options=': [1], 'patterns=': [1]
+    # 'paths=', 'options=', 'patterns='
     sequence(:random_paths) do |seq|
       @random_paths ||= []
 
       @random_paths[seq] = Random.new.rand(2...10).times.map do
         SecureRandom.hex[0..8]
       end
+    end
+
+    sequence(:random_patterns) do |seq|
+      @random_patterns ||= []
+
+      @random_patterns[seq] = Random.new.rand(2...10).times.map do
+        SecureRandom.hex[0..8]
+      end
+    end
+
+    sequence(:random_options) do |seq|
+      @random_options ||= {}
+
+      @random_options[seq] = {
+        only: Regexp.new(Random.new.rand(2...10).times.map do
+          '\.%s$' % SecureRandom.hex[0..2]
+        end.join('|')),
+        ignore: Regexp.new(Random.new.rand(2...10).times.map do
+          '%s/' % SecureRandom.hex[0..6]
+        end.join('|'))
+      }
     end
   end
 end
