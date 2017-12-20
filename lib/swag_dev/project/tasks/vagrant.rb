@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/dsl'
+require 'swag_dev/project'
 require 'rake/clean'
 
-vagrant = project.tools.fetch(:vagrant)
+vagrant = SwagDev.project.tools.fetch(:vagrant)
 
 CLOBBER.include('Vagrantfile')
 
