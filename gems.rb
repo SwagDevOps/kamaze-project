@@ -5,7 +5,7 @@
 source 'https://rubygems.org'
 
 # base
-gem 'rake', '~> 12.0'
+gem 'rake', '~> 12.3'
 gem 'activesupport', '~> 5.1'
 gem 'version_info', '~> 1.9'
 gem 'sham', '~> 1.2'
@@ -21,7 +21,7 @@ gem 'process_lock', '~> 0.1'
 # supported tools
 gem 'pry', '~> 0.11'
 gem 'yard', '~> 0.9'
-gem 'rubocop', '~> 0.50'
+gem 'rubocop', '~> 0.52'
 # 'rspec' is also supported, but we don't force to use it
 
 group :development do
@@ -37,6 +37,6 @@ group :doc, :development do
 end
 
 group :test, :development do
-  gem 'rspec', '~> 3.6'
+  gem 'rspec', '~> 3.7'
   gem 'factory_bot', '~> 4.8'
 end
