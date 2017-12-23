@@ -1,16 +1,18 @@
 # swag_dev-project
 
 This gem is intended to provide a bunch of recurrent dev tasks, such as:
-packaging (``gem``, ``rubyc``),
-running automated tests (``rspec``),
-generating documentation (``yardoc``),
-checking and/or correcting coding style (``rubocop``),
-running virtual machines (``vagrant``),
+
+* packaging (``gem``, ``rubyc``)
+* running automated tests (``rspec``)
+* generating documentation (``yardoc``)
+* checking and/or correcting coding style (``rubocop``)
+* running virtual machines (``vagrant``)
+
 and so on.
 
 ## Ease of use
 
-This gem keeps ease of use in mind.
+This gem keeps ease of use (and DRY) in mind.
 
 Sample of use:
 
@@ -33,7 +35,8 @@ end
 ```
 
 A ``project`` has a __name__ and a __subject__.
-Project ``name`` SHOULD be the same as the name of the (eventually) generated gem package [name][rubygems/specification#name].
+Project ``name`` SHOULD be the same as the name of the (eventually)
+generated gem package [name][rubygems/specification#name].
 
 ## Environment
 
