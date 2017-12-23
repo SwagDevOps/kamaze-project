@@ -28,26 +28,26 @@ Gem::Specification.new do |s|
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
 
-  s.add_runtime_dependency "rake", ["~> 12.0"]
+  s.add_runtime_dependency "rake", ["~> 12.3"]
   s.add_runtime_dependency "activesupport", ["~> 5.1"]
   s.add_runtime_dependency "version_info", ["~> 1.9"]
   s.add_runtime_dependency "sham", ["~> 1.2"]
   s.add_runtime_dependency "cliver", ["= 0.3.2"]
   s.add_runtime_dependency "gemspec_deps_gen", ["= 1.1.2"]
   s.add_runtime_dependency "tenjin", ["~> 0.7"]
-  s.add_runtime_dependency "pastel", ["~> 0.7"]
+  s.add_runtime_dependency "cli-ui", [">= 1.0.0", "~> 1.0"]
   s.add_runtime_dependency "tty-editor", ["~> 0.2"]
-  s.add_runtime_dependency "tty-screen", ["~> 0.5"]
+  s.add_runtime_dependency "tty-screen", [">= 0.6.2", "~> 0.6"]
   s.add_runtime_dependency "dotenv", ["~> 2.2"]
   s.add_runtime_dependency "process_lock", ["~> 0.1"]
   s.add_runtime_dependency "pry", ["~> 0.11"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
-  s.add_runtime_dependency "rubocop", ["~> 0.50"]
+  s.add_runtime_dependency "rubocop", ["~> 0.52"]
   s.add_development_dependency "sys-proc", [">= 1.0.4", "~> 1.0"]
   s.add_development_dependency "listen", ["~> 3.1"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "github-markup", ["~> 1.6"]
-  s.add_development_dependency "rspec", ["~> 3.6"]
+  s.add_development_dependency "rspec", ["~> 3.7"]
   s.add_development_dependency "factory_bot", ["~> 4.8"]
 end
 
