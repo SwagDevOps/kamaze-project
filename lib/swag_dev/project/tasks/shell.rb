@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/dsl'
+require 'swag_dev/project'
 
 banner = proc do
   patch = defined?(RUBY_PATCHLEVEL) ? 'p%s' % RUBY_PATCHLEVEL : nil
@@ -9,7 +9,9 @@ banner = proc do
            '(%s revision %s)' % [RUBY_RELEASE_DATE, RUBY_REVISION],
            '[%s]' % RUBY_PLATFORM]
 
-  console.stdout.writeln(parts.join(' '), :green)
+  SwagDev.project.tools
+         .fetch(:console)
+         .stdout.puts('{{green:%s}}' % parts.join(' '))
 end
 
 # More convenient than ``bundle exec pry``
