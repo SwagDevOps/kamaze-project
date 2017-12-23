@@ -106,7 +106,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 5.1)
-  cli-ui
+  cli-ui (~> 1.0.0)
   cliver (= 0.3.2)
   dotenv (~> 2.2)
   factory_bot (~> 4.8)
