@@ -1,4 +1,5 @@
 ---
+console:         'swag_dev/project/tools/console'
 gemspec_builder: 'swag_dev/project/tools/gemspec/builder'
 gemspec_packer:  'swag_dev/project/tools/gemspec/packer'
 gemspec_reader:  'swag_dev/project/tools/gemspec/reader'
