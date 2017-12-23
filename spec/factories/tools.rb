@@ -17,7 +17,8 @@ FactoryBot.define do
     # keys COULD be in a different order from the given class
     #
     # Usable in context '#to_h' (keys)
-    keys([:gemspec_builder,
+    keys([:console,
+          :gemspec_builder,
           :gemspec_packer,
           :gemspec_reader,
           :gemspec_writer,
