@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-# bundle install --path vendor/bundle
+# bundle install --path vendor/bundle --clean
 
 source 'https://rubygems.org'
 
 # base ---------------------------------------------------------------
+
 gem 'rake', '~> 12.3'
 gem 'activesupport', '~> 5.1'
 gem 'version_info', '~> 1.9'
@@ -19,10 +20,13 @@ gem 'dotenv', '~> 2.2'
 gem 'process_lock', '~> 0.1'
 
 # supported tools ----------------------------------------------------
+
 gem 'pry', '~> 0.11'
 gem 'yard', '~> 0.9'
 gem 'rubocop', '~> 0.52'
 # 'rspec' is also supported, but we don't force to use it
+
+# development, doc, test ---------------------------------------------
 
 group :development do
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
