@@ -14,7 +14,6 @@ class SwagDev::Project::Tools::Console::Output::Buffer
 
   # @param [SwagDev::Project::Tools::Console::Output] output
   # @param [String] content
-  # @param [Array<String>] args
   def initialize(output, content)
     @output = output
     @content = content
@@ -29,7 +28,7 @@ class SwagDev::Project::Tools::Console::Output::Buffer
   attr_reader :output
 
   # @param [String] s
-  # @param [Array<String>] args
+  # @return [String]
   def decorate(s)
     CLI::UI.fmt(s, enable_color: output.tty?)
   end
