@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require "#{__dir__}/lib/swag_dev-project"
-require 'swag_dev/project/dsl'
+require 'swag_dev/project'
 require 'sys/proc'
 
 Sys::Proc.progname = nil
 
-project do |c|
+SwagDev.project do |c|
   c.subject = SwagDev::Project
-  c.name    = 'swag_dev-project'
-  c.tasks   = [
+  c.name = 'swag_dev-project'
+  c.tasks = [
     :'cs:correct', :'cs:control',
     :doc, :'doc:watch',
     :gem, :'gem:compile',
@@ -19,6 +19,6 @@ project do |c|
     :vagrant,
     :'version:edit',
   ].shuffle
-end
+end.load!
 
 task default: [:gem]
