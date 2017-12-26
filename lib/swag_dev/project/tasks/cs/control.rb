@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tasks/cs'
+require_relative '../cs'
 
-cs_task_from_file(__FILE__)
+desc 'Run static code analyzer'
+task 'cs:control', [:path] do |t, args|
+  rubocop(args[:path], '--fail-level', 'E')
+end

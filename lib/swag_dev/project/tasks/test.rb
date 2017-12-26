@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/dsl'
+require 'swag_dev/project'
 
 # More convenient than ``bundle exec``
 #
@@ -11,9 +11,15 @@ desc 'Run test suites'
 task :test, [:tag] do |task, args|
   proc do
     require 'rspec/core'
-    spec_runner = RSpec::Core::Runner
-    options = sham!.rspec.options
+    require 'shellwords'
 
+    spec_runner = RSpec::Core::Runner
+    conf_file = Pathname.new(Dir.pwd).join('.rspec')
+    optionner = lambda do |file|
+      file.file? ? Shellwords.split(file.read) : []
+    end
+
+    options = optionner.call(conf_file)
     options += ['--tag', args[:tag]] if args[:tag]
     status = spec_runner.run(options, STDERR, STDOUT).to_i
 
@@ -21,4 +27,4 @@ task :test, [:tag] do |task, args|
   end.call
 end
 
-task spec: [:test] if project.working_dir.join('spec').directory?
+task spec: [:test] if SwagDev.project.working_dir.join('spec').directory?

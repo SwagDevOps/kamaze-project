@@ -14,17 +14,14 @@
 #   percy-style: [ default.yml ]
 # ~~~~
 
-require 'swag_dev/project/dsl/definition'
-
-# rubocop:disable Style/Documentation
-module SwagDev::Project::Dsl::Definition
-  # rubocop:enable Style/Documentation
-
+# Provide rubocop method
+#
+# @todo convert to tools
+module SwagDev::Project::Cs
   # Make a rubocop ``RakeTask``
   #
   # @param [Array<String>] patterns
   # @param [Hash] options
-  # @return [RuboCop::RakeTask]
   #
   # Sample of use:
   #
@@ -34,38 +31,21 @@ module SwagDev::Project::Dsl::Definition
   #     rubocop(args.fetch(:path), sham: sham!).invoke
   # end
   # ```
-  def rubocop(patterns, options = {})
+  def rubocop(patterns, *args)
     require 'rubocop/rake_task'
     require 'securerandom'
 
-    tname = '%s:rubocop' % SecureRandom.hex(8)
-    shammed = options[:sham] || sham!
+    tname = '%<task>s:rubocop' % { task: SecureRandom.hex(8) }
+    patterns = Dir.glob(patterns)
+    raise "#{args[:path]}: does not match any files" if patterns.empty?
 
     RuboCop::RakeTask.new(tname) do |task|
-      task.options       = shammed.options
-      task.patterns      = patterns
-      task.fail_on_error = shammed.fail_on_error
+      task.options = args
+      task.patterns = patterns
     end
 
-    Rake::Task[tname]
-  end
-
-  def cs_task_from_file(file)
-    require 'swag_dev/project/dsl'
-
-    type = Pathname.new(file).basename('.rb')
-    sham = sham!("tasks/cs/#{type}")
-
-    desc sham.description
-    task "cs:#{type}", [:path] => sham.prerequisites do |t, args|
-      patterns = project.gem.spec.require_paths
-      if args[:path]
-        patterns = Dir.glob(args[:path])
-
-        raise "#{args[:path]}: does not match any files" if patterns.empty?
-      end
-
-      rubocop(patterns, sham: sham).invoke
-    end
+    Rake::Task[tname].execute
   end
 end
+
+self.extend(SwagDev::Project::Cs)
