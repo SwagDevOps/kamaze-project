@@ -25,6 +25,8 @@ require 'yaml'
 # ```
 class SwagDev::Project::Tools
   class << self
+    # @type [Hash]
+    # @return [Hash<Symbol, Class>]
     attr_accessor :items
 
     # Default tools
@@ -45,6 +47,7 @@ class SwagDev::Project::Tools
 
   @items = {}
 
+  # @param [Hash] items
   def initialize(items = {})
     @items = self.class.defaults.clone.merge(self.class.items).merge(items)
     @cache = {}
@@ -77,7 +80,7 @@ class SwagDev::Project::Tools
 
   alias get fetch
 
-  # Get all instance at once
+  # Get all instances at once
   #
   # @return [Hash]
   def to_h
