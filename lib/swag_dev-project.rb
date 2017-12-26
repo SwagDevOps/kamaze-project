@@ -1,6 +1,5 @@
-# rubocop:disable Style/FileName
 # frozen_string_literal: true
-# rubocop:enable Style/FileName
+# rubocop:disable Style/FileName
 
 # Copyright (C) 2017 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
@@ -39,3 +38,4 @@ if locked and 'development' == ENV['PROJECT_MODE']
 end
 
 require File.basename(__FILE__, '.rb').tr('-', '/')
+# rubocop:enable Style/FileName
