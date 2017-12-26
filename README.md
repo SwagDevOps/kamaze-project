@@ -31,7 +31,7 @@ SwagDev.project do |c|
     :test,
     :'version:edit',
   ]
-end
+end.load!
 ```
 
 A ``project`` has a __name__ and a __subject__.
