@@ -8,6 +8,9 @@ require 'tmpdir'
 require 'process_lock'
 require 'active_support/inflector'
 
+# Process Locker
+#
+# @see https://github.com/ianheggie/process_lock
 class SwagDev::Project::Tools::ProcessLocker
   # Manage lock on given block
   #
@@ -23,7 +26,7 @@ class SwagDev::Project::Tools::ProcessLocker
   # @return [Object]
   def lock!(lockname)
     mklock(lockname).acquire! { yield }
-  rescue ProcessLock::AlreadyLocked => e
+  rescue ProcessLock::AlreadyLocked
     raise Errno::EALREADY if mklock(lockname).alive?
     raise
   end
@@ -32,7 +35,7 @@ class SwagDev::Project::Tools::ProcessLocker
   def tmpdir
     tmp = Pathname.new(Dir.tmpdir)
     uid = Etc.getpwnam(Etc.getlogin).uid
-    dir = [inflector.underscore(self.class.name).gsub('/', '-'), uid].join('.')
+    dir = [inflector.underscore(self.class.name).tr('/', '-'), uid].join('.')
 
     tmp.join(dir)
   end
@@ -79,7 +82,7 @@ class SwagDev::Project::Tools::ProcessLocker
   # @return [Pathname]
   def mktmpdir(options = {})
     tmpdir = self.tmpdir
-    options[:mode] ||= 0700
+    options[:mode] ||= 0o700
 
     FileUtils.mkdir_p(tmpdir, options)
 
