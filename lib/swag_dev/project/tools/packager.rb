@@ -17,7 +17,8 @@ class SwagDev::Project::Tools
     require_relative 'packager/filesystem/operator'
     require_relative 'packager/filesystem/operator/utils'
   end
-end # rubocop:enable Style/Documentation
+end
+# rubocop:enable Style/Documentation
 
 # Provides a packager
 #
