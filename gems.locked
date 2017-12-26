@@ -92,7 +92,7 @@ GEM
       tty-reader (~> 0.1.0)
     tty-reader (0.1.0)
       wisper (~> 2.0.0)
-    tty-screen (0.6.3)
+    tty-screen (0.6.4)
     tty-which (0.3.0)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
