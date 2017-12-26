@@ -5,8 +5,10 @@ require 'pathname'
 module SwagDev
   # rubocop:disable Style/Documentation
   class Project
-    %w[env mode helper sham tasks gem yardoc versionable tools]
-      .each { |req| require "swag_dev/project/concern/#{req}" }
+    [
+      :env, :mode, :helper, :sham,
+      :tasks, :versionable, :tools
+    ].each { |req| require "swag_dev/project/concern/#{req}" }
   end
   # rubocop:enable Style/Documentation
 
@@ -40,8 +42,6 @@ class SwagDev::Project
   include Concern::Helper
   include Concern::Sham
   include Concern::Tasks
-  include Concern::Gem
-  include Concern::Yardoc
   include Concern::Versionable
   include Concern::Tools
 
@@ -61,7 +61,6 @@ class SwagDev::Project
   def initialize(&block)
     if block
       config = helper.get('project/config')
-
       yield(config)
       config.configure(self)
     end
