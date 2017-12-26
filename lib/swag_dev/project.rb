@@ -1,31 +1,14 @@
 # frozen_string_literal: true
-
 require 'pathname'
 
+# Base module (almost a namespace)
 module SwagDev
+  # rubocop:disable Style/Documentation
   class Project
-    [
-      'concern/env',
-      'concern/mode',
-      'concern/helper',
-      'concern/sham',
-      'concern/tasks',
-      'concern/gem',
-      'concern/yardoc',
-      'concern/versionable',
-      'concern/tools',
-    ].each { |req| require "swag_dev/project/#{req}" }
-
-    include Concern::Env
-    include Concern::Mode
-    include Concern::Helper
-    include Concern::Sham
-    include Concern::Tasks
-    include Concern::Gem
-    include Concern::Yardoc
-    include Concern::Versionable
-    include Concern::Tools
+    %w[env mode helper sham tasks gem yardoc versionable tools]
+      .each { |req| require "swag_dev/project/concern/#{req}" }
   end
+  # rubocop:enable Style/Documentation
 
   class << self
     include Project::Concern::Helper
@@ -52,6 +35,16 @@ end
 # end
 # ```
 class SwagDev::Project
+  include Concern::Env
+  include Concern::Mode
+  include Concern::Helper
+  include Concern::Sham
+  include Concern::Tasks
+  include Concern::Gem
+  include Concern::Yardoc
+  include Concern::Versionable
+  include Concern::Tools
+
   # @return [Pathname]
   attr_accessor :working_dir
 
@@ -73,7 +66,7 @@ class SwagDev::Project
       config.configure(self)
     end
 
-    self.working_dir ||= Dir.pwd
+    @working_dir = Pathname.new(@working_dir || Dir.pwd).realpath
 
     env_load(working_dir)
 
@@ -115,11 +108,6 @@ class SwagDev::Project
     @name = name.to_s.empty? ? nil : name.to_s.to_sym
   end
 
-  # Set working dir
-  def working_dir=(working_dir)
-    @working_dir = Pathname.new(working_dir).realpath
-  end
-
   # Set subject
   #
   # @param [Class] subject
@@ -135,7 +123,7 @@ class SwagDev::Project
   #
   # @return [Class]
   def subject!
-    resolvable = name.to_s.gsub('-', '/')
+    resolvable = name.to_s.tr('-', '/')
 
     helper.get(:inflector).resolve(resolvable)
   end
