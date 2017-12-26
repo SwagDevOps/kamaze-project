@@ -10,6 +10,9 @@ This gem is intended to provide a bunch of recurrent dev tasks, such as:
 
 and so on.
 
+Automation mostly relies on the ``gem`` (and ``gemspec``) standards,
+most tasks MUST run in a sufficient gem context.
+
 ## Ease of use
 
 This gem keeps ease of use (and DRY) in mind.
