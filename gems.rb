@@ -30,6 +30,7 @@ gem 'yard', '~> 0.9'
 
 group :development do
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
+  gem 'bootsnap', '~> 1.1', require: false
 
   # 'listen' is used to "watch"
   # but could be incompatible with some systems
