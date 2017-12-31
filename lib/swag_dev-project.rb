@@ -14,7 +14,7 @@ env = ENV['PROJECT_MODE'] || 'development'
 locked = proc do
   Dir.chdir("#{__dir__}/..") do
     [['gems.rb', 'gems.locked'], ['Gemfile', 'Gemfile.lock']]
-      .map { |m| true if Dir.glob(m).size >= 2 }
+      .map { |m| Dir.glob(m).size >= 2 }
       .include?(true)
   end
 end.call
