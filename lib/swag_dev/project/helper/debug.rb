@@ -1,12 +1,36 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project/helper'
-require 'swag_dev/project/concern/helper'
-require 'tty/screen'
+require 'active_support/inflector'
 
 # Provides color printer automagically
+#
+# @todo moves to tools
 class SwagDev::Project::Helper::Debug
-  include SwagDev::Project::Concern::Helper
+  class << self
+    # @return [Boolean]
+    def warned?
+      @warned || false
+    end
+
+    protected
+
+    # @return [Boolean]
+    attr_accessor :warned
+  end
+
+  # @return [Array<PP>]
+  attr_reader :printers
+
+  def initialize
+    @inflector = ActiveSupport::Inflector
+    @printers = available_printers
+  end
+
+  # @return [Boolean]
+  def warned?
+    self.class.warned?
+  end
 
   # Outputs obj to out in pretty printed format of width columns in width.
   #
@@ -18,10 +42,21 @@ class SwagDev::Project::Helper::Debug
   # @param [Fixnum] width
   # @see http://ruby-doc.org/stdlib-2.2.0/libdoc/pp/rdoc/PP.html
   def dump(obj, out = STDOUT, width = nil)
-    width ||= TTY::Screen.width || 79
-    printer = out.isatty ? 0 : 1
+    require 'tty/screen'
 
-    printers[printer].pp(obj, out, width)
+    width ||= TTY::Screen.width || 79
+
+    printer_for(out).pp(obj, out, width)
+  end
+
+  # Get printer for given output
+  #
+  # @param [IO] out
+  # @return [PP]
+  def printer_for(out)
+    out_tty = out.respond_to?(:isatty) and out.isatty
+
+    printers[out_tty ? 0 : 1]
   end
 
   # Get printers
@@ -29,8 +64,9 @@ class SwagDev::Project::Helper::Debug
   # First printer SHOULD be the color printer, secund is the default printer
   #
   # @return [Array<PP>]
-  def printers
-    printers_load
+  def available_printers
+    load_printers
+
     default = '::PP'
 
     [
@@ -40,28 +76,55 @@ class SwagDev::Project::Helper::Debug
         Kernel.const_defined?(target) ? target : default
       end.call,
       default
-    ].map { |n| helper.get('inflector').constantize(n) }.freeze
+    ].map { |n| inflector.constantize(n) }.freeze
   end
 
   protected
 
-  # Load printers requirements (on demand)
-  def printers_load
-    require 'pp'
+  # @return [Boolean|nil]
+  attr_reader :warned
 
+  # @return [Class]
+  attr_reader :inflector
+
+  # Load printers requirements (on demand)
+  #
+  # @return [self]
+  def load_printers
     Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
 
     begin
-      require 'coderay'
-      require 'pry/pager'
-      require 'pry/color_printer'
+      load_printer_requirements
     rescue LoadError => e
-      # rubocop:disable Performance/Caller
-      warn(format('%s: %s', caller[0], e.message)) if @warned.nil?
-      # rubocop:enable Performance/Caller
-      @warned = true
+      self.class.__send__('warned=', !!warn_error(e)) unless warned?
     end
 
     self
+  end
+
+  # @raise [LoadError]
+  # @return [self]
+  def load_printer_requirements
+    ['pp',
+     'coderay',
+     'pry/pager',
+     'pry/color_printer'].each { |req| require req }
+
+    self
+  end
+
+  # Display the given exception message (followed by a newline) on STDERR
+  #
+  # unless warnings are disabled (for example with the -W0 flag).
+  #
+  # @param [Exception] e
+  # @return [Array<String>]
+  def warn_error(e)
+    formats = { from: caller(1..1).first, mssg: e.message }
+    message = '%<from>s: %<mssg>s' % formats
+
+    warn(message)
+
+    formats.values
   end
 end
