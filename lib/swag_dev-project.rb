@@ -39,9 +39,9 @@ if locked and 'development' == env
   def pp(*args)
     proc do
       require 'active_support/inflector'
-      require 'swag_dev/project/tools/debugger'
+      require 'swag_dev/project/tools/debug'
 
-      klass = 'SwagDev::Project::Tools::Debugger'
+      klass = 'SwagDev::Project::Tools::Debug'
       ActiveSupport::Inflector.constantize(klass)
     end.call.new.dump(*args)
   end

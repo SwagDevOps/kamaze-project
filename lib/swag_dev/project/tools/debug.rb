@@ -5,7 +5,7 @@ require 'tty/screen'
 require 'active_support/inflector'
 
 class SwagDev::Project::Tools
-  class Debugger < BaseTool
+  class Debug < BaseTool
   end
 end
 
@@ -13,7 +13,7 @@ end
 #
 # @see http://ruby-doc.org/stdlib-2.0.0/libdoc/pp/rdoc/PP.html
 # @see https://github.com/pry/pry
-class SwagDev::Project::Tools::Debugger
+class SwagDev::Project::Tools::Debug
   class << self
     # @return [Boolean]
     def warned?
