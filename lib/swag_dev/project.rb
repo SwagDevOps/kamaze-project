@@ -8,7 +8,9 @@ module SwagDev
     [
       :env, :mode, :helper, :sham,
       :tasks, :versionable, :tools
-    ].each { |req| require "swag_dev/project/concern/#{req}" }
+    ].each do |req|
+      require "swag_dev/project/concern/#{req}"
+    end
   end
   # rubocop:enable Style/Documentation
 
@@ -65,7 +67,7 @@ class SwagDev::Project
       config.configure(self)
     end
 
-    @working_dir = Pathname.new(@working_dir || Dir.pwd).realpath
+    @working_dir = ::Pathname.new(@working_dir || Dir.pwd).realpath
 
     env_load(working_dir)
 
@@ -101,6 +103,8 @@ class SwagDev::Project
   protected
 
   alias gem_name name
+
+  alias pwd working_dir
 
   # Set name
   def name=(name)
