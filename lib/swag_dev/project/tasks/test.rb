@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
+require_relative '../../project'
 
 # More convenient than ``bundle exec``
 #
 # https://www.relishapp.com/rspec/rspec-core/docs/command-line/rake-task
 # https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/runner.rb
-
+# https://relishapp.com/rspec/rspec-core/v/2-4/docs/command-line/tag-option
 desc 'Run test suites'
-task :test, [:tag] do |task, args|
+task :test, [:tags] do |task, args|
   proc do
     require 'rspec/core'
     require 'shellwords'
@@ -20,11 +20,13 @@ task :test, [:tag] do |task, args|
     end
 
     options = optionner.call(conf_file)
-    options += ['--tag', args[:tag]] if args[:tag]
+    args[:tags]
+      .to_s
+      .split(',')
+      .map(&:strip).each { |tag| options += ['--tag', tag] }
+
     status = spec_runner.run(options, STDERR, STDOUT).to_i
 
     exit(status) unless status.zero?
   end.call
 end
-
-task spec: [:test] if SwagDev.project.working_dir.join('spec').directory?
