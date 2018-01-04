@@ -12,12 +12,15 @@ require_relative '../tools/debug'
 #
 # pp(ENV)
 # ```
-#
-# @see SwagDev::Project::Tools::Debug
 module SwagDev::Project::Concern::Debug
-  # @param [Array<Object>] args
+  # @param [Object] obj
+  # @param [IO] out
+  # @param [Fixnum] width
+  #
   # @see SwagDev::Project::Tools::Debug
-  def pp(*args)
-    SwagDev::Project::Tools::Debug.new.dump(*args)
+  def pp(obj, out = STDOUT, width = nil)
+    debug = SwagDev::Project::Tools::Debug.new
+
+    debug.dump(obj, out, width)
   end
 end
