@@ -31,8 +31,7 @@ end
 # Sample of use:
 #
 # ```ruby
-# SwagDev::Project.new do do |c|
-#   c.working_dir = Dir.pwd
+# SwagDev.project do |c|
 #   c.subject     = SwagDev::Project
 #   c.name        = :'swag_dev-project'
 #   c.tasks       = [ :doc, :gem ]
