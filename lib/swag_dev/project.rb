@@ -67,7 +67,7 @@ class SwagDev::Project
 
     @working_dir = ::Pathname.new(@working_dir || Dir.pwd).realpath
 
-    env_load(working_dir)
+    env_load(pwd: @working_dir)
 
     self.name ||= ENV.fetch('PROJECT_NAME')
     self.subject ||= subject!

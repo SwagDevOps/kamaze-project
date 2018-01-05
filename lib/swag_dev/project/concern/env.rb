@@ -17,13 +17,22 @@ end
 module SwagDev::Project::Concern::Env
   extend ActiveSupport::Concern
 
+  protected
+
   # Load ``.env`` file (and store result)
   #
+  # @todo load different (or additionnal) files depending on env/mode
+  #
   # @return [self]
-  def env_load(pwd = Dir.pwd)
-    pwd = ::Pathname.new(pwd).realpath
+  def env_load(options = {})
+    options[:pwd] = ::Pathname.new(options[:pwd] || Dir.pwd).realpath
+    options[:filename] ||= '.env'
 
-    @env_loaded = ::Dotenv.load(pwd.join('.env'))
+    @env_loaded ||= {}
+
+    [options.fetch(:pwd).join(options.fetch(:filename))].each do |file|
+      @env_loaded.merge(::Dotenv.load(file))
+    end
 
     self
   end
