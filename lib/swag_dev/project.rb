@@ -42,13 +42,12 @@ class SwagDev::Project
   include Concern::Env
   include Concern::Mode
   include Concern::Helper
-  include Concern::Sham
   include Concern::Tasks
   include Concern::Versionable
   include Concern::Tools
 
   # @return [Pathname]
-  attr_accessor :working_dir
+  attr_reader :working_dir
 
   # Project name
   #
@@ -90,7 +89,7 @@ class SwagDev::Project
 
   # @return [Pathname]
   def path(*args)
-    working_dir.join(*args)
+    pwd.join(*args)
   end
 
   # Load project
@@ -101,6 +100,8 @@ class SwagDev::Project
   end
 
   protected
+
+  attr_writer :working_dir
 
   alias gem_name name
 
