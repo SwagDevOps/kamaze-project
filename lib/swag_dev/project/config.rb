@@ -8,7 +8,7 @@ require 'swag_dev/project/struct'
 # @abstract Subclass and override {#defaults} to implement
 class SwagDev::Project::Config
   # @return [SwagDev::Project::Struct]
-  attr_accessor :attributes
+  attr_reader :attributes
 
   def initialize
     @attributes = SwagDev::Project::Struct.new(defaults)
