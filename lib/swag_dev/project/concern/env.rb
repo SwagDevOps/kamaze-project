@@ -5,6 +5,7 @@ require_relative '../concern'
 require 'active_support/concern'
 require 'dotenv'
 require 'pathname'
+require 'pp'
 
 module SwagDev::Project::Concern
   # @rubocop:disable Style/Documentation
@@ -17,6 +18,24 @@ end
 module SwagDev::Project::Concern::Env
   extend ActiveSupport::Concern
 
+  included do
+    { env_loaded: {} }.each do |attr, default|
+      class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
+        def #{attr}
+          @#{attr} ||= #{default}
+
+          @#{attr}
+        end
+
+        protected
+
+        def #{attr}=(v)
+          @#{attr} = v
+        end
+      ACCESSORS
+    end
+  end
+
   protected
 
   # Load ``.env`` file (and store result)
@@ -28,10 +47,8 @@ module SwagDev::Project::Concern::Env
     options[:pwd] = ::Pathname.new(options[:pwd] || Dir.pwd).realpath
     options[:filename] ||= '.env'
 
-    @env_loaded ||= {}
-
     [options.fetch(:pwd).join(options.fetch(:filename))].each do |file|
-      @env_loaded.merge(::Dotenv.load(file))
+      env_loaded.merge!(::Dotenv.load(file))
     end
 
     self
