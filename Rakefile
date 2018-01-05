@@ -22,3 +22,5 @@ SwagDev.project do |c|
 end.load!
 
 task default: [:gem]
+
+task spec: [:test] if SwagDev.project.path('spec').directory?
