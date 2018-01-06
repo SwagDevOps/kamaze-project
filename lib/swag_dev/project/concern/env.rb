@@ -18,22 +18,24 @@ end
 module SwagDev::Project::Concern::Env
   extend ActiveSupport::Concern
 
+  # @!attribute [r] env_loaded
+  #   @return [Hash] loaded environment
+
   included do
-    { env_loaded: {} }.each do |attr, default|
-      class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
-        def #{attr}
-          @#{attr} ||= #{default}
-
-          @#{attr}
-        end
-
+    class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
         protected
 
-        def #{attr}=(v)
-          @#{attr} = v
-        end
-      ACCESSORS
-    end
+        attr_writer :env_loaded
+    ACCESSORS
+  end
+
+  # Loaded environment
+  #
+  # @return [Hash]
+  def env_loaded
+    @env_loaded ||= {}
+
+    @env_loaded
   end
 
   protected
