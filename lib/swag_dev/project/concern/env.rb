@@ -5,7 +5,6 @@ require_relative '../concern'
 require 'active_support/concern'
 require 'dotenv'
 require 'pathname'
-require 'pp'
 
 module SwagDev::Project::Concern
   # @rubocop:disable Style/Documentation
