@@ -46,9 +46,9 @@ module SwagDev::Project::Concern::Env
   # @return [self]
   def env_load(options = {})
     options[:pwd] = ::Pathname.new(options[:pwd] || Dir.pwd).realpath
-    options[:filename] ||= '.env'
+    options[:file] ||= '.env'
 
-    [options.fetch(:pwd).join(options.fetch(:filename))].each do |file|
+    [options.fetch(:pwd).join(options.fetch(:file))].each do |file|
       env_loaded.merge!(::Dotenv.load(file))
     end
 
