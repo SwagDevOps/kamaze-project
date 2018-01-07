@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 [
+  :constants,
   :progname,
   :factory_struct,
   :configure,
