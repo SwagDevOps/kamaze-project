@@ -10,7 +10,7 @@
 
 $LOAD_PATH.unshift(__dir__)
 
-mode = ENV['PROJECT_MODE'] || 'development'
+mode = (ENV['PROJECT_MODE'] || 'development').to_sym
 locked = proc do
   Dir.chdir("#{__dir__}/..") do
     [['gems.rb', 'gems.locked'], ['Gemfile', 'Gemfile.lock']]
@@ -26,7 +26,7 @@ if locked
 
   Bootsnap.setup(
     cache_dir:            '.boot',
-    development_mode:     'development' == mode,
+    development_mode:     :development == mode,
     load_path_cache:      true,
     autoload_paths_cache: true,
     disable_trace:        true,
@@ -35,7 +35,7 @@ if locked
   )
 end
 
-if locked and 'development' == mode
+if locked and :development == mode
   require 'swag_dev/project/pp'
 end
 
