@@ -1,17 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../concern'
-
+require 'swag_dev/project/concern'
 require 'active_support/concern'
 require 'dotenv'
 require 'pathname'
-
-module SwagDev::Project::Concern
-  # @rubocop:disable Style/Documentation
-  module Env
-  end
-  # @rubocop:enable Style/Documentation
-end
 
 # Load dotenv file
 module SwagDev::Project::Concern::Env

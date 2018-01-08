@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../concern'
-require_relative '../tools/debug'
+require 'swag_dev/project/concern'
+require 'swag_dev/project/tools/debug'
 
 # Provide debug module method(s)
 #
