@@ -7,17 +7,11 @@ require 'singleton'
 class SwagDev::Project::Helper
   include ::Singleton
 
-  protected def initialize
-    @items = {
-      inflector: proc do
-        require 'swag_dev/project/helper/inflector'
-
-        Inflector.new
-      end.call
-    }
-
-    super
+  class << self
+    attr_reader :ns
   end
+
+  @ns = :'swag_dev/project/helper'
 
   # @param [String|Symbol] name
   # @return [Object]
@@ -29,7 +23,7 @@ class SwagDev::Project::Helper
     return items[name] if items[name]
 
     begin
-      @items[name] = inflector.resolve("swag_dev/project/helper/#{name}").new
+      @items[name] = inflector.resolve("#{self.class.ns}/#{name}").new
     rescue LoadError
       raise NotImplementedError, "helper not loadable: #{name}"
     end
@@ -38,6 +32,18 @@ class SwagDev::Project::Helper
   protected
 
   attr_reader :items
+
+  def initialize
+    @items = {
+      inflector: proc do
+        require "#{self.class.ns}/inflector"
+
+        Inflector.new
+      end.call
+    }
+
+    super
+  end
 
   # @return [Hash]
   def to_h
