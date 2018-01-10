@@ -1,10 +1,11 @@
+!/.env
+!/.gitignore
 *.gem
 *.swp
+*_flymake.*
 *~
-/_yardoc/
 /.*
-!/.gitignore
-!/.env
+/_yardoc/
 /build/
 /coverage/
 /doc/
