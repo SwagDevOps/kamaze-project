@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'swag_dev/project/concern'
+
 # Files are described by path and data (content loaded as env)
 sample_files = {
   math: [
