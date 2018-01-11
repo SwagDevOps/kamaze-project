@@ -33,7 +33,7 @@ GEM
       ruby_dep (~> 1.2)
     method_source (0.9.0)
     minitest (5.11.1)
-    msgpack (1.2.0)
+    msgpack (1.2.2)
     necromancer (0.4.0)
     parallel (1.12.1)
     parser (2.4.0.2)
