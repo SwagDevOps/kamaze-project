@@ -5,15 +5,8 @@
 *_flymake.*
 *~
 /.*
-/_yardoc/
 /build/
-/coverage/
 /doc/
-/Gemfile
-/Gemfile.lock
-/pkg/
-/spec/reports/
-/spec/var/*
 /tmp/
 /Vagrantfile
 /vendor/
