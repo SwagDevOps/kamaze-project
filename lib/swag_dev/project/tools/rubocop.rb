@@ -11,12 +11,21 @@ class SwagDev::Project::Tools
 end
 
 # Tool to run ``Rubocop::CLI``
+#
+# Sample of use:
+#
+# ```ruby
+# Rubocop.new.prepare do |c|
+#   c.patterns = ["#{Dir.pwd}/test/cs.rb"]
+#   c.options = ['--fail-level', 'E']
+# end.run
+# ```
 class SwagDev::Project::Tools::Rubocop
   # Default arguments used by ``Rubocop::CLI``
   #
   # @type [Array<String>]
   # @return [Array<String>]
-  attr_reader :defaults
+  attr_accessor :defaults
 
   # Arguments used by ``Rubocop::CLI``
   #
@@ -24,15 +33,37 @@ class SwagDev::Project::Tools::Rubocop
   # @return [Pathname]
   attr_accessor :config_file
 
-  def run(args, options = {})
-    args = arguments.push(*args)
-    if options[:patterns]
-      match_patterns(options[:patterns]).tap do |files|
-        args = args.push(*files)
+  attr_accessor :fail_on_error
+
+  def prepare
+    config = OpenStruct.new
+    yield(config) if block_given?
+
+    @arguments = arguments.concat(config.options.to_a)
+    if config.patterns
+      match_patterns(config.patterns).tap do |files|
+        @arguments.concat(files)
       end
     end
 
-    core.run(args)
+    @arguments.freeze
+
+    self
+  end
+
+  # Arguments used by CLI
+  #
+  # @return [Array<String>]
+  def arguments
+    (@arguments || defaults.to_a.map(&:to_s)).to_a
+  end
+
+  def run
+    prepare if arguments.to_a.empty?
+
+    retcode = core.run(arguments)
+
+    on_error(retcode)
   end
 
   # Denote configurable
@@ -42,24 +73,18 @@ class SwagDev::Project::Tools::Rubocop
     config_file.file? and config_file.readable?
   end
 
-  # Arguments used by CLI
-  #
-  # @return [Array<String>]
-  def arguments
-    configurable? ? arguments_push('-c', config_file) : []
+  def fail_on_error?
+    !!@fail_on_error
   end
 
   protected
 
-  def setup
-    @defaults ||= []
-    @config_file = ::Pathname.new(@config_file || "#{Dir.pwd}/.rubocop.yml")
-  end
+  attr_writer :arguments
 
-  # @param [Array<Object>] args
-  # @return [Array<String>]
-  def arguments_push(*args)
-    defaults.clone.to_a.push(*args).map(&:to_s)
+  def setup
+    @config_file = ::Pathname.new(config_file || "#{Dir.pwd}/.rubocop.yml")
+    @defaults ||= ['-c', config_file]
+    @fail_on_error = true if @fail_on_error.nil?
   end
 
   # Match against given patterns
@@ -71,6 +96,12 @@ class SwagDev::Project::Tools::Rubocop
     # raise "#{patterns} does not match any files" if files.empty?
 
     files
+  end
+
+  def on_error(code)
+    exit(code) if fail_on_error? and code != 0
+
+    code
   end
 
   # @return [YARD::CLI::Yardoc]
