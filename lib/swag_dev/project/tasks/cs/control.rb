@@ -4,5 +4,8 @@ require_relative '../cs'
 
 desc 'Run static code analyzer'
 task 'cs:control', [:path] do |t, args|
-  rubocop(args[:path], '--fail-level', 'E')
+  SwagDev.project.tools.fetch(:rubocop).prepare do |config|
+    config.patterns = args.fetch(:path)
+    config.options = ['--fail-level', 'E']
+  end.run
 end
