@@ -28,8 +28,8 @@ end
 class SwagDev::Project::Tools::Rubocop
   # Default arguments used by ``Rubocop::CLI``
   #
-  # @type [Array<String>]
-  # @return [Array<String>]
+  # @type [Array|Arguments]
+  # @return [Arguments]
   attr_accessor :defaults
 
   # @type [Boolean]
@@ -66,13 +66,17 @@ class SwagDev::Project::Tools::Rubocop
     self
   end
 
-  # Arguments used by CLI (during execution)
+  # Arguments used by ``CLI`` (during execution/``run``)
   #
-  # @return [Array<String>]
+  # @return [Arguments]
   def arguments
     @arguments = defaults.clone if @arguments.to_a.size.zero?
 
-    @arguments
+    if caller_locations(1..1).first.path == __FILE__
+      @arguments
+    else
+      @arguments.clone.freeze
+    end
   end
 
   def run
