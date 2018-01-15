@@ -32,9 +32,16 @@ class SwagDev::Project::Tools::Rubocop
   # @return [Array<String>]
   attr_accessor :defaults
 
+  # @type [Boolean]
+  # @return [Boolean]
   attr_accessor :fail_on_error
 
+  def mutable_attributes
+    [:defaults, :fail_on_error]
+  end
+
   def prepare
+    # @todo Use a real class instead of ``OpenStruct``
     config = OpenStruct.new
     yield(config) if block_given?
 
