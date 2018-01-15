@@ -2,10 +2,12 @@
 
 require_relative '../rubocop'
 
+# Arguments
+#
+# Almost a basic ``Array``
 class SwagDev::Project::Tools::Arguments
   # @return [Array<String>]
   def to_a
-    pp('Here I am')
     super.map(&:to_s)
   end
 end
