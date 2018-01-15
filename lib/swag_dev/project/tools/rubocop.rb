@@ -8,10 +8,9 @@ require 'rubocop'
 # rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
   class Rubocop < BaseTool
-  end
-
-  class Rubocop::Arguments < Array
-    require_relative 'rubocop/arguments'
+    class Arguments < Array
+      require_relative 'rubocop/arguments'
+    end
   end
 end
 # rubocop:enable Style/Documentation
@@ -32,12 +31,6 @@ class SwagDev::Project::Tools::Rubocop
   # @type [Array<String>]
   # @return [Array<String>]
   attr_accessor :defaults
-
-  # Arguments used by ``Rubocop::CLI``
-  #
-  # @type [String|Pathname]
-  # @return [Pathname]
-  attr_accessor :config_file
 
   attr_accessor :fail_on_error
 
@@ -66,7 +59,7 @@ class SwagDev::Project::Tools::Rubocop
     self
   end
 
-  # Arguments used by CLI
+  # Arguments used by CLI (during execution)
   #
   # @return [Array<String>]
   def arguments
@@ -99,8 +92,7 @@ class SwagDev::Project::Tools::Rubocop
   attr_writer :arguments
 
   def setup
-    @config_file = ::Pathname.new(config_file || "#{Dir.pwd}/.rubocop.yml")
-    @defaults ||= Arguments.new(['-c', config_file])
+    @defaults = Arguments.new(@defaults.to_a)
     @fail_on_error = true if @fail_on_error.nil?
   end
 
@@ -109,14 +101,15 @@ class SwagDev::Project::Tools::Rubocop
   # @param [Array<String>] patterns
   # @return [Array<String>]
   def match_patterns(patterns)
-    files = Dir.glob(patterns)
-    # raise "#{patterns} does not match any files" if files.empty?
-
-    files
+    Dir.glob(patterns)
   end
 
+  # Abort execution on error
+  #
+  # @param [Fixnum] code
+  # @return [Fixnum]
   def on_error(code)
-    exit(code) if fail_on_error? and code != 0
+    (exit(code) if fail_on_error?) unless code.zero?
 
     code
   end
