@@ -5,13 +5,16 @@ require_relative 'base_tool'
 require 'pathname'
 require 'rubocop'
 
+# rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
   class Rubocop < BaseTool
   end
 
   class Rubocop::Arguments < Array
+    require_relative 'rubocop/arguments'
   end
 end
+# rubocop:enable Style/Documentation
 
 # Tool to run ``Rubocop::CLI``
 #
@@ -75,7 +78,7 @@ class SwagDev::Project::Tools::Rubocop
   def run
     prepare if arguments.to_a.empty?
 
-    retcode = core.run(arguments)
+    retcode = core.run(arguments.to_a)
 
     reset.on_error(retcode)
   end
