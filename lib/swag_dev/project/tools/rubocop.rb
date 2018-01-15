@@ -8,6 +8,9 @@ require 'rubocop'
 class SwagDev::Project::Tools
   class Rubocop < BaseTool
   end
+
+  class Rubocop::Arguments < Array
+  end
 end
 
 # Tool to run ``Rubocop::CLI``
@@ -39,14 +42,23 @@ class SwagDev::Project::Tools::Rubocop
     config = OpenStruct.new
     yield(config) if block_given?
 
-    @arguments = arguments.concat(config.options.to_a)
+    reset.arguments.concat(config.options.to_a)
     if config.patterns
       match_patterns(config.patterns).tap do |files|
-        @arguments.concat(files)
+        arguments.concat(files)
       end
     end
 
-    @arguments.freeze
+    arguments.freeze
+
+    self
+  end
+
+  # Reset arguments
+  #
+  # @return [self]
+  def reset
+    @arguments = nil
 
     self
   end
@@ -55,7 +67,9 @@ class SwagDev::Project::Tools::Rubocop
   #
   # @return [Array<String>]
   def arguments
-    (@arguments || defaults.to_a.map(&:to_s)).to_a
+    @arguments = defaults.clone if @arguments.to_a.size.zero?
+
+    @arguments
   end
 
   def run
@@ -63,7 +77,7 @@ class SwagDev::Project::Tools::Rubocop
 
     retcode = core.run(arguments)
 
-    on_error(retcode)
+    reset.on_error(retcode)
   end
 
   # Denote configurable
@@ -83,7 +97,7 @@ class SwagDev::Project::Tools::Rubocop
 
   def setup
     @config_file = ::Pathname.new(config_file || "#{Dir.pwd}/.rubocop.yml")
-    @defaults ||= ['-c', config_file]
+    @defaults ||= Arguments.new(['-c', config_file])
     @fail_on_error = true if @fail_on_error.nil?
   end
 
