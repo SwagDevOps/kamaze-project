@@ -11,6 +11,10 @@ class SwagDev::Project::Tools
     class Arguments < Array
       require_relative 'rubocop/arguments'
     end
+
+    class Config
+      require_relative 'rubocop/config'
+    end
   end
 end
 # rubocop:enable Style/Documentation
@@ -41,15 +45,12 @@ class SwagDev::Project::Tools::Rubocop
   end
 
   def prepare
-    # @todo Use a real class instead of ``OpenStruct``
-    config = OpenStruct.new
-    yield(config) if block_given?
+    reset
 
-    reset.arguments.concat(config.options.to_a)
-    if config.patterns
-      match_patterns(config.patterns).tap do |files|
-        arguments.concat(files)
-      end
+    if block_given?
+      config = Config.new
+      yield(config)
+      arguments.concat(config.to_a)
     end
 
     arguments.freeze
@@ -105,14 +106,6 @@ class SwagDev::Project::Tools::Rubocop
   def setup
     @defaults = Arguments.new(@defaults.to_a)
     @fail_on_error = true if @fail_on_error.nil?
-  end
-
-  # Match against given patterns
-  #
-  # @param [Array<String>] patterns
-  # @return [Array<String>]
-  def match_patterns(patterns)
-    Dir.glob(patterns)
   end
 
   # Abort execution on error
