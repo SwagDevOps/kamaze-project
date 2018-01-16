@@ -50,7 +50,7 @@ class SwagDev::Project::Tools::Rubocop
     if block_given?
       config = Config.new
       yield(config)
-      arguments.concat(config.to_a)
+      arguments.concat(config.freeze.to_a)
     end
 
     arguments.freeze
@@ -86,13 +86,6 @@ class SwagDev::Project::Tools::Rubocop
     retcode = core.run(arguments.to_a)
 
     reset.on_error(retcode)
-  end
-
-  # Denote configurable
-  #
-  # @return [Boolean]
-  def configurable?
-    config_file.file? and config_file.readable?
   end
 
   def fail_on_error?
