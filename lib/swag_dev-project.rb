@@ -1,6 +1,6 @@
-# rubocop:disable Style/FileName
+# rubocop:disable Naming/FileName
 # frozen_string_literal: true
-# rubocop:enable Style/FileName
+# rubocop:enable Naming/FileName
 
 # Copyright (C) 2017 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
