@@ -44,5 +44,6 @@ end
 
 group :test, :development do
   gem 'factory_bot', '~> 4.8'
+  gem 'mocha', '~> 1.3'
   gem 'rspec', '~> 3.7'
 end
