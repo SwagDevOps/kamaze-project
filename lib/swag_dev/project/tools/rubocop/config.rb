@@ -22,7 +22,7 @@ class SwagDev::Project::Tools::Rubocop::Config
   def to_a
     filepaths = match_patterns(patterns)
 
-    self.options.to_a.concat(filepaths)
+    self.options.to_a.clone.concat(['--'] + filepaths)
   end
 
   protected
