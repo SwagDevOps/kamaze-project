@@ -80,10 +80,20 @@ class SwagDev::Project::Tools::Rubocop
     end
   end
 
+  # Denote runnable
+  #
+  # When last argument is ``--`` we suppose there is no files
+  #
+  # @return [Boolean]
+  def runnable?
+    '--' != arguments.last
+  end
+
   def run
     prepare if arguments.to_a.empty?
 
-    retcode = core.run(arguments.to_a)
+    retcode = 0
+    retcode = core.run(arguments.to_a) if runnable?
 
     reset.on_error(retcode)
   end
