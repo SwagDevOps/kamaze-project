@@ -18,6 +18,7 @@ task 'cs:pre-commit' do
                .to_s.lines.map(&:chomp)
                .keep_if { |line| /^(M|A)/.match(line) }
                .map { |line| line.gsub(/^[A-Z]+\s+/, '') }
+               .map { |line| line.gsub(/^"|"$/, '') } # paths with spaces
 
   SwagDev.project.tools.fetch(:rubocop).prepare do |c|
     c.patterns = files
