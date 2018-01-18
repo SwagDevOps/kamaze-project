@@ -4,5 +4,8 @@ require_relative '../cs'
 
 desc 'Run static code analyzer, auto-correcting offenses'
 task 'cs:correct', [:path] do |t, args|
-  rubocop(args[:path], '--fail-level', 'E', '--auto-correct')
+  SwagDev.project.tools.fetch(:rubocop).prepare do |c|
+    c.patterns = args.fetch(:path)
+    c.options = ['--parallel', '--auto-correct']
+  end.run
 end

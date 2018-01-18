@@ -13,39 +13,3 @@
 # inherit_gem:
 #   percy-style: [ default.yml ]
 # ~~~~
-
-# Provide rubocop method
-#
-# @todo convert to tools
-module SwagDev::Project::Cs
-  # Make a rubocop ``RakeTask``
-  #
-  # @param [Array<String>] patterns
-  # @param [Hash] options
-  #
-  # Sample of use:
-  #
-  # ```ruby
-  # desc 'Run static code analyzer'
-  # task 'cs:correct', [:path] => ['gem:gemspec'] do |t, args|
-  #     rubocop(args.fetch(:path), sham: sham!).invoke
-  # end
-  # ```
-  def rubocop(patterns, *args)
-    require 'rubocop/rake_task'
-    require 'securerandom'
-
-    tname = '%<task>s:rubocop' % { task: SecureRandom.hex(8) }
-    patterns = Dir.glob(patterns)
-    raise "#{args[:path]}: does not match any files" if patterns.empty?
-
-    RuboCop::RakeTask.new(tname) do |task|
-      task.options = args
-      task.patterns = patterns
-    end
-
-    Rake::Task[tname].execute
-  end
-end
-
-self.extend(SwagDev::Project::Cs)
