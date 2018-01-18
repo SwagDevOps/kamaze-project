@@ -7,7 +7,7 @@ SwagDev.project do |c|
   c.subject = SwagDev::Project
   c.name = 'swag_dev-project'
   c.tasks = [
-    :'cs:correct', :'cs:control',
+    :'cs:correct', :'cs:control', :'cs:pre-commit',
     :doc, :'doc:watch',
     :gem, :'gem:compile',
     :'misc:gitignore',
