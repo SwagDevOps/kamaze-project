@@ -107,7 +107,7 @@ class SwagDev::Project::Tools::Rubocop
   attr_writer :arguments
 
   def setup
-    @defaults = Arguments.new((@defaults || ['--parallel']).to_a)
+    @defaults = Arguments.new(@defaults.to_a)
     @fail_on_error = true if @fail_on_error.nil?
   end
 
