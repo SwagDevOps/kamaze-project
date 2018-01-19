@@ -9,7 +9,7 @@ SwagDev.project do |c|
   c.tasks = [
     :'cs:correct', :'cs:control', :'cs:pre-commit',
     :doc, :'doc:watch',
-    :gem, :'gem:compile',
+    :gem, :'gem:install', :'gem:compile',
     :'misc:gitignore',
     :shell,
     :'sources:license',

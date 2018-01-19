@@ -3,8 +3,7 @@
 require 'swag_dev/project'
 
 # Require base tasks -------------------------------------------------
-[:gemspec, :build, :install]
-  .each { |req| require_relative "gem/#{req}" }
+[:gemspec, :build].each { |req| require_relative "gem/#{req}" }
 
 # Default task -------------------------------------------------------
 desc 'Build all the packages'
