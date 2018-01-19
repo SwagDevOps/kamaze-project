@@ -1,22 +1,21 @@
 # frozen_string_literal: true
-# -*- coding: utf-8 -*-
 
 require 'cliver'
-require_relative '../gem'
+require_relative 'build'
 
 desc 'Install gem'
 task 'gem:install': ['gem:build'] do
-  project = SwagDev.project
   command = [
     Cliver.detect(:sudo),
     Cliver.detect!(:gem),
     :install,
-    '-u',
-    '--verbose',
-    '--no-document',
+    '--update-sources',
     '--clear-sources',
-    project.tools.fetch(:gemspec_builder).buildable
+    '--no-user-install',
+    '--norc',
+    '--no-document',
+    SwagDev.project.tools.fetch(:gemspec_builder).buildable
   ].compact.map(&:to_s)
 
-  sh(*command)
+  sh(*command, verbose: false)
 end
