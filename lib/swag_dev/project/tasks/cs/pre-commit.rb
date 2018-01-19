@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 # rubocop:enable Naming/FileName
 
-require_relative '../cs'
 require 'open3'
 
 # Sample of use (``.git/hooks/pre-commit``):
@@ -12,7 +11,6 @@ require 'open3'
 #
 # exec bundle exec rake cs:pre-commit
 # ```
-
 task 'cs:pre-commit' do
   files = Open3.capture3('git', 'status', '--porcelain', '-uno')[0]
                .to_s.lines.map(&:chomp)

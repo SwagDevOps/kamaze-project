@@ -13,3 +13,5 @@
 # inherit_gem:
 #   percy-style: [ default.yml ]
 # ~~~~
+
+[:control, :correct].each { |req| require_relative "cs/#{req}" }
