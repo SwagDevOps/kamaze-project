@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
+# rubocop:disable all
 
 # Should follow the higher required_ruby_version
 # at the moment, gem with higher required_ruby_version is activesupport
@@ -15,7 +16,7 @@ Gem::Specification.new do |s|
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
   s.email       = 'dimitri@arrigoni.me'
-  s.homepage    = 'https://github.com/SwagDevOps/ylem'
+  s.homepage    = 'https://github.com/SwagDevOps/'
 
   s.required_ruby_version = '>= 2.3.0'
   s.require_paths = ['lib']
@@ -37,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rake", ["~> 12.3"]
   s.add_runtime_dependency "sham", ["~> 1.2"]
   s.add_runtime_dependency "tenjin", ["~> 0.7"]
-  s.add_runtime_dependency "tty-editor", ["~> 0.2"]
+  s.add_runtime_dependency "tty-editor", ["~> 0.3"]
   s.add_runtime_dependency "tty-screen", [">= 0.6.2", "~> 0.6"]
   s.add_runtime_dependency "version_info", ["~> 1.9"]
   s.add_runtime_dependency "pry", ["~> 0.11"]
@@ -49,6 +50,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "github-markup", ["~> 1.6"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "factory_bot", ["~> 4.8"]
+  s.add_development_dependency "mocha", ["~> 1.3"]
   s.add_development_dependency "rspec", ["~> 3.7"]
 end
 
