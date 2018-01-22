@@ -2,7 +2,7 @@
 
 require 'swag_dev/project/tools'
 
-describe SwagDev::Project::Tools do
+describe SwagDev::Project::Tools, :tools do
   build('tools')
     .describe_instance_methods
     .each do |method, counts|
@@ -12,7 +12,7 @@ describe SwagDev::Project::Tools do
   end
 end
 
-describe SwagDev::Project::Tools do
+describe SwagDev::Project::Tools, :tools do
   context '.defaults' do
     # rubocop:disable Performance/HashEachMethods
     build('tools').keys.each do |k|
