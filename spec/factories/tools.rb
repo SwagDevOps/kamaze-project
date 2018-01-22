@@ -24,6 +24,7 @@ FactoryBot.define do
           :gemspec_writer,
           :licenser,
           :process_locker,
+          :rubocop,
           :vagrant,
           :yardoc,
           :yardoc_watcher].shuffle)
