@@ -16,7 +16,7 @@ class SwagDev::Project::Tools
     class Status < Command
     end
     require_relative 'git/status'
-    # require_relative 'git/status/buffer'
+    require_relative 'git/status/buffer'
 
     class << self
       # Path to executable (binary}
