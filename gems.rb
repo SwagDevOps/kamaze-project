@@ -21,7 +21,6 @@ gem 'version_info', '~> 1.9'
 
 # supported tools ----------------------------------------------------
 
-gem 'git', '~> 1.3'
 gem 'pry', '~> 0.11'
 gem 'rubocop', '~> 0.52'
 gem 'yard', '~> 0.9'
