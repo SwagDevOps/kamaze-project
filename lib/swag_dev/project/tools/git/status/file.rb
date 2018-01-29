@@ -4,6 +4,8 @@ require_relative '../status'
 require 'pathname'
 
 # Status file
+#
+# @see https://git-scm.com/docs/git-status
 class SwagDev::Project::Tools::Git::Status::File
   # @return [Pathname]
   attr_reader :base
