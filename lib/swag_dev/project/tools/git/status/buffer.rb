@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../status'
+require_relative 'file'
 require 'pathname'
 
 # Buffer
@@ -67,13 +68,12 @@ class SwagDev::Project::Tools::Git::Status::Buffer
   #
   # @see https://git-scm.com/docs/git-status
   def add_filepath(result, filepath, flag)
-    file = Struct.new(:path, :base, :flag)
-    base = ::Pathname.new(Dir.pwd)
+    file_class = SwagDev::Project::Tools::Git::Status::File
 
     matchers.each do |type, reg|
       next unless reg =~ flag
 
-      return result[type] << file.new(filepath.to_s, base, flag.to_s).freeze
+      return result[type] << file_class.new(filepath, flag, Dir.pwd).freeze
     end
   end
 end
