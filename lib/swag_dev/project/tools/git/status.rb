@@ -14,6 +14,12 @@ class SwagDev::Project::Tools::Git::Status
     parsed
   end
 
+  # @param [Symbol] key
+  # @return [nil|Array<File>]
+  def [](key)
+    to_h[key]
+  end
+
   protected
 
   attr_reader :buffer
