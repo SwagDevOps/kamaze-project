@@ -3,13 +3,17 @@
 require_relative 'command'
 
 # Provide status
+#
+# Capture a buffer (from a command) and provide a parsed result
 class SwagDev::Project::Tools::Git::Status
+  # @return [self]
   def parse!
     @parsed = buffer.parse
 
     self
   end
 
+  # @return [Hash]
   def to_h
     parsed
   end
@@ -30,6 +34,7 @@ class SwagDev::Project::Tools::Git::Status
     @parsed = nil
   end
 
+  # @return [Hash{Symbol => Array<File>}
   def parsed
     @parsed ||= proc do
       parse!
@@ -39,10 +44,16 @@ class SwagDev::Project::Tools::Git::Status
     @parsed
   end
 
+  # Get command (used to capture buffer)
+  #
+  # @return [Array<String>]
   def command
     super.push('status', '-z', '--untracked-files=all')
   end
 
+  # Capture buffer
+  #
+  # @return [String]
   def capture_buffer
     capture[0].to_s.lines.map(&:chomp).join("\n")
   end
