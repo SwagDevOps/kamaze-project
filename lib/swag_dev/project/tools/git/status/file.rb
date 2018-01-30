@@ -5,6 +5,9 @@ require 'pathname'
 
 # Status file
 #
+# Describe a file as seen in status,
+# file is described by its path and its flag.
+#
 # @see https://git-scm.com/docs/git-status
 class SwagDev::Project::Tools::Git::Status::File
   # @return [Pathname]
@@ -31,6 +34,32 @@ class SwagDev::Project::Tools::Git::Status::File
 
   def staged?
     !['?', '!', ' '].include?(flag[0])
+  end
+
+  def untracked?
+    flag[0] == '?'
+  end
+
+  def unmerged?
+    flag.each { |f| return true if ['D', 'A', 'U'].include?(f) }
+
+    false
+  end
+
+  def ignored?
+    flag[0] == '!'
+  end
+
+  def modified?
+    flag.include?('M')
+  end
+
+  def renamed?
+    flag.include?('R')
+  end
+
+  def copied?
+    flag.include?('C')
   end
 
   def to_s
