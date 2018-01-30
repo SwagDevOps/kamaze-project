@@ -7,6 +7,7 @@ require 'pathname'
 #
 # Describe a file as seen in status,
 # file is described by its path and its flag.
+# File is immutable by design.
 #
 # @see https://git-scm.com/docs/git-status
 class SwagDev::Project::Tools::Git::Status::File
@@ -23,8 +24,8 @@ class SwagDev::Project::Tools::Git::Status::File
   # @param [String] flag
   # @param [Pathname|String] base
   def initialize(path, flag, base = Dir.pwd)
-    @base = ::Pathname.new(base)
-    @path = ::Pathname.new(path)
+    @base = ::Pathname.new(base).freeze
+    @path = ::Pathname.new(path).freeze
     @flag = flag.split('').freeze
   end
 
