@@ -22,6 +22,7 @@ FactoryBot.define do
           :gemspec_packer,
           :gemspec_reader,
           :gemspec_writer,
+          :git,
           :licenser,
           :process_locker,
           :rubocop,
