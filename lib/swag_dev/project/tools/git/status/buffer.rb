@@ -20,7 +20,7 @@ class SwagDev::Project::Tools::Git::Status::Buffer
   def matchers
     {
       staged: /^[A-Z]/,
-      unstaged: /^\s/,
+      unstaged: /^(\s|[A-Z]M$)/, #  +modified
       untracked: /^\?/,
     }
   end
@@ -73,7 +73,7 @@ class SwagDev::Project::Tools::Git::Status::Buffer
     matchers.each do |type, reg|
       next unless reg =~ flag
 
-      return result[type] << file_class.new(filepath, flag, Dir.pwd).freeze
+      result[type] << file_class.new(filepath, flag, Dir.pwd).freeze
     end
   end
 end
