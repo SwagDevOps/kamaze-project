@@ -67,6 +67,21 @@ class SwagDev::Project::Tools::Git::Status::File
     absolute_path.to_s
   end
 
+  # Status line
+  #
+  # String representation for file status as a string line
+  #
+  # @return [String]
+  def status_line
+    path = self.path
+    if flag[0] == '?' and path.dirname.to_s != '.'
+      path = path.dirname
+      path = "#{path}/" if path.directory?
+    end
+
+    "#{flag.join} #{path}"
+  end
+
   # Get absolute path
   #
   # @return [Pathname]
