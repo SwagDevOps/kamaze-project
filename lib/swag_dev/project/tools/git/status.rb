@@ -18,6 +18,20 @@ class SwagDev::Project::Tools::Git::Status
     parsed
   end
 
+  # Get a string representation of status
+  #
+  # SHOULD be similar to:
+  #
+  # ```sh
+  # git status -z | sed "s/\x0/\n/g"
+  # ```
+  def to_s
+    files = []
+    parsed.to_h.each_value { |items| files << items }
+
+    files.flatten.map(&:status_line).uniq.join("\n")
+  end
+
   # @param [Symbol] key
   # @return [nil|Array<File>]
   def [](key)
