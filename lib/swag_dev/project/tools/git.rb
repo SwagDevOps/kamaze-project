@@ -2,57 +2,58 @@
 
 require_relative '../tools'
 require_relative 'base_tool'
-require 'cliver'
+require 'pathname'
+require 'rugged'
 
 # rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
   class Git < BaseTool
-    class Command
-      class Buffer
-      end
+    # @abstract
+    class Util
     end
-    require_relative 'git/command'
 
-    class Status < Command
-    end
-    require_relative 'git/status'
-    require_relative 'git/status/buffer'
-
-    class << self
-      # Path to executable (binary}
-      #
-      # @return [String]
-      # @raise Cliver::Dependency::NotFound
-      def executable
-        Cliver.detect(:git)
-      end
+    class Hooks < Util
     end
   end
+
+  [:util,
+   :hooks,
+   :status].each { |req| require_relative "git/#{req}" }
 end
 # rubocop:enable Style/Documentation
 
-# Provide some git related features
+# Provide a wrapper based on ``rugged`` (``libgit2``}
 class SwagDev::Project::Tools::Git
   # @return [String]
-  attr_accessor :executable
+  attr_writer :base_dir
+
+  # @see https://github.com/libgit2/rugged
+  #
+  # @return [Rugged::Repository]
+  attr_reader :repository
 
   # Instance attributes altered during initialization
   #
   # @return [Array<Symbol>]
   def mutable_attributes
-    [:executable]
+    [:base_dir]
   end
 
-  # Get status
+  # Get base directory
   #
-  # @return [Status]
-  def status
-    Status.new(executable)
+  # @return [::Pathname]
+  def base_dir
+    ::Pathname.new(@base_dir)
+  end
+
+  def hooks
+    Hooks.new(repository)
   end
 
   protected
 
   def setup
-    @executable ||= self.class.executable
+    @base_dir ||= Dir.pwd
+    @repository = Rugged::Repository.new(base_dir.to_s)
   end
 end
