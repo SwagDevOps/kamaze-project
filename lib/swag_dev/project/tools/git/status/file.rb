@@ -6,10 +6,9 @@ require 'pathname'
 # Status file
 #
 # Describe a file as seen in status,
-# file is described by its path and its flag.
-# File is immutable by design.
+# file is described by path and flags, and is immutable by design.
 #
-# @see https://git-scm.com/docs/git-status
+# @see http://www.rubydoc.info/github/libgit2/rugged/Rugged%2FRepository%3Astatus
 class SwagDev::Project::Tools::Git::Status::File
   # @return [Pathname]
   attr_reader :base_dir
@@ -20,6 +19,15 @@ class SwagDev::Project::Tools::Git::Status::File
   # @return [String]
   attr_reader :flags
 
+  class << self
+    # Available status flags
+    #
+    # @return [Array<Symbol>]
+    def flags
+      [:index, :worktree, :ignored, :new, :modified, :deleted]
+    end
+  end
+
   # @param [Pathname|String] path
   # @param [String] flag
   # @param [Pathname|String] base
@@ -29,23 +37,9 @@ class SwagDev::Project::Tools::Git::Status::File
     @flags = flags.to_a.map(&:to_sym)
   end
 
-  def to_s
-    absolute_path.to_s
-  end
-
-  # Status line
-  #
-  # String representation for file status as a string line
-  #
   # @return [String]
-  def status_line
-    path = self.path
-    if flag[0] == '?' and path.dirname.to_s != '.'
-      path = path.dirname
-      path = "#{path}/" if path.directory?
-    end
-
-    "#{flag.join} #{path}"
+  def to_s
+    path.to_s
   end
 
   # Get absolute path
@@ -53,5 +47,44 @@ class SwagDev::Project::Tools::Git::Status::File
   # @return [Pathname]
   def absolute_path
     base_dir.join(path)
+  end
+
+  # @!method igmored?
+  #   Denote ignored
+  #   @return [Boolean]
+
+  # @!method worktree?
+  #   Denote worktree
+  #   @return [Boolean]
+
+  # @!method index?
+  #   Denote index
+  #   @return [Boolean]
+
+  # @!method new?
+  #   Denote new
+  #   @return [Boolean]
+
+  # @!method modified?
+  #   Denote modified
+  #   @return [Boolean]
+
+  # @!method deleted?
+  #   Denote deleted
+  #   @return [Boolean]
+
+  def method_missing(method, *args, &block)
+    return super unless respond_to_missing?(method)
+
+    flags.include?(method.to_s.gsub(/\?$/, '').to_sym)
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    if method.to_s =~ /.+\?$/
+      flag = method.to_s.gsub(/\?$/, '').to_sym
+      return self.class.flags.include?(flag)
+    end
+
+    super(method, include_private)
   end
 end
