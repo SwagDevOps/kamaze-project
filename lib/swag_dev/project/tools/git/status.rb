@@ -1,74 +1,50 @@
 # frozen_string_literal: true
 
-require_relative 'command'
+require_relative '../git'
+require_relative 'status/file'
+require 'pathname'
 
 # Provide status
 #
 # Capture a buffer (from a command) and provide a parsed result
 class SwagDev::Project::Tools::Git::Status
-  # @return [self]
-  def parse!
-    @parsed = buffer.parse
+  attr_reader :base_dir
 
-    self
+  def initialize(status, base_dir = Dir.pwd)
+    @base_dir = ::Pathname.new(base_dir)
+    @status = status.clone
   end
 
-  # @return [Hash]
+  # @todo Implement
+  # @return [Hash{Symbol => Haah{String => File}}]
   def to_h
-    parsed
+    output = { index: {}, worktree: {}, ignored: {} }
+
+    output
   end
 
-  # Get a string representation of status
-  #
-  # SHOULD be similar to:
-  #
-  # ```sh
-  # git status -z | sed "s/\x0/\n/g"
-  # ```
-  def to_s
-    files = []
-    parsed.to_h.each_value { |items| files << items }
-
-    files.flatten.map(&:status_line).uniq.join("\n")
-  end
-
-  # @param [Symbol] key
-  # @return [nil|Array<File>]
-  def [](key)
-    to_h[key]
+  # @return [Array<File>]
+  def to_a
+    prepared.to_a.map do |v|
+      File.new(v.fetch(0), v.fetch(1), base_dir).freeze
+    end
   end
 
   protected
 
-  attr_reader :buffer
-
-  # Prepare buffer string
-  def setup
-    @buffer = Buffer.new(capture_buffer).freeze
-    @parsed = nil
-  end
-
-  # @return [Hash{Symbol => Array<File>}
-  def parsed
-    @parsed ||= proc do
-      parse!
-      @parsed
-    end.call.freeze
-
-    @parsed
-  end
-
-  # Get command (used to capture buffer)
+  # Get prepared filepaths with symbols (states)
   #
-  # @return [Array<String>]
-  def command
-    super.push('status', '-z', '--untracked-files=all')
-  end
+  # @return [Hash{String => Array<Symbol>}]
+  def prepared
+    output = {}
+    @status.each do |file, status_data|
+      status_data.each do |status|
+        status = status.to_s.split('_').map(&:to_sym)
 
-  # Capture buffer
-  #
-  # @return [String]
-  def capture_buffer
-    capture[0].to_s.lines.map(&:chomp).join("\n")
+        output[file] = (output[file] || []).concat(status).uniq.sort
+      end
+    end
+
+    output
   end
 end

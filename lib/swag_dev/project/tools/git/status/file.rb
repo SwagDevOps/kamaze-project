@@ -12,55 +12,21 @@ require 'pathname'
 # @see https://git-scm.com/docs/git-status
 class SwagDev::Project::Tools::Git::Status::File
   # @return [Pathname]
-  attr_reader :base
+  attr_reader :base_dir
 
   # @return [Pathname]
   attr_reader :path
 
   # @return [String]
-  attr_reader :flag
+  attr_reader :flags
 
   # @param [Pathname|String] path
   # @param [String] flag
   # @param [Pathname|String] base
-  def initialize(path, flag, base = Dir.pwd)
-    @base = ::Pathname.new(base).freeze
+  def initialize(path, flags, base_dir = Dir.pwd)
+    @base_dir = ::Pathname.new(base_dir).freeze
     @path = ::Pathname.new(path).freeze
-    @flag = flag.split('').freeze
-  end
-
-  def deleted?
-    flag.include?('D')
-  end
-
-  def staged?
-    !['?', '!', ' '].include?(flag[0])
-  end
-
-  def untracked?
-    flag[0] == '?'
-  end
-
-  def unmerged?
-    flag.each { |f| return true if ['D', 'A', 'U'].include?(f) }
-
-    false
-  end
-
-  def ignored?
-    flag[0] == '!'
-  end
-
-  def modified?
-    flag.include?('M')
-  end
-
-  def renamed?
-    flag.include?('R')
-  end
-
-  def copied?
-    flag.include?('C')
+    @flags = flags.to_a.map(&:to_sym)
   end
 
   def to_s
@@ -86,6 +52,6 @@ class SwagDev::Project::Tools::Git::Status::File
   #
   # @return [Pathname]
   def absolute_path
-    base.join(path)
+    base_dir.join(path)
   end
 end

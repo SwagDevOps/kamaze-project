@@ -12,6 +12,9 @@ class SwagDev::Project::Tools
     class Util
     end
 
+    class Status
+    end
+
     class Hooks < Util
     end
   end
@@ -48,6 +51,16 @@ class SwagDev::Project::Tools::Git
 
   def hooks
     Hooks.new(repository)
+  end
+
+  # @return [Hash]
+  def status
+    status = {}
+    repository.status do |file, status_data|
+      status[file] = status_data
+    end
+
+    Status.new(status)
   end
 
   protected
