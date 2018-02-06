@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "gemspec_deps_gen", ["= 1.1.2"]
   s.add_runtime_dependency "process_lock", ["~> 0.1"]
   s.add_runtime_dependency "rake", ["~> 12.3"]
+  s.add_runtime_dependency "rugged", ["~> 0.26"]
   s.add_runtime_dependency "sham", ["~> 1.2"]
   s.add_runtime_dependency "tenjin", ["~> 0.7"]
   s.add_runtime_dependency "tty-editor", ["~> 0.3"]
