@@ -22,21 +22,7 @@ end.call
 if locked
   require 'rubygems'
   require 'bundler/setup'
-  require 'bootsnap'
-
-  Bootsnap.setup(
-    cache_dir:            '.boot',
-    development_mode:     :development == mode,
-    load_path_cache:      true,
-    autoload_paths_cache: true,
-    disable_trace:        true,
-    compile_cache_iseq:   true,
-    compile_cache_yaml:   true
-  )
-end
-
-if locked and :development == mode
-  require 'swag_dev/project/pp'
+  require 'swag_dev/project/pp' if :development == mode
 end
 
 require File.basename(__FILE__, '.rb').tr('-', '/')
