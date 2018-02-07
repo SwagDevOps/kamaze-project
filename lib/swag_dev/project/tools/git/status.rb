@@ -5,20 +5,26 @@ require_relative 'status/file'
 require 'pathname'
 
 # Provide status
-#
-# Capture a buffer (from a command) and provide a parsed result
 class SwagDev::Project::Tools::Git::Status
   attr_reader :base_dir
 
+  # @param [Hash{String => Array<Symbol>}] status
+  # @param [String] base_dir
   def initialize(status, base_dir = Dir.pwd)
     @base_dir = ::Pathname.new(base_dir)
     @status = status.clone
   end
 
-  # @todo Implement
-  # @return [Hash{Symbol => Haah{String => File}}]
+  # Get a ``Hash`` representation of status
+  #
+  # @return [Hash{Symbol => Hash{String => File}}]
   def to_h
     output = { index: {}, worktree: {}, ignored: {} }
+    to_a.each do |file|
+      output.each_key do |key|
+        output[key][file.to_s] = file if file.public_send("#{key}?")
+      end
+    end
 
     output
   end
