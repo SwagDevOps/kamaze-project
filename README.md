@@ -68,12 +68,14 @@ export PROJECT_MODE='development'
 
 ## Dependencies (``gems``)
 
-Some dependencies are considered as optional, as seen inspecting the
+Some dependencies are optional, as seen inspecting the
 ``gems.rb`` file.
-For example, ``rspec`` is considered as a ``development`` dependency
-of this gem, but ``rspec`` is required by the ``test`` task.
-The ``listen`` gem is optional, this gem is only used for "``watch`` tasks"
-and has [several system incompatibilities][guard/listen#issues-limitations].
+
+For example, ``rspec`` is considered as a ``development`` dependency,
+but ``rspec`` is required by the ``test`` task.
+The ``listen`` gem is optional, due to
+[several system incompatibilities][guard/listen#issues-limitations];
+``listen`` gem is only used by some "``watch`` optional tasks".
 
 [rubygems/specification#name]: http://guides.rubygems.org/specification-reference/#name
 [guard/listen#issues-limitations]: https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations
