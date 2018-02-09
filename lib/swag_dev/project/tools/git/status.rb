@@ -2,10 +2,13 @@
 
 require_relative '../git'
 require_relative 'status/file'
+require_relative 'status/index'
+require_relative 'status/worktree'
 require 'pathname'
 
 # Provide status
 class SwagDev::Project::Tools::Git::Status
+  # @return [Pathname]
   attr_reader :base_dir
 
   # @param [Hash{String => Array<Symbol>}] status
@@ -13,30 +16,43 @@ class SwagDev::Project::Tools::Git::Status
   def initialize(status, base_dir = Dir.pwd)
     @base_dir = ::Pathname.new(base_dir)
     @status = status.clone
+    @cached = nil
   end
 
-  # Get a ``Hash`` representation of status
+  # Empty cache
   #
-  # @return [Hash{Symbol => Hash{String => File}}]
-  def to_h
-    output = { index: {}, worktree: {}, ignored: {} }
-    to_a.each do |file|
-      output.each_key do |key|
-        output[key][file.to_s] = file if file.public_send("#{key}?")
-      end
-    end
+  # @return [self]
+  def refresh!
+    @cached = nil
 
-    output
+    self
+  end
+
+  # @return [Index]
+  def index
+    Index.new(self.to_a)
+  end
+
+  # @return [Worktree]
+  def worktree
+    Worktree.new(self.to_a)
   end
 
   # @return [Array<File>]
   def to_a
-    prepared.to_a.map do |v|
-      File.new(v.fetch(0), v.fetch(1), base_dir).freeze
-    end
+    cached.to_a.map { |v| File.new(v.fetch(0), v.fetch(1), base_dir) }
   end
 
   protected
+
+  # Get cached filepaths
+  #
+  # @return [Hash|nil]
+  def cached
+    @cached ||= prepared
+
+    @cached
+  end
 
   # Get prepared filepaths with symbols (states)
   #
