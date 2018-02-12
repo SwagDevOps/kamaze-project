@@ -27,6 +27,7 @@ class SwagDev::Project::Tools::Git::Status::Index
 
   # Get present files in intersection between index and worktree
   #
+  # @todo only "modified" files SHOULD be considered
   # @return [Array<File>]
   def tainted_files
     c = [self.to_a, worktree].map do |a|
