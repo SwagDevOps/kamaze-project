@@ -10,6 +10,6 @@ class SwagDev::Project::Tools::Git::Status
 end
 # rubocop:enable Style/Documentation
 
-# Represent files seen in worktree
+# Represent worktree status
 class SwagDev::Project::Tools::Git::Status::Worktree
 end
