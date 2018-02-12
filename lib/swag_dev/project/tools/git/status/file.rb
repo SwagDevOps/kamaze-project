@@ -42,6 +42,27 @@ class SwagDev::Project::Tools::Git::Status::File
     path.to_s
   end
 
+  # @return [Boolean]
+  def ==(other)
+    return false unless comparable_with?(other)
+
+    [[self.flags.sort, other.flags.sort],
+     [self.path.to_s, other.path.to_s],
+     [self.base_dir.to_s, other.base_dir.to_s]].each do |c|
+      return false unless c[0] == c[1]
+    end
+
+    true
+  end
+
+  # Denote instance is comparable with another object
+  #
+  # @param [Object] other
+  # @return [Boolean]
+  def comparable_to?(other)
+    [:flags, :path, :base_dir].map { |m| other.respond_to?(m) }.uniq[0]
+  end
+
   # Get absolute path
   #
   # @return [Pathname]
