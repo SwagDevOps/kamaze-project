@@ -18,10 +18,8 @@ class SwagDev::Project::Tools::Git::Status::FilesArray < Array
 
   # @param [Array] a
   def initialize(a)
-    unless self.class.type.nil?
-      super a.clone
-             .keep_if { |file| file.public_send("#{self.class.type}?") }
-    end
+    super a.clone
+           .keep_if { |file| file.public_send("#{self.class.type}?") }
 
     @memento = a.clone.map(&:freeze).freeze
   end
