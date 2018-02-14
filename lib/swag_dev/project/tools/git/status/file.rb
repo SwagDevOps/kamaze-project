@@ -94,6 +94,10 @@ class SwagDev::Project::Tools::Git::Status::File
   #   Denote deleted
   #   @return [Boolean]
 
+  def untracked?
+    worktree? and new?
+  end
+
   def method_missing(method, *args, &block)
     return super unless respond_to_missing?(method)
 
