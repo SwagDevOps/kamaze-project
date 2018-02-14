@@ -30,6 +30,7 @@ gem 'yard', '~> 0.9'
 # development, doc, test ---------------------------------------------
 
 group :development do
+  gem 'bootsnap', '~> 1.1'
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
 
   # 'listen' is used to "watch"
