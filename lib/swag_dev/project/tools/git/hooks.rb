@@ -37,7 +37,7 @@ class SwagDev::Project::Tools::Git::Hooks
     [:pre_commit].each { |n| self.class.register(n) }
 
     self.class.registered_hooks.each do |name, klass|
-      @hooks[name] = klass.new(executable)
+      @hooks[name] = klass.new(repository)
     end
   end
 
