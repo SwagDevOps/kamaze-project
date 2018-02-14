@@ -6,6 +6,7 @@
 *~
 /.*
 /build/
+/cache/
 /doc/
 /tmp/
 /Vagrantfile
