@@ -60,7 +60,8 @@ class SwagDev::Project::Tools::Git::Status::File
   # @param [Object] other
   # @return [Boolean]
   def comparable_to?(other)
-    [:flags, :path, :base_dir].map { |m| other.respond_to?(m) }.uniq[0]
+    [:flags, :path, :base_dir]
+      .map { |m| other.respond_to?(m) }.uniq == [true]
   end
 
   # Get absolute path
