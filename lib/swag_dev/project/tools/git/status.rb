@@ -28,11 +28,15 @@ class SwagDev::Project::Tools::Git::Status
     self
   end
 
+  # Get index
+  #
   # @return [Index]
   def index
     Index.new(self.to_a)
   end
 
+  # Get worktree
+  #
   # @return [Worktree]
   def worktree
     Worktree.new(self.to_a)
