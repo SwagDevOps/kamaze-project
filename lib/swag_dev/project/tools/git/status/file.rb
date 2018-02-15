@@ -19,22 +19,13 @@ class SwagDev::Project::Tools::Git::Status::File
   # @return [String]
   attr_reader :flags
 
-  class << self
-    # Available status flags
-    #
-    # @return [Array<Symbol>]
-    def flags
-      [:index, :worktree, :ignored, :new, :modified, :deleted]
-    end
-  end
-
   # @param [Pathname|String] path
-  # @param [String] flag
-  # @param [Pathname|String] base
+  # @param [Hash] status
+  # @param [Pathname|String] base_dir
   def initialize(path, flags, base_dir = Dir.pwd)
     @base_dir = ::Pathname.new(base_dir).freeze
     @path = ::Pathname.new(path).freeze
-    @flags = flags.to_a.map(&:to_sym)
+    @flags = flags
   end
 
   # @return [String]
@@ -42,13 +33,32 @@ class SwagDev::Project::Tools::Git::Status::File
     path.to_s
   end
 
+  # Get a status string, composed of two chars
+  #
+  # @see https://git-scm.com/docs/git-status
+  # @return [String]
+  def status
+    return '??' if untracked?
+    states = [' ', ' ']
+    mapping = { new: 'A', modified: 'M', deleted: 'D' }
+    { index: 0, worktree: 1 }.each do |from, index|
+      next unless self.public_send("#{from}?")
+
+      mapping.each do |flag, s|
+        states[index] = s if self.public_send("#{from}_#{flag}?")
+      end
+    end
+
+    states.join
+  end
+
   # @return [Boolean]
   def ==(other)
     return false unless comparable_with?(other)
 
-    [[self.flags.sort, other.flags.sort],
-     [self.path.to_s, other.path.to_s],
-     [self.base_dir.to_s, other.base_dir.to_s]].each do |c|
+    [[self.path.to_s, other.path.to_s],
+     [self.base_dir.to_s, other.base_dir.to_s],
+     [self.flags.sort, other.flags.sort]].each do |c|
       return false unless c[0] == c[1]
     end
 
@@ -71,46 +81,94 @@ class SwagDev::Project::Tools::Git::Status::File
     base_dir.join(path)
   end
 
-  # @!method igmored?
-  #   Denote ignored
-  #   @return [Boolean]
+  # Denote ignored
+  #
+  # @return [Boolean]
+  def ignored?
+    flags.keys.include?(:ignored)
+  end
 
-  # @!method worktree?
-  #   Denote worktree
-  #   @return [Boolean]
+  # Denote worktree
+  #
+  # @return [Boolean]
+  def worktree?
+    flags.keys.include?(:worktree)
+  end
 
-  # @!method index?
-  #   Denote index
-  #   @return [Boolean]
+  # Denote index
+  #
+  # @return [Boolean]
+  def index?
+    flags.keys.include?(:index)
+  end
 
-  # @!method new?
-  #   Denote new
-  #   @return [Boolean]
+  # Denote new
+  #
+  # @return [Boolean]
+  def new?
+    flags.values.include?(:new)
+  end
 
-  # @!method modified?
-  #   Denote modified
-  #   @return [Boolean]
+  # Denote modified
+  #
+  # @return [Boolean]
+  def modified?
+    flags.values.include?(:modified)
+  end
 
-  # @!method deleted?
-  #   Denote deleted
-  #   @return [Boolean]
+  # Denote deleted
+  #
+  # @return [Boolean]
+  def deleted?
+    flags.values.include?(:deleted)
+  end
 
+  # Denote untracked
+  #
+  # @return [Boolean]
   def untracked?
+    worktree? and new? and !index?
+  end
+
+  # Denote new in index
+  #
+  # @return [Boolean]
+  def index_new?
+    index? and new?
+  end
+
+  # Denote modified in index
+  #
+  # @return [Boolean]
+  def index_modified?
+    index? and modified?
+  end
+
+  # Denote deleted in index
+  #
+  # @return [Boolean]
+  def index_deleted?
+    index? and deleted?
+  end
+
+  # Denote new in worktree
+  #
+  # @return [Boolean]
+  def worktree_new?
     worktree? and new?
   end
 
-  def method_missing(method, *args, &block)
-    return super unless respond_to_missing?(method)
-
-    flags.include?(method.to_s.gsub(/\?$/, '').to_sym)
+  # Denote modified in worktree
+  #
+  # @return [Boolean]
+  def worktree_modified?
+    worktree? and modified?
   end
 
-  def respond_to_missing?(method, include_private = false)
-    if method.to_s =~ /.+\?$/
-      flag = method.to_s.gsub(/\?$/, '').to_sym
-      return self.class.flags.include?(flag)
-    end
-
-    super(method, include_private)
+  # Denote deleted in worktree
+  #
+  # @return [Boolean]
+  def worktree_deleted?
+    worktree? and deleted?
   end
 end

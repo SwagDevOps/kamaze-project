@@ -4,9 +4,17 @@ require_relative '../git'
 require_relative 'status/file'
 require_relative 'status/index'
 require_relative 'status/worktree'
+require_relative 'status/decorator'
 require 'pathname'
 
 # Provide status
+#
+# Status can provide different kind of file lists, as seen by ``libgit``.
+#
+# ``index`` and ``worktree`` are directly provided throuh ``status``,
+# but files can also been easily discriminated by status.
+#
+# @see SwagDev::Project::Tools::Git::Status::File
 class SwagDev::Project::Tools::Git::Status
   # @return [Pathname]
   attr_reader :base_dir
@@ -17,6 +25,16 @@ class SwagDev::Project::Tools::Git::Status
     @base_dir = ::Pathname.new(base_dir)
     @status = status.clone
     @cached = nil
+  end
+
+  # @return [Decorator]
+  def decorate
+    Decorator.new(self)
+  end
+
+  # @return [String]
+  def to_s
+    decorate.to_s
   end
 
   # Empty cache
@@ -51,7 +69,7 @@ class SwagDev::Project::Tools::Git::Status
 
   # Get cached filepaths
   #
-  # @return [Hash|nil]
+  # @return [Hash]
   def cached
     @cached ||= prepared
 
@@ -60,14 +78,15 @@ class SwagDev::Project::Tools::Git::Status
 
   # Get prepared filepaths with symbols (states)
   #
-  # @return [Hash{String => Array<Symbol>}]
+  # @return [Hash{String => Hash{Symbol => Symbol}}]
   def prepared
     output = {}
     @status.each do |file, status_data|
       status_data.each do |status|
         status = status.to_s.split('_').map(&:to_sym)
+        flags = { status[0] => status[1] || status[0] }
 
-        output[file] = (output[file] || []).concat(status).uniq.sort
+        output[file] = (output[file] || {}).merge(flags)
       end
     end
 
