@@ -37,11 +37,23 @@ class SwagDev::Project::Tools::Git::Status::Index
 
     self.to_a.keep_if do |f|
       if (c[0] & c[1]).include?(f.absolute_path.to_s)
-        true if f.worktree_modified?
+        true if f.index_modified? and f.worktree_modified?
       else
         false
       end
     end
+  end
+
+  # Get files present in index and considered as safe
+  #
+  # Safe files SHOULD NOT present divergent modifications
+  # between index and worktree. As seen in ``unsafe_files`` only
+  # the modified state is considered.
+  def safe_files
+    unsafe = self.unsafe_files.map { |f| f.absolute_path.to_s }
+
+    self.to_a
+        .reject { |f| unsafe.include?(f.absolute_path.to_s) }
   end
 
   protected
