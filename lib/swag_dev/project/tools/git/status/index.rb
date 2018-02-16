@@ -13,29 +13,34 @@ end
 
 # Represent index status
 class SwagDev::Project::Tools::Git::Status::Index
-  # Denote index is tainted
+  # Denote index is safe
   #
-  # Tainted index shares modifications with the worktree,
-  # thus, files CAN NOT be naively verified.
-  # For example running a static code analysis on files seen
-  # in a tainted index COULD lead to inconsistent results.
+  # Unsafe index shares modifications with the worktree,
+  # thus, files SHOULD NOT be naively analyzed,
+  # for example, by running a static code analysis.
+  # Running a static code analysis on unsafe index files
+  # COULD lead to inconsistent results.
   #
   # @return [Boolean]
-  def tainted?
-    tainted_files.empty? ? false : true
+  def safe?
+    unsafe_files.empty?
   end
 
   # Get present files in intersection between index and worktree
   #
   # @todo only "modified" files SHOULD be considered
   # @return [Array<File>]
-  def tainted_files
-    c = [self.to_a, worktree].map do |a|
+  def unsafe_files
+    c = [self, worktree].map do |a|
       a.map { |f| f.absolute_path.to_s }
     end.freeze
 
     self.to_a.keep_if do |f|
-      (c[0] & c[1]).include?(f.absolute_path.to_s)
+      if (c[0] & c[1]).include?(f.absolute_path.to_s)
+        true if f.worktree_modified?
+      else
+        false
+      end
     end
   end
 
