@@ -25,7 +25,7 @@ class SwagDev::Project::Tools::Git::Status::File
   def initialize(path, flags, base_dir = Dir.pwd)
     @base_dir = ::Pathname.new(base_dir).freeze
     @path = ::Pathname.new(path).freeze
-    @flags = flags
+    @flags = flags.freeze
   end
 
   # @return [String]
