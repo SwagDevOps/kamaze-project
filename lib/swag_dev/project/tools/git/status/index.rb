@@ -28,7 +28,6 @@ class SwagDev::Project::Tools::Git::Status::Index
 
   # Get present files in intersection between index and worktree
   #
-  # @todo only "modified" files SHOULD be considered
   # @return [Array<File>]
   def unsafe_files
     c = [self, worktree].map do |a|
@@ -36,11 +35,7 @@ class SwagDev::Project::Tools::Git::Status::Index
     end.freeze
 
     self.to_a.keep_if do |f|
-      if (c[0] & c[1]).include?(f.absolute_path.to_s)
-        true if f.index_modified? and f.worktree_modified?
-      else
-        false
-      end
+      (c[0] & c[1]).include?(f.absolute_path.to_s)
     end
   end
 
