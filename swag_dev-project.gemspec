@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bootsnap", ["~> 1.1"]
   s.add_development_dependency "sys-proc", [">= 1.0.4", "~> 1.0"]
   s.add_development_dependency "listen", ["~> 3.1"]
-  s.add_development_dependency "github-markup", ["~> 1.6"]
+  s.add_development_dependency "github-markup", ["~> 2.0"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "factory_bot", ["~> 4.8"]
   s.add_development_dependency "mocha", ["~> 1.3"]
