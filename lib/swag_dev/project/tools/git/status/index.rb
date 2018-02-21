@@ -26,6 +26,11 @@ class SwagDev::Project::Tools::Git::Status::Index
     unsafe_files.empty?
   end
 
+  # @return [Boolean]
+  def unsafe?
+    !safe?
+  end
+
   # Get present files in intersection between index and worktree
   #
   # @return [Array<File>]
