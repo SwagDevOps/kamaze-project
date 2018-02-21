@@ -50,15 +50,13 @@ class SwagDev::Project::Tools::Git
   end
 
   def hooks
-    Hooks.new(repository)
+    Hooks.new
   end
 
   # @return [Hash]
   def status
     status = {}
-    repository.status do |file, status_data|
-      status[file] = status_data
-    end
+    repository.status { |file, data| status[file] = data }
 
     Status.new(status)
   end

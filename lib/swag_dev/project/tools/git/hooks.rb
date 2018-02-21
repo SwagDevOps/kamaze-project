@@ -29,16 +29,14 @@ class SwagDev::Project::Tools::Git::Hooks
 
   @registered_hooks = {}
 
-  # @param [Rugged::Repository] repository
-  def initialize(repository)
-    @repository = repository
+  def initialize
     @hooks = {}
 
     [:pre_commit].each { |n| self.class.register(n) }
 
-    self.class.registered_hooks.each do |name, klass|
-      @hooks[name] = klass.new(repository)
-    end
+    self.class
+        .registered_hooks
+        .each { |name, klass| @hooks[name] = klass.new }
   end
 
   # @return [Hash]
