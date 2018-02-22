@@ -10,6 +10,7 @@
 
 $LOAD_PATH.unshift(__dir__)
 
+base = File.basename(__FILE__, '.rb').tr('-', '/')
 mode = (ENV['PROJECT_MODE'] || 'development').to_sym
 locked = proc do
   Dir.chdir("#{__dir__}/..") do
@@ -22,7 +23,7 @@ end.call
 if locked
   require 'rubygems'
   require 'bundler/setup'
-  require_relative 'swag_dev/project/pp' if :development == mode
+  require_relative "#{base}/core_ext/pp" if :development == mode
 
   if :development == mode
     require 'bootsnap'
