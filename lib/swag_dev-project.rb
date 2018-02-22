@@ -39,5 +39,3 @@ if locked
     )
   end
 end
-
-require File.basename(__FILE__, '.rb').tr('-', '/')
