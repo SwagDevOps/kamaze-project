@@ -50,7 +50,7 @@ class SwagDev::Project::Tools::Git
   end
 
   def hooks
-    Hooks.new
+    Hooks.new(self)
   end
 
   # @return [Hash]

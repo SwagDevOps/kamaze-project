@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../git'
+require_relative 'hooks/base_hook'
 require 'swag_dev/project/concern/helper'
 
 # Provide hooks
@@ -29,14 +30,16 @@ class SwagDev::Project::Tools::Git::Hooks
 
   @registered_hooks = {}
 
-  def initialize
+  # @param [SwagDev::Project::Tools::Git] repository
+  def initialize(repository)
     @hooks = {}
+    @repository = repository
 
     [:pre_commit].each { |n| self.class.register(n) }
 
     self.class
         .registered_hooks
-        .each { |name, klass| @hooks[name] = klass.new }
+        .each { |name, klass| @hooks[name] = klass.new(repository) }
   end
 
   # @return [Hash]
@@ -49,4 +52,9 @@ class SwagDev::Project::Tools::Git::Hooks
   def [](key)
     to_h[key]
   end
+
+  protected
+
+  # @return [SwagDev::Project::Tools::Git]
+  attr_reader :repository
 end
