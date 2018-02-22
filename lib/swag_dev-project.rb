@@ -10,7 +10,7 @@
 
 $LOAD_PATH.unshift(__dir__)
 
-base = File.basename(__FILE__, '.rb').tr('-', '/')
+base = File.basename(__FILE__, '.*').tr('-', '/')
 mode = (ENV['PROJECT_MODE'] || 'development').to_sym
 locked = proc do
   Dir.chdir("#{__dir__}/..") do
