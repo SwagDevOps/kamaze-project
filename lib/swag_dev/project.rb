@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'pathname'
+[:object].each { |req| require_relative "project/core_ext/#{req}" }
 
 # Base module (almost a namespace)
 module SwagDev
