@@ -7,14 +7,10 @@ module SwagDev
   # rubocop:disable Style/Documentation
   class Project
     module Concern
-      require_relative 'project/concern'
-    end
-
-    [
-      :env, :mode, :helper, :sham,
-      :tasks, :versionable, :tools
-    ].each do |req|
-      require "swag_dev/project/concern/#{req}"
+      [nil, :env, :mode, :helper, :sham,
+       :tasks, :versionable, :tools].each do |req|
+        require_relative "project/concern/#{req}".gsub(%r{/$}, '')
+      end
     end
   end
   # rubocop:enable Style/Documentation
