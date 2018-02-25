@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern/debug'
+require_relative '../tools/debug'
 
-# Object is the default root of all Ruby objects
-#
-# Object inherits from BasicObject
-# which allows creating alternate object hierarchies.
-# Methods on Object are available to all classes
-# (unless explicitly overridden).
-#
-# @see https://ruby-doc.org/core-2.5.0/Object.html
+# rubocop:disable Style/Documentation
 class Object
-  include SwagDev::Project::Concern::Debug
+  private
+
+  # Print arguments in pretty form
+  #
+  # @see https://ruby-doc.org/stdlib-2.4.0/libdoc/pp/rdoc/Kernel.html
+  # @see https://github.com/topazproject/topaz/blob/master/lib-ruby/pp.rb
+  def pp(*objs)
+    debug = SwagDev::Project::Tools::Debug.new
+    objs.each { |obj| debug.dump(obj) }
+
+    objs.size <= 1 ? objs.first : objs
+  end
 end
+# rubocop:enable Style/Documentation
