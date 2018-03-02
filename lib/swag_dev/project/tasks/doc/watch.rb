@@ -2,6 +2,8 @@
 
 require_relative '../doc'
 
+tools = SwagDev.project.tools
+
 # Display start time
 #
 # @todo add observer on watcher
@@ -9,14 +11,13 @@ require_relative '../doc'
 time = proc do
   stime = Time.now.to_s.split(/\s+/)[0..1].reverse.join(' ')
 
-  SwagDev::Console.new.stdout.writeln(stime, :green, :bold) ? true : false
+  tools.fetch(:console).stdout.puts("{{green:#{stime}}}")
 end
 
 # watch --------------------------------------------------------------
 
 desc 'Watch documentation changes'
 task :'doc:watch' do
-  tools   = SwagDev.project.tools
   # ENV['LISTEN_GEM_DEBUGGING'] = '2'
   watcher = tools.fetch(:yardoc_watcher)
 
