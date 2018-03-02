@@ -71,11 +71,13 @@ class SwagDev::Project::Tools
   # @param [Symbol] name
   # @return [Object]
   def [](name)
+    return nil unless member?(name)
+
     (@cache[name] ||= proc do
       klass = @items[name.to_sym]
 
       make(name, klass) if klass
-    end.call)&.clone if member?(name)
+    end.call)&.clone
   end
 
   alias get fetch
