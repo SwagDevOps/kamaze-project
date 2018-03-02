@@ -3,10 +3,11 @@
 require 'swag_dev/project'
 require 'ostruct'
 
-# Generic struct (ala OpenStruct)
+# Generic struct (ala`` OpenStruct``)
 class SwagDev::Project::Struct < OpenStruct
   # Introduces some strictness on ``OpenStruct#method_missing``
   #
+  # @raise [NoMethodError]
   # @see https://apidock.com/ruby/OpenStruct/method_missing
   # @return [Object]
   def method_missing(method, *args)
@@ -18,6 +19,10 @@ class SwagDev::Project::Struct < OpenStruct
       end
     end
 
+    super
+  end
+
+  def respond_to_missing?(method, include_private = false)
     super
   end
 end
