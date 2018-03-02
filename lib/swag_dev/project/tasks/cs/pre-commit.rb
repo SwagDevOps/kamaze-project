@@ -2,8 +2,6 @@
 # frozen_string_literal: true
 # rubocop:enable Naming/FileName
 
-require 'open3'
-
 # Sample of use (``.git/hooks/pre-commit``):
 #
 # ```sh
@@ -11,15 +9,51 @@ require 'open3'
 #
 # exec bundle exec rake cs:pre-commit
 # ```
-task 'cs:pre-commit' do
-  files = Open3.capture3('git', 'status', '--porcelain', '-uno')[0]
-               .to_s.lines.map(&:chomp)
-               .keep_if { |line| /^(M|A)/.match(line) }
-               .map { |line| line.gsub(/^[A-Z]+\s+/, '') }
-               .map { |line| line.gsub(/^"|"$/, '') } # paths with spaces
 
-  SwagDev.project.tools.fetch(:rubocop).prepare do |c|
-    c.patterns = files
-    c.options = ['--parallel']
-  end.run
+tools = SwagDev.project.tools
+
+# process files (index) ----------------------------------------------
+index = lambda do
+  hooks = tools.fetch(:git).hooks
+  hooks[:pre_commit].process_index(allow_empty: true) do |files|
+    return 0 if files.reject(&:deleted?).empty?
+
+    tools.fetch(:rubocop).prepare do |c|
+      c.patterns = files.reject(&:deleted?).map(&:to_s)
+    end.run
+  end
+end
+
+# after process ------------------------------------------------------
+after = lambda do |retcode|
+  # @raise ArgumentError
+  retcode = ('%<retcode>d' % { retcode: retcode }).to_i
+  messages = { out: nil, err: nil }
+  # rubocop:disable Style/FormatStringToken
+  case retcode
+  when Errno::EOPNOTSUPP::Errno
+    messages[:err] = "%s\n\n" % [
+      'Changed files both present in index and worktree:',
+      '  (use "git reset HEAD <file>..." to unstage)',
+      '  (use "git add <file>..." to update what will be committed)',
+    ].join("\n")
+
+    tools.fetch(:git).status.index.unsafe_files.each do |file|
+      messages[:err] += "{{red:%smodified:\s\s\s#{file}}}\n" % ("\s" * 8)
+    end
+  end
+  # rubocop:enable Style/FormatStringToken
+
+  messages.each do |type, message|
+    unless message.nil?
+      tools.fetch(:console).public_send("std#{type}").puts(message)
+    end
+  end
+
+  exit(retcode) unless retcode.zero?
+end
+
+# task ---------------------------------------------------------------
+task 'cs:pre-commit' do
+  index.call.yield_self { |retcode| after.call(retcode) }
 end
