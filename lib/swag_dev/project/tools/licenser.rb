@@ -60,8 +60,9 @@ class SwagDev::Project::Tools::Licenser
   # @return [Pathname|IO|nil]
   attr_accessor :output
 
+  # @type [String|Pathname]
   # @return [Pathname]
-  attr_accessor :working_dir
+  attr_writer :working_dir
 
   class << self
     def process(&block)
@@ -82,7 +83,7 @@ class SwagDev::Project::Tools::Licenser
   #
   # @return [Pathname]
   def working_dir
-    Pathname.new(@working_dir || Dir.pwd)
+    Pathname.new(@working_dir || Dir.pwd).freeze
   end
 
   # Set patterns
@@ -107,7 +108,7 @@ class SwagDev::Project::Tools::Licenser
           .delete_if { |file| !file.file? }
           .delete_if { |file| file.basename.to_s[0] == '.' }
           .sort.uniq
-          .map { |file| file.realpath }
+          .map(&:realpath)
   end
 
   # Get license, formatted (using comments)
