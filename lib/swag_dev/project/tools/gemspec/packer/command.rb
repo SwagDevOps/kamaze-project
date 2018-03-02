@@ -25,7 +25,9 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   attr_accessor :tmp_dir
 
   # The directory where "compiled" executable stands
-  attr_accessor :bin_dir
+  #
+  # @type [String]
+  attr_writer :bin_dir
 
   # The path to source files
   attr_accessor :src_dir
