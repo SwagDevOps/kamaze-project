@@ -15,22 +15,16 @@ module SwagDev::Project::Concern::Tasks
   def tasks
     @tasks ||= []
 
-    @tasks.clone
+    @tasks.clone.freeze
   end
 
   # Set tasks
   #
   # @param [Array] tasks
   def tasks=(tasks)
-    tasks = tasks.to_a
-    @tasks ||= []
-
-    @tasks.empty? ? @tasks = tasks : @tasks += tasks
-
-    @tasks.map! { |tn| tn.to_s.gsub(/:+/, '/').to_sym }
-    @tasks.uniq!
-
-    tasks
+    @tasks = (@tasks.to_a + tasks.to_a).map do |tn|
+      tn.to_s.gsub(/:+/, '/').to_sym
+    end.uniq
   end
 
   protected
