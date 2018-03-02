@@ -58,10 +58,10 @@ class SwagDev::Project::Tools::Gemspec::Packer
 
     self.package_labels = [:src, :tmp, :bin]
     self.purgeables     = [:bin]
-    self.package_name   = '%s/%s' % [
+    self.package_name   = [
       config.fetch(:host_os),
       config.fetch(:host_cpu)
-    ]
+    ].join('/')
   end
 
   # Get command for (packing) a given packable
