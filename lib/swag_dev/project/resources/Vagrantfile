@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This file is used as a kind of template,
 # ``boxes`` variable is defined at runtime.
 #
@@ -5,12 +6,13 @@
 # this setup avoid to load any project sources.
 #
 # @see SwagDev::Project::Tools::VagrantHelper
+
 Vagrant.configure(2) do |config|
   boxes.each do |box, box_config|
     if box_config['synced_folder']
       config.vm.public_send(:synced_folder,
-      *(box_config['synced_folder'][0] || []),
-      **(box_config['synced_folder'][1] || {}))
+                            *(box_config['synced_folder'][0] || []),
+                            **(box_config['synced_folder'][1] || {}))
     end
 
     machine_name = box
@@ -43,9 +45,9 @@ Vagrant.configure(2) do |config|
         next unless ['provision', 'guest'].include?(k)
 
         if v.is_a?(Array)
-          machine.vm.public_send('%s' % k, *(v[0]), **(v[1]))
+          machine.vm.public_send(k, *(v[0]), **(v[1]))
         else # settings
-          machine.vm.public_send('%s=' % k, v)
+          machine.vm.public_send("#{k}=", v)
         end
       end
     end
