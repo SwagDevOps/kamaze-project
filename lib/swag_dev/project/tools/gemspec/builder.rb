@@ -46,6 +46,18 @@ class SwagDev::Project::Tools::Gemspec::Builder
 
   alias buildable? ready?
 
+  # Get path do gemspec present in ``src`` dir
+  #
+  # @return [Pathname]
+  def gemspec_srcfile
+    (package_dirs.fetch(:src)
+                 .realpath
+                 .join(buildable.basename('.*')).to_s
+                 .gsub(/-([0-9 \.])+$/, '') + '.gemspec').yield_self do |s|
+      Pathname.new(s)
+    end
+  end
+
   protected
 
   def setup
@@ -61,13 +73,7 @@ class SwagDev::Project::Tools::Gemspec::Builder
   # @return [Array<String>]
   def build_args
     Dir.chdir(pwd) do
-      [
-        :build,
-        '--norc',
-        '%s.gemspec' % package_dirs.fetch(:src).realpath
-                                   .join(buildable.basename('.*')).to_s
-                                   .gsub(/-([0-9 \.])+$/, '')
-      ].map(&:to_s)
+      [:build, '--norc', gemspec_srcfile].map(&:to_s)
     end
   end
 end
