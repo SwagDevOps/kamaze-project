@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../concern'
+
 require 'pathname'
+require 'version_info'
 require 'active_support/concern'
-require 'swag_dev/project/concern'
 
 # Provides a standardized way to use ``VersionInfo``
 module SwagDev::Project::Concern::Versionable
@@ -10,25 +12,20 @@ module SwagDev::Project::Concern::Versionable
 
   included { version_info }
 
-  # Class methods for ``Ylem::Concern::Versionable``
+  # Class methods
   module ClassMethods
     # @return [Hash]
     def version_info
       unless const_defined?(:VERSION)
-        require 'version_info'
         include VersionInfo
 
         # @todo deternmine format from extension?
         VersionInfo.file_format = :yaml
-
         self.VERSION.file_name = version_basedir.join('version_info.yml')
         self.VERSION.load
       end
 
-      self.VERSION
-          .to_h
-          .merge(version: self.VERSION.to_s)
-          .freeze
+      self.VERSION.to_h.merge(version: self.VERSION.to_s).freeze
     end
 
     protected
