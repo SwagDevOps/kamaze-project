@@ -1,25 +1,32 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
+# Provides a task intented to easily start pry REPL
+#
+# * more convenient than ``bundle exec pry``
+# * displays ``RUBY_DESCRIPTION`` (variant) on startup
 
-banner = proc do
-  patch = defined?(RUBY_PATCHLEVEL) ? 'p%s' % RUBY_PATCHLEVEL : nil
-  parts = ['Ruby',
-           '%s%s' % [RUBY_VERSION, patch],
-           '(%s revision %s)' % [RUBY_RELEASE_DATE, RUBY_REVISION],
-           '[%s]' % RUBY_PLATFORM]
+tools  = SwagDev.project.tools
 
-  SwagDev.project.tools
-         .fetch(:console)
-         .stdout.puts('{{green:%s}}' % parts.join(' '))
+# banner -------------------------------------------------------------
+banner = lambda do
+  patch = defined?(RUBY_PATCHLEVEL) ? "p#{RUBY_PATCHLEVEL}" : nil
+  # almost like RUBY_DESCRIPTION
+  descr = ["#{RUBY_ENGINE} #{RUBY_VERSION}#{patch}".rstrip,
+           "(#{RUBY_RELEASE_DATE})",
+           "[#{RUBY_PLATFORM}]"].join(' ')
+
+  tools.fetch(:console).stdout.puts("{{green:#{descr}}}")
 end
 
-# More convenient than ``bundle exec pry``
-desc 'Start ruby REPL'
-task :shell do
+# shell --------------------------------------------------------------
+shell = lambda do
   require 'pry'
 
-  banner.call
-
   Pry.start
+end
+
+# task ---------------------------------------------------------------
+desc 'Start ruby REPL'
+task :shell do
+  [banner, shell].map { |t| Thread.new { t.call } }.each(&:join)
 end
