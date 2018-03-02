@@ -43,12 +43,13 @@ class SwagDev::Project::Tools::Licenser
   # License chapter/header
   #
   # @return [String]
-  attr_accessor :license
+  attr_writer :license
 
   # Files to be licensed
   #
+  # @type [Array<String|Pathname>]
   # @return [Array<Pathname>]
-  attr_accessor :files
+  attr_writer :files
 
   # Patterns used to match files
   #
@@ -117,8 +118,7 @@ class SwagDev::Project::Tools::Licenser
   def license
     @license.to_s.gsub(/\n{3}/mi, "\n\n").lines.map do |line|
       line.chomp!
-
-      line = "# #{line}" if line and line[0] != '#'
+      "# #{line}" if line and line[0] != '#'
     end.join("\n")
   end
 
