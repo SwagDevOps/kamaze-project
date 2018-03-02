@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern'
+require_relative '../concern'
 require 'active_support/concern'
 
 # Concern tasks
