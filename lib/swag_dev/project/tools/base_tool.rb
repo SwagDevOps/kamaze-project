@@ -25,6 +25,7 @@ class SwagDev::Project::Tools::BaseTool
 
   # Execute additionnal setup
   def setup
+    nil
   end
 
   def attrs_mute!
