@@ -23,12 +23,14 @@ task 'vagrant:init': ['Vagrantfile']
   task "vagrant:#{k}": ['vagrant:init'] do
     begin
       vagrant.execute(k.to_s)
+      # rubocop:disable Lint/HandleExceptions
     rescue SystemExit, Interrupt
+      # rubocop:enable Lint/HandleExceptions
     end
   end
 end
 
-desc "Dump config"
+desc 'Dump config'
 task 'vagrant:dump', [:output] => ['vagrant:init'] do |task, args|
   out_file = Pathname.new(args[:output] || '/dev/stdout')
   dump = vagrant.dump
@@ -40,7 +42,7 @@ end
 
 vagrant.boxes.each do |box, box_config|
   [:up, :halt, :reload, :provision, :rsync].each do |command|
-    desc "%s #{box}" % command.to_s.gsub(/(\w+)/) { |s| s.capitalize }
+    desc "#{command.to_s.gsub(/(\w+)/, &:capitalize)} #{box}"
     task "vagrant:vm:#{box}:#{command}": ['vagrant:init'] do
       vagrant.execute(command.to_s, box)
     end
