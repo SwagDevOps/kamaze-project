@@ -28,5 +28,5 @@ end
 # task ---------------------------------------------------------------
 desc 'Start ruby REPL'
 task :shell do
-  [banner, shell].map { |t| Thread.new { t.call } }.each(&:join)
+  [banner, shell].each(&:call)
 end
