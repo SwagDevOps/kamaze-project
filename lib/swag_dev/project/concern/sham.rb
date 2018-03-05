@@ -53,11 +53,13 @@ module SwagDev::Project::Concern::Sham
   # @param [String|Symbol] name
   # @return [SwagDev::Project::Sham]
   def shammer_as(name)
-    begin
-      require "swag_dev/project/sham/#{name}"
-    rescue LoadError
-      return shammer
-    end unless shammer.has?(name)
+    unless shammer.has?(name)
+      begin
+        require "swag_dev/project/sham/#{name}"
+      rescue LoadError
+        return shammer
+      end
+    end
 
     shammer
   end
