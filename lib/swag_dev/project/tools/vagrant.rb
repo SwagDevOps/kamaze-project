@@ -165,15 +165,25 @@ class SwagDev::Project::Tools::Vagrant
   #
   # @return [String]
   def vagrantfile_content
-    boxes64 = Base64.strict_encode64(dump)
+    boxes64 = Base64.strict_encode64(dump).yield_self do |text|
+      word_wrap(text, 70).map { |s| "\s\s'#{s}'\\" }.join("\n").chomp('\\')
+    end
 
     ['# frozen_string_literal: true',
-     '# vim: ai ts=2 sts=2 et sw=2 ft=ruby',
-     nil,
-     '[:base64, :yaml, :pp].each { |req| require req.to_s }',
-     nil,
-     "boxes = YAML.load(Base64.strict_decode64('#{boxes64}'))",
-     nil,
-     resource.read.gsub(/^#.*\n/, '')].map(&:to_s).join("\n")
+     '# vim: ai ts=2 sts=2 et sw=2 ft=ruby', nil,
+     '[:base64, :yaml, :pp].each { |req| require req.to_s }', nil,
+     "cnf64 = \\\n#{boxes64}", nil,
+     'boxes = YAML.load(Base64.strict_decode64(cnf64), [Symbol])', nil,
+     resource.read.gsub(/^#.*\n/, '')]
+      .map(&:to_s).join("\n").gsub(/\n\n+/, "\n\n")
+  end
+
+  # Wrap text into small chunks
+  #
+  # @param [String] text
+  # @param [Fixnum] width
+  # @return [Array<String>]
+  def word_wrap(text, width = 80)
+    text.each_char.each_slice(width).to_a.map(&:join)
   end
 end
