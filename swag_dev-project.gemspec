@@ -58,5 +58,4 @@ end
 
 # Local Variables:
 # mode: ruby
-# eval: (rufo-minor-mode 0);
 # End:
