@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-# This file is used as a kind of template,
+# Vagrant CAN NOT cohabitate well with bundler,
+# this bootstrap DOES NOT load any project sources.
+# This file is used as a kind of template.
 # ``boxes`` variable is defined at runtime.
-#
-# Vagrant does not cohabitate well with bundler,
-# this setup avoid to load any project sources.
 #
 # @see SwagDev::Project::Tools::Vagrant
 
@@ -27,10 +26,9 @@ providers_config = lambda do |config, providers|
         pconfigs.each do |c|
           c = ['customize', [c], {}] if pc_type == 'customize'
 
-          configurable = vb if pc_type == 'customize'
-          configurable = config.vm if pc_type == 'vm'
-
-          configurable.public_send(c[0], *(c[1]), **(c[2] || {}))
+          { customize: vb, vm: config.vm }
+            .fetch(pc_type.to_sym)
+            .public_send(c[0], *(c[1]), **(c[2] || {}))
         end
       end
     end
@@ -49,6 +47,8 @@ end
 # machine provisions -------------------------------------------------
 machine_provisions_config = lambda do |machine, provisions|
   (provisions || {}).each do |provision|
+    provision[0] = [provision[0]] unless provision[0].is_a?(Array)
+
     machine.vm.public_send(:provision, *(provision[0]), **(provision[1]))
   end
 end
