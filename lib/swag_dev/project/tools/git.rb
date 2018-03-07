@@ -65,6 +65,10 @@ class SwagDev::Project::Tools::Git
 
   def setup
     @base_dir ||= Dir.pwd
-    @repository = Rugged::Repository.new(base_dir.to_s)
+    begin
+      @repository = Rugged::Repository.new(base_dir.to_s)
+    rescue Rugged::RepositoryError
+      @repository = nil
+    end
   end
 end
