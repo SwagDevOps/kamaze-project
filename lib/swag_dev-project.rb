@@ -27,7 +27,7 @@ if lock
     require 'bootsnap'
 
     Bootsnap.setup(
-      cache_dir:            'cache',
+      cache_dir:            "#{__dir__}/../cache",
       development_mode:     true,
       load_path_cache:      true,
       autoload_paths_cache: true,
