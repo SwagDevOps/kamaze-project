@@ -8,12 +8,12 @@
 # @see SwagDev::Project::Tools::Vagrant
 
 # synced folders -----------------------------------------------------
-synced_folder_config = lambda do |config, box_config|
-  return unless box_config['synced_folder']
+synced_folders_config = lambda do |config, box_config|
+  (box_config['synced_folders'] || []).each do |s|
+    folders = s.delete(:folders) || []
 
-  config.vm.public_send(:synced_folder,
-                        *(box_config['synced_folder'][0] || []),
-                        **(box_config['synced_folder'][1] || {}))
+    config.vm.public_send(:synced_folder, *folders, **s)
+  end
 end
 
 # providers config ---------------------------------------------------
@@ -53,28 +53,15 @@ machine_provisions_config = lambda do |machine, provisions|
   end
 end
 
-# machine vm config -------------------------------------------------
-machine_vm_config = lambda do |machine, box_config|
-  box_config.each do |k, v|
-    next unless ['provision', 'guest'].include?(k)
-
-    if v.is_a?(Array)
-      machine.vm.public_send(k, *(v[0]), **(v[1]))
-    else # settings
-      machine.vm.public_send("#{k}=", v)
-    end
-  end
-end
-
 # configure ----------------------------------------------------------
 Vagrant.configure(2) do |config|
   boxes.each do |box, box_config|
-    synced_folder_config.call(config, box_config)
+    synced_folders_config.call(config, box_config)
     providers_config.call(config, box_config['providers'])
 
     machine_config.call(config, box, box_config) do |machine|
+      machine.vm.guest = box_config['guest'] if box_config['guest']
       machine_provisions_config.call(machine, box_config['provisions'])
-      machine_vm_config.call(machine, box_config)
     end
   end
 end

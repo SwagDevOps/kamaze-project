@@ -2,29 +2,52 @@
 # @see https://groups.google.com/forum/#!topic/vagrant-up/dNnloUOVCI4
 ---
 image: 'bento/freebsd-11.0'
-guest: !ruby/symbol freebsd
-synced_folder:
-  - ['.', '/vagrant']
-  - {!ruby/symbol id: 'vagrant-root',
-     !ruby/symbol type: 'rsync',
-     !ruby/symbol rsync__args: ['-vaz', '--copy-links'],
-     !ruby/symbol rsync__verbose: true,
-     !ruby/symbol rsync__auto: true,
-     !ruby/symbol rsync__exclude: [
-       '**/.#*', '**/*_flymake.*', '**/.git*',
-       'Vagrantfile', 'vagrant/',
-       'doc/', 'pkg/', 'vendor/', '*.gemspec', '.yardoc/',
-    ]}
+guest: :freebsd
+network:
+  - 'private_network'
+  - :type: 'dhcp'
+    :adapter: 2
+synced_folders:
+  - :folders: ['.', '/vagrant']
+    :type: 'rsync'
+    :args: ['-vaz', '--copy-links', '--delete']
+    :rsync__verbose: true
+    :rsync__auto: true
+    :rsync__exclude:
+      - '.#*'
+      - '*_flymake.*'
+      - '.git/'
+      - 'Vagrantfile'
+      - 'vagrant/'
+      - '.yardoc/'
+      - 'doc/'
+      - 'build/'
+      - 'cache/'
+      - 'vendor/'
+  - :folders: ['lib', '/vagrant/lib']
+    :type: 'rsync'
+    :rsync__args: ['-vaz', '--copy-links', '--delete-excluded', '--delete']
+    :rsync__verbose: true
+    :rsync__auto: true
+    :rsync__exclude: ['.#*', '*_flymake.*']
+  - :folders: ['spec', '/vagrant/spec']
+    :type: 'rsync'
+    :rsync__args: ['-vaz', '--copy-links', '--delete-excluded', '--delete']
+    :rsync__verbose: true
+    :rsync__auto: true
+    :rsync__exclude: ['.#*', '*_flymake.*']
 provisions:
-  - [['file'], {
+  - ['file', {
       !ruby/symbol source: 'vagrant/freebsd/bashrc.sh',
       !ruby/symbol destination: '/home/vagrant/.bashrc',
     }]
-  - [['file'], {
+  - ['file', {
       !ruby/symbol source: 'vagrant/freebsd/vimrc',
       !ruby/symbol destination: '/home/vagrant/.vim/vimrc',
     }]
-  - [['shell'], {!ruby/symbol path: 'vagrant/freebsd/provision.sh'}]
+  - ['shell', {
+      !ruby/symbol path: 'vagrant/freebsd/provision.sh'
+    }]
 providers:
   virtualbox:
     vm:
