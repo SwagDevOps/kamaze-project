@@ -3,7 +3,6 @@
 require_relative '../tools'
 require_relative 'base_tool'
 require 'pathname'
-require 'rugged'
 
 # rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
@@ -49,10 +48,15 @@ class SwagDev::Project::Tools::Git
     ::Pathname.new(@base_dir)
   end
 
+  # Get hooks
+  #
+  # @return [Hooks]
   def hooks
     Hooks.new(self)
   end
 
+  # Get status
+  #
   # @return [Hash]
   def status
     status = {}
@@ -61,13 +65,22 @@ class SwagDev::Project::Tools::Git
     Status.new(status)
   end
 
+  # Denote is a repository
+  #
+  # @return [Boolean]
+  def repository?
+    !!repository
+  end
+
   protected
 
   def setup
     @base_dir ||= Dir.pwd
     begin
+      require 'rugged'
       @repository = Rugged::Repository.new(base_dir.to_s)
-    rescue Rugged::RepositoryError
+    rescue LoadError, Rugged::RepositoryError
+      # @todo Load error SHOULD be stored (as a boolean?)
       @repository = nil
     end
   end
