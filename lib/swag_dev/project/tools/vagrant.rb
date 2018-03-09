@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
+require_relative '../tools'
+require_relative 'base_tool'
 require 'base64'
 require 'pathname'
 require 'cliver'
+
+class SwagDev::Project::Tools
+  class Vagrant < BaseTool
+  end
+end
 
 # Vagrant based,
 # this class provides a easy and ready to use wrapper.
