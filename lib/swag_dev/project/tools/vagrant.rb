@@ -173,7 +173,7 @@ class SwagDev::Project::Tools::Vagrant
      '# vim: ai ts=2 sts=2 et sw=2 ft=ruby', nil,
      '[:base64, :yaml, :pp].each { |req| require req.to_s }', nil,
      "cnf64 = \\\n#{boxes64}", nil,
-     'boxes = YAML.load(Base64.strict_decode64(cnf64), [Symbol])', nil,
+     'boxes = YAML.safe_load(Base64.strict_decode64(cnf64), [Symbol])', nil,
      resource.read.gsub(/^#.*\n/, '')]
       .map(&:to_s).join("\n").gsub(/\n\n+/, "\n\n")
   end
