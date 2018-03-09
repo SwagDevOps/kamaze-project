@@ -28,45 +28,30 @@ end
 # @see http://yaml.org/YAML_for_ruby.html
 # @see https://friendsofvagrant.github.io/v1/docs/boxes.html
 class SwagDev::Project::Tools::Vagrant
-  # Path where resources are stored
+  # Template file (used for code generation)
   #
   # @return [Pathname]
-  attr_reader :resources_dir
+  attr_accessor :template_path
 
-  # Working directory
+  # Absolute path to the vagrant executable
   #
-  # @return [Pathname]
-  attr_writer :working_dir
+  # @return [String|nil]
+  attr_accessor :executable
+
+  def mutable_attributes
+    [:template_path, :executable]
+  end
 
   include FileUtils
-
-  def initialize
-    @resources_dir = Pathname.new(__dir__).join('..', 'resources').realpath
-
-    yield self if block_given?
-
-    @working_dir ||= Dir.pwd
-
-    [:working_dir].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
-  end
 
   # Get working dir
   #
   # @return [Pathname]
   def working_dir
-    Pathname.new(@working_dir).realpath
+    Pathname.new(Dir.pwd).realpath
   end
 
   alias pwd working_dir
-
-  # Absolute path to the vagrant executable
-  #
-  # @return [String|nil]
-  def executable
-    Cliver.detect(:vagrant)
-  end
 
   # Denote ``vagrant`` executable is present
   #
@@ -93,13 +78,6 @@ class SwagDev::Project::Tools::Vagrant
   # @return [Pathname]
   def vagrantfile
     pwd.join('Vagrantfile')
-  end
-
-  # Get path to "templated" Vagrantfile
-  #
-  # @return [Pathname]
-  def resource
-    resources_dir.join('Vagrantfile')
   end
 
   # Install a new Vagrantfile
@@ -167,6 +145,14 @@ class SwagDev::Project::Tools::Vagrant
 
   protected
 
+  def setup
+    resources_path = Pathname.new(__dir__).join('..', 'resources').realpath
+    template_path = resources_path.join('Vagrantfile')
+
+    @template_path = Pathname.new(@template_path || template_path).realpath
+    @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
+  end
+
   # Get generated content for ``Vagrantfile``
   #
   # @return [String]
@@ -180,7 +166,7 @@ class SwagDev::Project::Tools::Vagrant
      '[:base64, :yaml, :pp].each { |req| require req.to_s }', nil,
      "cnf64 = \\\n#{boxes64}", nil,
      'boxes = YAML.safe_load(Base64.strict_decode64(cnf64), [Symbol])', nil,
-     resource.read.gsub(/^#.*\n/, '')]
+     template_path.read.gsub(/^#.*\n/, '')]
       .map(&:to_s).join("\n").gsub(/\n\n+/, "\n\n")
   end
 
