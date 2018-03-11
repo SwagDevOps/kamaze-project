@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# -*- coding: utf-8 -*-
 
 # ~/.bashrc: executed by bash(1) for non-login shells
 #
