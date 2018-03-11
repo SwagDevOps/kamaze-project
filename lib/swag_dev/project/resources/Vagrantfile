@@ -12,7 +12,7 @@ synced_folders_config = lambda do |config, box_config|
   (box_config['synced_folders'] || []).each do |s|
     folders = s.delete(:folders)
 
-    config.vm.synced_folder(*folders, **s) if folders
+    config.vm.synced_folder(*folders, **s)
   end
 end
 
