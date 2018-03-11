@@ -2,7 +2,13 @@
 # -*- coding: utf-8 -*-
 
 export RUBY_VERSION=2.3.3
-export PACKAGES='bash bash-completion htop curl vim-lite direnv pidof'
+
+# minimal rbenv requirements -----------------------------------------
+export PACKAGES='bash bash-completion'
+# misc utils ---------------------------------------------------------
+PACKAGES="${PACKAGES} htop pstree pidof curl vim-lite direnv"
+# libgit2/rugged  ----------------------------------------------------
+PACKAGES="${PACKAGES} cmake devel/pkgconf"
 
 # packages installation ----------------------------------------------
 pkg update
