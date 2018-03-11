@@ -56,6 +56,13 @@ provisions:
     :source: 'vagrant/freebsd/vimrc'
     :destination: '/home/vagrant/.vim/vimrc'
   - :type: :shell
-    :path: 'vagrant/freebsd/provision.sh'
+    :preserve_order: true
+    :path: 'vagrant/freebsd/provision/base.sh'
+  - :type: :shell
+    :preserve_order: true
+    :path: 'vagrant/freebsd/provision/rvm.sh'
+  - :type: :shell
+    :preserve_order: true
+    :path: 'vagrant/freebsd/provision/bundle.sh'
 ssh_commands:
   rspec: 'bash -cl ". .env && bundle exec rspec"'
