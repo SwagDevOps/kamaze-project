@@ -38,6 +38,13 @@ class SwagDev::Project::Tools::Vagrant
   # @return [String|nil]
   attr_accessor :executable
 
+  # Path to files describing boxes
+  #
+  # defaults to ``./vagrant``
+  #
+  # @return [Pathname]
+  attr_accessor :boxes_path
+
   def mutable_attributes
     [:template_path, :executable]
   end
@@ -96,7 +103,7 @@ class SwagDev::Project::Tools::Vagrant
   #
   # @return [Array<Pathname>]
   def box_files
-    Dir.glob(pwd.join('vagrant/*.yml')).map do |file|
+    Dir.glob("#{boxes_path}/*.yml").map do |file|
       Pathname.new(file)
     end
   end
@@ -151,6 +158,7 @@ class SwagDev::Project::Tools::Vagrant
 
     @template_path = Pathname.new(@template_path || template_path).realpath
     @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
+    @boxes_path = Pathname.new(@boxes_path || pwd.join('vagrant'))
   end
 
   # Get generated content for ``Vagrantfile``
