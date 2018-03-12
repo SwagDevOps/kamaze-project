@@ -46,7 +46,7 @@ class SwagDev::Project::Tools::Vagrant
   #
   # defaults to ``./vagrant``
   #
-  # @return [Pathname]
+  # @return [String]
   attr_accessor :boxes_path
 
   def mutable_attributes
@@ -151,7 +151,7 @@ class SwagDev::Project::Tools::Vagrant
 
     @template_path = Pathname.new(@template_path || template_path).realpath
     @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
-    @boxes_path ||= pwd.join('vagrant')
+    @boxes_path ||= pwd.join('vagrant').to_s
     @composer = Composer.new(boxes_path)
   end
 
