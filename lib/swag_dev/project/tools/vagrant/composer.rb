@@ -17,6 +17,9 @@ class SwagDev::Project::Tools::Vagrant::Composer
   # @return [Pathname]
   attr_reader :path
 
+  # Initialize from given path
+  #
+  # @param [String] path
   def initialize(path)
     @path = ::Pathname.new(path)
   end
