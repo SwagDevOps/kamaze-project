@@ -21,10 +21,38 @@ class SwagDev::Project::Tools::Vagrant::Composer
     @path = ::Pathname.new(path)
   end
 
+  # Get boxes
+  #
+  # @return [Hash]
+  def boxes
+    results = {}
+    files.each do |path|
+      path = ::Pathname.new(path).realpath
+      name = path.basename('.yml').to_s
+
+      results[name] = YAML.load_file(path)
+    end
+
+    results
+  end
+
   # Get files used to generate ``boxes``
   #
   # @return [Array<Pathname>]
   def files
     Dir.glob("#{path}/*.yml").map { |file| ::Pathname.new(file) }
+  end
+
+  # Get files related to "box files"
+  #
+  # @return [Array<Pathname>]
+  def sources
+    files.map do |file|
+      Dir.glob("#{file.dirname}/**/**").map do |path|
+        path = ::Pathname.new(path)
+
+        path.file? ? path : nil
+      end.compact
+    end.flatten
   end
 end
