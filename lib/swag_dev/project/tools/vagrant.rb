@@ -6,10 +6,14 @@ require 'base64'
 require 'pathname'
 require 'cliver'
 
+# rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
   class Vagrant < BaseTool
   end
+
+  require_relative 'vagrant/composer'
 end
+# rubocop:enable Style/Documentation
 
 # Vagrant based,
 # this class provides a easy and ready to use wrapper.
@@ -103,37 +107,21 @@ class SwagDev::Project::Tools::Vagrant
   #
   # @return [Array<Pathname>]
   def box_files
-    Dir.glob("#{boxes_path}/*.yml").map do |file|
-      Pathname.new(file)
-    end
+    composer.files
   end
 
   # Get files related to "box files"
   #
   # @return [Array<Pathname>]
   def source_files
-    box_files.map do |file|
-      Dir.glob("#{file.dirname}/**/**").map do |path|
-        path = Pathname.new(path)
-
-        path.file? ? path : nil
-      end.compact
-    end.flatten
+    composer.sources
   end
 
   # Get boxes configuration
   #
   # @return [Hash]
   def boxes
-    results = {}
-    box_files.each do |path|
-      path = Pathname.new(path).realpath
-      name = path.basename('.yml').to_s
-
-      results[name] = YAML.load_file(path)
-    end
-
-    results
+    composer.boxes
   end
 
   # Denote vagrant existence of configured boxes
@@ -152,13 +140,19 @@ class SwagDev::Project::Tools::Vagrant
 
   protected
 
+  # Composer provides boxes
+  #
+  # @return [Composer]
+  attr_reader :composer
+
   def setup
     resources_path = Pathname.new(__dir__).join('..', 'resources').realpath
     template_path = resources_path.join('Vagrantfile')
 
     @template_path = Pathname.new(@template_path || template_path).realpath
     @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
-    @boxes_path = Pathname.new(@boxes_path || pwd.join('vagrant'))
+    @boxes_path ||= pwd.join('vagrant')
+    @composer = Composer.new(boxes_path)
   end
 
   # Get generated content for ``Vagrantfile``
