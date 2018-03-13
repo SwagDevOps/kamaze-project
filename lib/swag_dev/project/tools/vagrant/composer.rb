@@ -39,24 +39,27 @@ class SwagDev::Project::Tools::Vagrant::Composer
 
   # Get files used to generate ``boxes``
   #
-  # @return [Array<Pathname>]
+  # Files are indexed by ``name``.
+  # Overrides and non-loablde files are excluded during listing.
+  #
+  # @return [Array<File>]
   def files
     Dir.glob("#{path}/*.yml")
        .delete_if { |file| /\.override.yml$/ =~ file }
        .map { |file| File.new(file) }
        .keep_if(&:loadable?)
+       .freeze
   end
 
   # Get files related to "box files"
   #
+  # Almost all files stored in ``path`` are considered as ``source``
+  #
   # @return [Array<Pathname>]
   def sources
-    files.map do |file|
-      Dir.glob("#{file.dirname}/**/**").map do |path|
-        path = ::Pathname.new(path)
-
-        path.file? ? path : nil
-      end.compact
-    end.flatten
+    Dir.glob("#{path}/**/**")
+       .map { |path| ::Pathname.new(path) }
+       .keep_if(&:file?)
+       .sort_by(&:to_s).freeze
   end
 end
