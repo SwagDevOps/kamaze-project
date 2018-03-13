@@ -9,5 +9,6 @@
 /cache/
 /doc/
 /tmp/
+/vagrant/*.override.yml
 /Vagrantfile
 /vendor/
