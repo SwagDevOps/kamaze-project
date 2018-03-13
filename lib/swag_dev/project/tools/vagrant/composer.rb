@@ -3,10 +3,13 @@
 require_relative '../vagrant'
 require 'pathname'
 
+# rubocop:disable Style/Documentation
 class SwagDev::Project::Tools::Vagrant
   class Composer
   end
+  require_relative 'composer/file'
 end
+# rubocop:enable Style/Documentation
 
 # Compose ``boxes`` data structure from files
 class SwagDev::Project::Tools::Vagrant::Composer
@@ -29,12 +32,7 @@ class SwagDev::Project::Tools::Vagrant::Composer
   # @return [Hash]
   def boxes
     results = {}
-    files.each do |path|
-      path = ::Pathname.new(path).realpath
-      name = path.basename('.yml').to_s
-
-      results[name] = YAML.load_file(path)
-    end
+    files.each { |file| results[file.name] = file.load }
 
     results
   end
@@ -43,7 +41,10 @@ class SwagDev::Project::Tools::Vagrant::Composer
   #
   # @return [Array<Pathname>]
   def files
-    Dir.glob("#{path}/*.yml").map { |file| ::Pathname.new(file) }
+    Dir.glob("#{path}/*.yml")
+       .delete_if { |file| /\.override.yml$/ =~ file }
+       .map { |file| File.new(file) }
+       .keep_if(&:loadable?)
   end
 
   # Get files related to "box files"
