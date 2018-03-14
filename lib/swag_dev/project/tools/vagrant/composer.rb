@@ -2,6 +2,7 @@
 
 require_relative '../vagrant'
 require 'pathname'
+require 'yaml'
 
 # rubocop:disable Style/Documentation
 class SwagDev::Project::Tools::Vagrant
@@ -25,6 +26,20 @@ class SwagDev::Project::Tools::Vagrant::Composer
   # @param [String] path
   def initialize(path)
     @path = ::Pathname.new(path)
+  end
+
+  # Dump (boxes) config
+  #
+  # @return [String]
+  def dump
+    ::YAML.dump(boxes)
+  end
+
+  # Denote existence of configured boxes
+  #
+  # @return [Boolean]
+  def boxes?
+    !boxes.empty?
   end
 
   # Get boxes
