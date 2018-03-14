@@ -47,10 +47,10 @@ class SwagDev::Project::Tools::Vagrant
   # defaults to ``./vagrant``
   #
   # @return [String]
-  attr_accessor :boxes_path
+  attr_accessor :path
 
   def mutable_attributes
-    [:template_path, :executable]
+    [:path, :executable]
   end
 
   include FileUtils
@@ -103,46 +103,22 @@ class SwagDev::Project::Tools::Vagrant
     self
   end
 
-  # Get files used to generate ``boxes``
-  #
-  # @return [Array<Pathname>]
-  def box_files
-    composer.files
+  def method_missing(method, *args, &block)
+    if respond_to_missing?(method)
+      composer.public_send(method, *args, &block)
+    else
+      super
+    end
   end
 
-  # Get files related to "box files"
-  #
-  # @return [Array<Pathname>]
-  def source_files
-    composer.sources
-  end
+  def respond_to_missing?(method, include_private = false)
+    return true if composer.respond_to?(method, include_private)
 
-  # Get boxes configuration
-  #
-  # @return [Hash]
-  def boxes
-    composer.boxes
-  end
-
-  # Denote vagrant existence of configured boxes
-  #
-  # @return [Boolean]
-  def boxes?
-    !boxes.empty?
-  end
-
-  # Dump (boxes) config
-  #
-  # @return [String]
-  def dump
-    YAML.dump(boxes)
+    super
   end
 
   protected
 
-  # Composer provides boxes
-  #
-  # @return [Composer]
   attr_reader :composer
 
   def setup
@@ -151,8 +127,8 @@ class SwagDev::Project::Tools::Vagrant
 
     @template_path = Pathname.new(@template_path || template_path).realpath
     @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
-    @boxes_path ||= pwd.join('vagrant').to_s
-    @composer = Composer.new(boxes_path)
+    @path ||= pwd.join('vagrant').to_s
+    @composer = Composer.new(@path)
   end
 
   # Get generated content for ``Vagrantfile``
