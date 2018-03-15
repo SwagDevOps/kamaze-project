@@ -7,7 +7,7 @@ vagrant = SwagDev.project.tools.fetch(:vagrant)
 
 CLOBBER.include('Vagrantfile')
 
-file 'Vagrantfile': vagrant.source_files do
+file 'Vagrantfile': vagrant.files do
   vagrant.install
 end
 
