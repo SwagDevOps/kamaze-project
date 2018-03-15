@@ -54,8 +54,6 @@ class SwagDev::Project::Tools::Vagrant
     [:path, :executable]
   end
 
-  include FileUtils
-
   # Get working dir
   #
   # @return [Pathname]
