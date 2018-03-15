@@ -4,14 +4,15 @@ require_relative '../tools'
 require_relative 'base_tool'
 require 'base64'
 require 'pathname'
-require 'cliver'
 
 # rubocop:disable Style/Documentation
 class SwagDev::Project::Tools
   class Vagrant < BaseTool
   end
 
-  require_relative 'vagrant/composer'
+  [:composer, :shell].each do |req|
+    require_relative "vagrant/#{req}"
+  end
 end
 # rubocop:enable Style/Documentation
 
@@ -68,20 +69,14 @@ class SwagDev::Project::Tools::Vagrant
   #
   # @return [Boolean]
   def executable?
-    !!executable
+    shell.executable?
   end
 
   # Run the vagrant command +cmd+.
   #
   # @see https://github.com/ruby/rake/blob/master/lib/rake/file_utils.rb
   def execute(*cmd, &block)
-    require 'rake/file_utils'
-
-    Bundler.with_clean_env do
-      cmd = [executable || 'vagrant'] + cmd
-
-      sh(*cmd, &block)
-    end
+    shell.execute(*cmd, &block)
   end
 
   # Get path to actual ``Vagrantfile``
@@ -121,14 +116,20 @@ class SwagDev::Project::Tools::Vagrant
 
   attr_reader :composer
 
+  # Get a shell, to execute ``vagrant`` commands
+  #
+  # @return [Shell]
+  attr_reader :shell
+
   def setup
     resources_path = Pathname.new(__dir__).join('..', 'resources').realpath
     template_path = resources_path.join('Vagrantfile')
 
     @template_path = Pathname.new(@template_path || template_path).realpath
-    @executable = Cliver.detect(@executable || :vagrant) || 'vagrant'
+    @executable ||= :vagrant
     @path ||= pwd.join('vagrant').to_s
     @composer = Composer.new(@path)
+    @shell = Shell.new(executable: executable)
   end
 
   # Get generated content for ``Vagrantfile``
