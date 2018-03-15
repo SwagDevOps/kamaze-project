@@ -17,7 +17,12 @@ end
 # rubocop:enable Style/Documentation
 
 # Vagrant based,
-# this class provides a easy and ready to use wrapper.
+# this class provides a easy and ready to use wrapper around ``vagrant``
+# executable. VM configuration is easyfied by the use of YAML files.
+#
+# VM configurations are stored in a single directory (default: ``vagrant``)
+# and can be overriden by an ``.override.yml`` file.
+# A ``Vagrantfile`` is generated upon configurations.
 #
 # Sample use in Rake task:
 #
@@ -29,6 +34,11 @@ end
 #    end
 # end
 # ```
+#
+# This Class is almost a facade based on:
+#
+# * Composer
+# * Shell
 #
 # @see http://yaml.org/YAML_for_ruby.html
 # @see https://friendsofvagrant.github.io/v1/docs/boxes.html
@@ -68,11 +78,11 @@ class SwagDev::Project::Tools::Vagrant
     shell.executable?
   end
 
-  # Run the vagrant command +cmd+.
+  # Run the vagrant command with given ``args``.
   #
   # @see https://github.com/ruby/rake/blob/master/lib/rake/file_utils.rb
-  def execute(*cmd, &block)
-    shell.execute(*cmd, &block)
+  def execute(*args, &block)
+    shell.execute(*args, &block)
   end
 
   # Get path to actual ``Vagrantfile``
@@ -110,6 +120,9 @@ class SwagDev::Project::Tools::Vagrant
 
   protected
 
+  # Get composer, responsible to read and combine files describing boxes
+  #
+  # @return [Composer]
   attr_reader :composer
 
   # Get a shell, to execute ``vagrant`` commands
