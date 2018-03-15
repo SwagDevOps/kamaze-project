@@ -57,11 +57,9 @@ class SwagDev::Project::Tools::Vagrant
   # Get working dir
   #
   # @return [Pathname]
-  def working_dir
+  def pwd
     Pathname.new(Dir.pwd).realpath
   end
-
-  alias pwd working_dir
 
   # Denote ``vagrant`` executable is present
   #
