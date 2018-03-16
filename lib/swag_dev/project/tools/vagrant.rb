@@ -10,7 +10,7 @@ class SwagDev::Project::Tools
   class Vagrant < BaseTool
   end
 
-  [:composer, :shell].each do |req|
+  [:composer, :shell, :writer].each do |req|
     require_relative "vagrant/#{req}"
   end
 end
@@ -38,6 +38,7 @@ end
 # This Class is almost a facade based on:
 #
 # * Composer
+# * Writer
 # * Shell
 #
 # @see http://yaml.org/YAML_for_ruby.html
@@ -45,15 +46,15 @@ end
 class SwagDev::Project::Tools::Vagrant
   # Template file (used for code generation)
   #
-  # @return [Pathname]
-  attr_accessor :template_path
+  # @return [String]
+  attr_accessor :template
 
   # Absolute path to the vagrant executable
   #
   # @return [String|nil]
   attr_accessor :executable
 
-  # Path to files describing boxes
+  # Path to files describing boxes (directory)
   #
   # defaults to ``./vagrant``
   #
@@ -61,7 +62,7 @@ class SwagDev::Project::Tools::Vagrant
   attr_accessor :path
 
   def mutable_attributes
-    [:path, :executable]
+    [:path, :executable, :template]
   end
 
   # Get working dir
@@ -87,6 +88,8 @@ class SwagDev::Project::Tools::Vagrant
 
   # Get path to actual ``Vagrantfile``
   #
+  # @todo pass to attr_accessor
+  #
   # @return [Pathname]
   def vagrantfile
     pwd.join('Vagrantfile')
@@ -99,7 +102,7 @@ class SwagDev::Project::Tools::Vagrant
   #
   # @return [self]
   def install
-    vagrantfile.write(vagrantfile_content)
+    writer.write(boxes)
 
     self
   end
@@ -130,40 +133,19 @@ class SwagDev::Project::Tools::Vagrant
   # @return [Shell]
   attr_reader :shell
 
-  def setup
-    resources_path = Pathname.new(__dir__).join('..', 'resources').realpath
-    template_path = resources_path.join('Vagrantfile')
+  # Get writer, reponsible of ``Vagrantfile`` generation
+  #
+  # @return [Writer]
+  attr_reader :writer
 
-    @template_path = Pathname.new(@template_path || template_path).realpath
+  def setup
+    @template ||= Pathname.new(__dir__).join('..', 'resources').to_s
     @executable ||= :vagrant
     @path ||= pwd.join('vagrant').to_s
+
+    # subtools -------------------------------------------------------
     @composer = Composer.new(@path)
     @shell = Shell.new(executable: executable)
-  end
-
-  # Get generated content for ``Vagrantfile``
-  #
-  # @return [String]
-  def vagrantfile_content
-    boxes64 = Base64.strict_encode64(dump).yield_self do |text|
-      word_wrap(text, 70).map { |s| "\s\s'#{s}'\\" }.join("\n").chomp('\\')
-    end
-
-    ['# frozen_string_literal: true',
-     '# vim: ai ts=2 sts=2 et sw=2 ft=ruby', nil,
-     '[:base64, :yaml, :pp].each { |req| require req.to_s }', nil,
-     "cnf64 = \\\n#{boxes64}", nil,
-     'boxes = YAML.safe_load(Base64.strict_decode64(cnf64), [Symbol])', nil,
-     template_path.read.gsub(/^#.*\n/, '')]
-      .map(&:to_s).join("\n").gsub(/\n\n+/, "\n\n")
-  end
-
-  # Wrap text into small chunks
-  #
-  # @param [String] text
-  # @param [Fixnum] width
-  # @return [Array<String>]
-  def word_wrap(text, width = 80)
-    text.each_char.each_slice(width).to_a.map(&:join)
+    @writer = Writer.new(@template, vagrantfile)
   end
 end
