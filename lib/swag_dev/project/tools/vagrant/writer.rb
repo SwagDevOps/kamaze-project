@@ -25,13 +25,14 @@ class SwagDev::Project::Tools::Vagrant::Writer
   # @return [Pathname]
   attr_reader :output_file
 
-  def initialize(template, output_file = nil)
+  # @param [String] template
+  # @param [String] output_file
+  def initialize(template, output_file = 'Vagrantfile')
     template = ::Pathname.new(template)
-    pwd = Pathname.new(Dir.pwd).realpath
 
     @template = template
     @template = template.join('Vagrantfile') if template.directory?
-    @output_file = output_file || pwd.join('Vagrantfile')
+    @output_file = output_file
   end
 
   # Write ``Vagrantfile`` based on given ``boxes``
