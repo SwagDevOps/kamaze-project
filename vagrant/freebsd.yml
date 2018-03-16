@@ -50,19 +50,34 @@ synced_folders:
     :rsync__exclude: ['.#*', '*_flymake.*']
 provisions:
   - :type: :file
-    :source: 'vagrant/freebsd/bashrc.sh'
+    :run: always
+    :preserve_order: true
+    :source: 'vagrant/freebsd/files/bin'
+    :destination: '/tmp/bin'
+  - :type: :file
+    :run: always
+    :preserve_order: true
+    :source: 'vagrant/freebsd/files/conf/bashrc.sh'
     :destination: '/home/vagrant/.bashrc'
   - :type: :file
-    :source: 'vagrant/freebsd/vimrc'
+    :run: always
+    :preserve_order: true
+    :source: 'vagrant/freebsd/files/conf/vimrc'
     :destination: '/home/vagrant/.vim/vimrc'
   - :type: :shell
     :preserve_order: true
-    :path: 'vagrant/freebsd/provision/base.sh'
+    :path: 'vagrant/freebsd/provisions/base.sh'
   - :type: :shell
     :preserve_order: true
-    :path: 'vagrant/freebsd/provision/rvm.sh'
+    :path: 'vagrant/freebsd/provisions/rvm.sh'
   - :type: :shell
     :preserve_order: true
-    :path: 'vagrant/freebsd/provision/bundle.sh'
-ssh_commands:
-  rspec: 'bash -cl ". .env && bundle exec rspec"'
+    :path: 'vagrant/freebsd/provisions/bundle.sh'
+  - :type: :shell
+    :run: always
+    :preserve_order: true
+    :path: 'vagrant/freebsd/provisions/bin.sh'
+ssh:
+  aliases:
+    rake:  'remote bundle exec rake'
+    rspec: 'remote bundle exec rspec'
