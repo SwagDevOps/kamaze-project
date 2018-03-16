@@ -2,6 +2,7 @@
 
 require 'swag_dev/project'
 require 'rake/clean'
+require 'shellwords'
 
 vagrant = SwagDev.project.tools.fetch(:vagrant)
 
@@ -52,10 +53,16 @@ vagrant.boxes.each do |box, box_config|
   task "vagrant:vm:#{box}:ssh", [:command] => ['vagrant:init'] do |task, args|
     command = args[:command]
     params  = ['ssh', box]
-    if command and command[0] == ':'
-      command = box_config.fetch('ssh_commands')
-                          .fetch(command.gsub(/^:/, ''))
+
+    if command
+      argv = Shellwords.split(command)
+      exeb = box_config['ssh']['aliases'][argv[0]]
+      if exeb
+        command = Shellwords.split(exeb).concat(argv.drop(1))
+                            .yield_self { |c| Shellwords.shelljoin(c) }
+      end
     end
+
     params += ['-c', command] if command
     vagrant.execute(*params)
   end
