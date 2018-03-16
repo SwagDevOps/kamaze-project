@@ -54,6 +54,11 @@ class SwagDev::Project::Tools::Vagrant
   # @return [String|nil]
   attr_accessor :executable
 
+  # Get path to actual ``Vagrantfile``
+  #
+  # @return [Pathname]
+  attr_accessor :vagrantfile
+
   # Path to files describing boxes (directory)
   #
   # defaults to ``./vagrant``
@@ -62,7 +67,7 @@ class SwagDev::Project::Tools::Vagrant
   attr_accessor :path
 
   def mutable_attributes
-    [:path, :executable, :template]
+    [:path, :executable, :template, :vagrantfile]
   end
 
   # Get working dir
@@ -84,15 +89,6 @@ class SwagDev::Project::Tools::Vagrant
   # @see https://github.com/ruby/rake/blob/master/lib/rake/file_utils.rb
   def execute(*args, &block)
     shell.execute(*args, &block)
-  end
-
-  # Get path to actual ``Vagrantfile``
-  #
-  # @todo pass to attr_accessor
-  #
-  # @return [Pathname]
-  def vagrantfile
-    pwd.join('Vagrantfile')
   end
 
   # Install a new Vagrantfile
@@ -140,6 +136,7 @@ class SwagDev::Project::Tools::Vagrant
 
   def setup
     @template ||= Pathname.new(__dir__).join('..', 'resources').to_s
+    @vagrantfile ||= ::Pathname.new(@vagrantfile || pwd.join('Vagrantfile'))
     @executable ||= :vagrant
     @path ||= pwd.join('vagrant').to_s
 
