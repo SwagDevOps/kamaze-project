@@ -16,6 +16,8 @@ class SwagDev::Project::Tools::Vagrant::Shell
   # @return [Hash]
   attr_reader :options
 
+  # Initialize a shell with given options
+  #
   # @param [Hash]
   def initialize(options = {})
     @options = options
@@ -71,9 +73,9 @@ class SwagDev::Project::Tools::Vagrant::Shell
     require 'rake'
     require 'rake/file_utils'
 
-    # rubocop:disable Style/CaseEquality
-    cmd.push(options) unless cmd.last === Hash
-    # rubocop:enable Style/CaseEquality
+    unless cmd.last.is_a?(Hash) and !cmd.last.empty?
+      cmd.push(options.clone)
+    end
 
     ::Rake::FileUtilsExt.sh(*cmd, &block)
   end
