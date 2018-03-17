@@ -71,6 +71,7 @@ provisions:
     :preserve_order: true
     :path: 'vagrant/freebsd/provisions/rvm.sh'
   - :type: :shell
+    :privileged: false
     :preserve_order: true
     :path: 'vagrant/freebsd/provisions/bundle.sh'
   - :type: :shell
