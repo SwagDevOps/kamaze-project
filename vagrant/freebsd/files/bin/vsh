@@ -9,8 +9,8 @@
 # remote bundle exec rspec
 # ```
 
-WORKING_DIR=/vagrant
 set -e
 . /etc/profile.d/rvm.sh
-cd "${WORKING_DIR}"
+
+cd /vagrant
 exec $@
