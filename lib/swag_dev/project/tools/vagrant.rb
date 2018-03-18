@@ -10,7 +10,7 @@ class SwagDev::Project::Tools
   class Vagrant < BaseTool
   end
 
-  [:composer, :shell, :writer].each do |req|
+  [:composer, :shell, :writer, :remote].each do |req|
     require_relative "vagrant/#{req}"
   end
 end
@@ -28,18 +28,20 @@ end
 #
 # ```ruby
 # vagrant = project.tools.fetch(:vagrant)
+#
 # if vagrant.boxes? and vagrant.executable?
-#    file vagrant.vagrantfile => vagrant.source_files do
+#    file vagrant.vagrantfile => vagrant.sources do
 #        vagrant.install
 #    end
 # end
 # ```
 #
-# This Class is almost a facade based on:
+# This class is almost a facade based on:
 #
 # * Composer
 # * Writer
 # * Shell
+# * Remote
 #
 # @see http://yaml.org/YAML_for_ruby.html
 # @see https://friendsofvagrant.github.io/v1/docs/boxes.html
@@ -91,6 +93,17 @@ class SwagDev::Project::Tools::Vagrant
     shell.execute(*args, &block)
   end
 
+  # Run a command remotely on box identified by ``box_id``
+  #
+  # Sample of use:
+  #
+  # ```ruby
+  # vagrant.ssh('freebsd', 'rake clobber')
+  # ```
+  def ssh(*args, &block)
+    remote.execute(*args, &block)
+  end
+
   # Install a new Vagrantfile
   #
   # Vagrant file is installed with additionnal YAML file,
@@ -140,9 +153,22 @@ class SwagDev::Project::Tools::Vagrant
     @executable ||= :vagrant
     @path ||= pwd.join('vagrant').to_s
 
-    # subtools -------------------------------------------------------
+    setup_compose
+  end
+
+  # Initialize most of the tools used internally
+  def setup_compose
     @composer = Composer.new(@path)
     @shell = Shell.new(executable: executable)
     @writer = Writer.new(@template, vagrantfile)
+
+    self
+  end
+
+  # Get remote shell provider
+  #
+  # @return [Remote]
+  def remote
+    Remote.new(boxes, executable: executable)
   end
 end
