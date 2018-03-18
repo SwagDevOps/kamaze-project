@@ -18,7 +18,7 @@ class SwagDev::Project::Tools::Vagrant::Shell
 
   # Initialize a shell with given options
   #
-  # @param [Hash]
+  # @param [Hash] options
   def initialize(options = {})
     @options = options
     # Executable used by command
