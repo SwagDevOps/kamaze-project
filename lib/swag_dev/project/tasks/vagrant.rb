@@ -51,19 +51,6 @@ vagrant.boxes.each do |box, box_config|
 
   desc "Ssh #{box}"
   task "vagrant:vm:#{box}:ssh", [:command] => ['vagrant:init'] do |task, args|
-    command = args[:command]
-    params  = ['ssh', box]
-
-    if command
-      argv = Shellwords.split(command)
-      exeb = box_config['ssh']['aliases'][argv[0]]
-      if exeb
-        command = Shellwords.split(exeb).concat(argv.drop(1))
-                            .yield_self { |c| Shellwords.shelljoin(c) }
-      end
-    end
-
-    params += ['-c', command] if command
-    vagrant.execute(*params)
+    vagrant.ssh(box, args[:command])
   end
 end
