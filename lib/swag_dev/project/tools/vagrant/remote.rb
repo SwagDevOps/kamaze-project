@@ -36,10 +36,13 @@ class SwagDev::Project::Tools::Vagrant::Remote
   # Sample of use:
   #
   # ```ruby
+  # remote.execute(:freebsd)
   # remote.execute(:freebsd, 'rake clobber')
   # ```
+  #
+  # At least, one argument is required.
   def execute(*params, &block)
-    box_id  = params[0]
+    box_id  = params.fetch(0)
     command = apply_alias(box_id, params[1]) # remote command
     params  = command ? [box_id, '-c', command] : [box_id]
 
@@ -56,9 +59,9 @@ class SwagDev::Project::Tools::Vagrant::Remote
   def apply_alias(box_id, command)
     return unless command
 
-    idb = box_id.to_s # box identifier
+    conf = boxes.fetch(box_id.to_s) # fetch related config
     args = Shellwords.split(command) # command split into words
-    exeb = boxes[idb]['ssh']['aliases'][args[0]] # executable
+    exeb = conf['ssh']['aliases'][args[0]] # executable
     if exeb
       command = Shellwords.split(exeb)
                           .concat(args.drop(1))
