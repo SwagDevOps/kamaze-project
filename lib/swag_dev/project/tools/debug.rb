@@ -122,10 +122,10 @@ class SwagDev::Project::Tools::Debug
   #
   # unless warnings are disabled (for example with the -W0 flag).
   #
-  # @param [Exception] e
+  # @param [Exception] error
   # @return [Array<String>]
-  def warn_error(e)
-    formats = { from: caller(1..1).first, mssg: e.message }
+  def warn_error(error)
+    formats = { from: caller(1..1).first, mssg: error.message }
     message = '%<from>s: %<mssg>s' % formats
 
     warn(message)
