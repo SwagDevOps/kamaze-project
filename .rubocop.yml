@@ -13,6 +13,7 @@ Metrics/ClassLength: { CountComments: false }
 Metrics/CyclomaticComplexity: { Max: 10 }
 Metrics/MethodLength: { CountComments: false, Max: 10 }
 Metrics/ModuleLength: { CountComments: false }
+Naming/MemoizedInstanceVariableName: { Enabled: false }
 Style/AndOr: { Enabled: false }
 Style/ClassAndModuleChildren: { Enabled: false }
 Style/DoubleNegation: { Enabled: false }
