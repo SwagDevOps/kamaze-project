@@ -16,12 +16,14 @@ class SwagDev::Project::Tools::Git::Status::FilesArray < Array
     attr_reader :type
   end
 
-  # @param [Array] a
-  def initialize(a)
-    super a.clone
-           .keep_if { |file| file.public_send("#{self.class.type}?") }
+  # Initialize using given status array representation
+  #
+  # @param [Array] status
+  def initialize(status)
+    super status.clone
+                .keep_if { |file| file.public_send("#{self.class.type}?") }
 
-    @memento = a.clone.map(&:freeze).freeze
+    @memento = status.clone.map(&:freeze).freeze
   end
 
   protected
