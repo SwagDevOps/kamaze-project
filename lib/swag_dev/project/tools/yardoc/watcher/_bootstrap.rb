@@ -8,8 +8,7 @@ require 'listen/record/symlink_detector'
 # Listen >=2.8
 # patch to silence duplicate directory errors. USE AT YOUR OWN RISK
 module Listen
-  # rubocop:disable Style/Documentation
-  # rubocop:disable Style/SignalException
+  # rubocop:disable all
   class Record
     class SymlinkDetector
       def _fail(_, _)
@@ -17,6 +16,5 @@ module Listen
       end
     end
   end
-  # rubocop:enable Style/SignalException
-  # rubocop:enable Style/Documentation
+  # rubocop:enable all
 end
