@@ -23,13 +23,9 @@ gem 'version_info', '~> 1.9'
 # supported tools ----------------------------------------------------
 
 gem 'pry', '~> 0.11'
+gem 'rubocop', '~> 0.53'
 gem 'yard', '~> 0.9'
-# rubocop ------------------------------------------------------------
-# parser SHOULD be updated later
-# @see https://github.com/bbatsov/rubocop/pull/5575/commits/
-# @see https://github.com/bbatsov/rubocop/pull/5575#issuecomment-366598058
-gem 'parser', '>= 2.4.0.2', '< 2.5'
-gem 'rubocop', '~> 0.52'
+
 # --------------------------------------------------------------------
 # 'rspec' is also supported, but we don't force to use it
 
