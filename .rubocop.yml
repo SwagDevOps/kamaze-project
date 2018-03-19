@@ -4,7 +4,7 @@
 # https://github.com/bbatsov/rubocop/tree/master/config
 # https://raw.githubusercontent.com/bbatsov/rubocop/master/config/enabled.yml
 # https://github.com/tootsuite/mastodon/blob/master/.rubocop.yml
-
+---
 AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.3 }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
 Lint/UnusedBlockArgument: { Enabled: false }
