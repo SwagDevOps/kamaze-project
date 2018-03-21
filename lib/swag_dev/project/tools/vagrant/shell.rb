@@ -91,20 +91,28 @@ class SwagDev::Project::Tools::Vagrant::Shell
     require 'rake'
     require 'rake/file_utils'
 
+    block ||= create_shell_runner(cmd)
+
     unless cmd.last.is_a?(Hash) and !cmd.last.empty?
       cmd.push(options.clone)
     end
 
-    ::Rake::FileUtilsExt.sh(*cmd, &(block || sh_block))
+    ::Rake::FileUtilsExt.sh(*cmd, &block)
   end
 
   # Get shell block
   #
+  # @param [Array] cmd
   # @return [Proc]
-  def sh_block
-    proc do |res, status|
-      unless res
-        exit status.exitstatus if status.exitstatus
+  def create_shell_runner(cmd)
+    proc do |ok, status|
+      retcode = status.exitstatus
+
+      unless ok
+        warn(["Command failed with status (#{retcode}):",
+              cmd.to_s.gsub(/\s+/, ' '),].join("\n"))
+
+        exit(retcode) if retcode
       end
     end
   end
