@@ -56,6 +56,28 @@ machine_provisions_config = lambda do |machine, box_config|
   end
 end
 
+# @see https://github.com/guard/listen/wiki/Duplicate-directory-errors
+#
+# Listen >=2.8
+# patch to silence duplicate directory errors. USE AT YOUR OWN RISK
+if YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
+  require 'listen'
+
+  if Gem::Version.new(Listen::VERSION) >= Gem::Version.new('2.8.0')
+    # rubocop:disable all
+    module Listen
+      class Record
+        class SymlinkDetector
+          def _fail(_, _)
+            fail Error, "Don't watch locally-symlinked directory twice"
+          end
+        end
+      end
+    end
+    # rubocop:enable all
+  end
+end
+
 # configure ----------------------------------------------------------
 Vagrant.configure(2) do |config|
   boxes.each do |box, box_config|
