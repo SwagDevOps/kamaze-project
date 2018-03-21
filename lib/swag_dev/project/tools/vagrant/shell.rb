@@ -95,6 +95,17 @@ class SwagDev::Project::Tools::Vagrant::Shell
       cmd.push(options.clone)
     end
 
-    ::Rake::FileUtilsExt.sh(*cmd, &block)
+    ::Rake::FileUtilsExt.sh(*cmd, &(block || sh_block))
+  end
+
+  # Get shell block
+  #
+  # @return [Proc]
+  def sh_block
+    proc do |res, status|
+      unless res
+        exit status.exitstatus if status.exitstatus
+      end
+    end
   end
 end
