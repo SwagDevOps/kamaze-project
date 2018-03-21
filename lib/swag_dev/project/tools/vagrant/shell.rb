@@ -54,13 +54,31 @@ class SwagDev::Project::Tools::Vagrant::Shell
 
   # Run given arguments as system command using ``executable``.
   def execute(*params, &block)
+    env = preserved_env
+
     Bundler.with_clean_env do
-      # [ENV.to_h]
-      sh(*to_a.concat(params), &block)
+      sh(*[env].concat(to_a.concat(params)), &block)
     end
   end
 
   protected
+
+  # Get preserved env (from given env)
+  #
+  # @param [ENV|Hash] from
+  # @return [Hash]
+  def preserved_env(from = ENV)
+    env = {}
+    from = from.to_h
+
+    ['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].each do |key|
+      next unless from.key?(key)
+
+      env[key] = from.fetch(key)
+    end
+
+    env
+  end
 
   # Run given (``cmd``) system command.
   #
