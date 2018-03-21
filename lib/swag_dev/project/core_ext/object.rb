@@ -9,7 +9,7 @@
 #
 # @see https://ruby-doc.org/core-2.5.0/Object.html
 class Object
-  if ([2, 5] <=> RUBY_VERSION.split('.').map(&:to_i)) >= 1
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.5.0')
     # Yields self to the block and returns the result of the block.
     #
     # @return [Object]
