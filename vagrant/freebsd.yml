@@ -75,6 +75,7 @@ provisions:
     :preserve_order: true
     :path: 'vagrant/freebsd/provisions/files-bin.sh'
   - :type: :shell
+    :run: always
     :privileged: false
     :preserve_order: true
     :inline: 'vsh bundle install --frozen'
