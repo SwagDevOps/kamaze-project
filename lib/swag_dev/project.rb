@@ -1,6 +1,6 @@
 # frozen_string_literal: true
+
 require 'pathname'
-[:object].each { |req| require_relative "project/core_ext/#{req}" }
 
 # Base module (almost a namespace)
 module SwagDev
@@ -43,7 +43,6 @@ end
 # end
 # ```
 class SwagDev::Project
-  include Concern::Env
   include Concern::Mode
   include Concern::Helper
   include Concern::Tasks
@@ -63,16 +62,31 @@ class SwagDev::Project
   # @return [Class]
   attr_reader :subject
 
+  class << self
+    include Concern::Env
+
+    # Load "env file" + ruby files from ``boot`` directory
+    #
+    # @return [self]
+    def boot
+      env_load
+
+      Dir.glob("#{__dir__}/project/boot/*.rb").each do |bootable|
+        require_relative bootable
+      end
+
+      self
+    end
+  end
+
   def initialize(&block)
+    self.class.boot
+
     if block
       config = helper.get('project/config')
       yield(config)
       config.configure(self)
     end
-
-    @working_dir = ::Pathname.new(@working_dir || Dir.pwd).realpath
-
-    env_load(pwd: @working_dir)
 
     self.name ||= ENV.fetch('PROJECT_NAME')
     self.subject ||= subject!
@@ -103,13 +117,16 @@ class SwagDev::Project
     tasks_load!
   end
 
+  # @return [Pathname]
+  def pwd
+    ::Pathname.new(Dir.pwd)
+  end
+
   protected
 
   attr_writer :working_dir
 
   alias gem_name name
-
-  alias pwd working_dir
 
   # Set name
   def name=(name)

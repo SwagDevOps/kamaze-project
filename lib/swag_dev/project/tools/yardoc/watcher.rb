@@ -25,8 +25,6 @@ class SwagDev::Project::Tools::Yardoc::Watcher
   # @param [Boolean] wait
   # @return [self]
   def watch(wait = false)
-    require_relative 'watcher/_bootstrap'
-
     listener = ::Listen.to(*paths, options) do |mod, add, rem|
       if trigger?(mod + add + rem)
         yardoc.run
