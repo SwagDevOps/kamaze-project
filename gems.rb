@@ -23,7 +23,7 @@ gem 'version_info', '~> 1.9'
 # supported tools ----------------------------------------------------
 
 gem 'pry', '~> 0.11'
-gem 'rubocop', '~> 0.53'
+gem 'rubocop', '~> 0.54'
 gem 'yard', '~> 0.9'
 
 # --------------------------------------------------------------------
@@ -47,6 +47,6 @@ end
 
 group :test, :development do
   gem 'factory_bot', '~> 4.8'
-  gem 'mocha', '~> 1.3'
+  gem 'mocha', '~> 1.4'
   gem 'rspec', '~> 3.7'
 end
