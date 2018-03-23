@@ -78,7 +78,7 @@ provisions:
     :run: always
     :privileged: false
     :preserve_order: true
-    :inline: 'vsh bundle install --frozen'
+    :inline: 'vsh bundle install --frozen --clean --jobs=$(nproc)'
 ssh:
   aliases:
     bundle: 'vsh bundle'
