@@ -39,7 +39,7 @@ GEM
     msgpack (1.2.4)
     necromancer (0.4.0)
     parallel (1.12.1)
-    parser (2.5.0.4)
+    parser (2.5.0.5)
       ast (~> 2.4.0)
     pastel (0.7.2)
       equatable (~> 0.5.0)
