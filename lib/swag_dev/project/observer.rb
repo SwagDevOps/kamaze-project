@@ -8,6 +8,8 @@ class SwagDev::Project
 end
 
 # Observer class
+#
+# @abstract
 class SwagDev::Project::Observer
   class << self
     # Subscribe to given class.
