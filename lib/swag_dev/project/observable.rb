@@ -15,6 +15,8 @@ end
 # The observable object MNUST:
 #
 # * call ``#dispatch_event``
+#
+# @abstract
 class SwagDev::Project::Observable
   class << self
     # @return [Hash|nil]
