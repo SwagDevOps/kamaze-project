@@ -6,6 +6,7 @@ require 'base64'
 require 'pathname'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools
   class Vagrant < BaseTool
   end
@@ -14,6 +15,7 @@ class SwagDev::Project::Tools
     require_relative "vagrant/#{req}"
   end
 end
+
 # rubocop:enable Style/Documentation
 
 # Vagrant based,

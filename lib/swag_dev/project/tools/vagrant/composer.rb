@@ -5,11 +5,13 @@ require 'pathname'
 require 'yaml'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools::Vagrant
   class Composer
   end
   require_relative 'composer/file'
 end
+
 # rubocop:enable Style/Documentation
 
 # Compose ``boxes`` data structure from files

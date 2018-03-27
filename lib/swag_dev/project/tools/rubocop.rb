@@ -6,6 +6,7 @@ require 'pathname'
 require 'rubocop'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools
   class Rubocop < BaseTool
     class Arguments < Array
@@ -17,6 +18,7 @@ class SwagDev::Project::Tools
     end
   end
 end
+
 # rubocop:enable Style/Documentation
 
 # Tool to run ``Rubocop::CLI``

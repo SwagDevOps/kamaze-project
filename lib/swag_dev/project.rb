@@ -5,6 +5,7 @@ require 'pathname'
 # Base module (almost a namespace)
 module SwagDev
   # rubocop:disable Style/Documentation
+
   class Project
     module Concern
       [nil, :env, :mode, :helper, :sham,
@@ -13,10 +14,11 @@ module SwagDev
       end
     end
   end
+
   # rubocop:enable Style/Documentation
 end
 
-# rubocop:disable Style/Documentation
+# Base namespace
 module SwagDev
   class << self
     include Project::Concern::Helper
@@ -29,7 +31,6 @@ module SwagDev
     end
   end
 end
-# rubocop:enable Style/Documentation
 
 # Represent a project
 #

@@ -4,11 +4,13 @@ require_relative 'files_array'
 require_relative 'worktree'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools::Git::Status
   class Index < FilesArray
     @type = :index
   end
 end
+
 # rubocop:enable Style/Documentation
 
 # Represent index status

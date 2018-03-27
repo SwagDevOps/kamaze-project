@@ -5,6 +5,7 @@ require_relative 'base_tool'
 require 'pathname'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools
   class Git < BaseTool
     # @abstract
@@ -22,6 +23,7 @@ class SwagDev::Project::Tools
    :hooks,
    :status].each { |req| require_relative "git/#{req}" }
 end
+
 # rubocop:enable Style/Documentation
 
 # Provide a wrapper based on ``rugged`` (``libgit2``}
