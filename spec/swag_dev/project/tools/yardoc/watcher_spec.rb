@@ -2,7 +2,8 @@
 
 require 'swag_dev/project/tools/yardoc/watcher'
 
-describe SwagDev::Project::Tools::Yardoc::Watcher do
+describe SwagDev::Project::Tools::Yardoc::Watcher, \
+         :tools, :'tools/yardoc', :'tools/yardoc/watcher' do
   build('tools/yardoc/watcher')
     .describe_instance_methods
     .each do |method, counts|
@@ -12,17 +13,24 @@ describe SwagDev::Project::Tools::Yardoc::Watcher do
   end
 end
 
+# rubocop:disable Metrics/BlockLength
 10.times do
-  describe SwagDev::Project::Tools::Yardoc::Watcher do
+  describe SwagDev::Project::Tools::Yardoc::Watcher, \
+           :tools, :'tools/yardoc', :'tools/yardoc/watcher' do
     let(:paths) { build('tools/yardoc/watcher').random_paths }
     let(:patterns) { build('tools/yardoc/watcher').random_patterns }
     let(:options) { build('tools/yardoc/watcher').random_options }
 
     subject do
-      described_class.new do |watcher|
-        watcher.paths = paths
-        watcher.patterns = patterns
-        watcher.options = options
+      # testing purpose only, SHOULD use an observer instead
+      described_class.new.yield_self do |watcher|
+        {
+          paths: paths,
+          patterns: patterns,
+          options: options
+        }.each { |k, v| watcher.__send__("#{k}=", v) }
+
+        watcher
       end
     end
 
@@ -42,3 +50,4 @@ end
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
