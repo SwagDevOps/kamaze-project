@@ -2,7 +2,6 @@
 
 require_relative '../tools'
 require_relative 'base_tool'
-require 'pastel'
 
 # rubocop:disable Style/Documentation
 
