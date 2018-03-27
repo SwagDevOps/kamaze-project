@@ -1,13 +1,21 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
+require_relative '../observable'
 
+class SwagDev::Project::Tools
+  class BaseTool < SwagDev::Project::Observable
+  end
+end
+
+# Provides base for tools
+#
 # @abstract
 class SwagDev::Project::Tools::BaseTool
   def initialize
-    yield self if block_given?
-
+    dispatch_event(:before_setup)
     setup
+    dispatch_event(:after_setup)
 
     attrs_mute!
   end
