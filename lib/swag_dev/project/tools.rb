@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'swag_dev/project'
-require 'swag_dev/project/concern/sham'
 require 'swag_dev/project/concern/helper'
 require 'yaml'
 
@@ -24,6 +23,8 @@ require 'yaml'
 # end
 # ```
 class SwagDev::Project::Tools
+  include SwagDev::Project::Concern::Helper
+
   class << self
     # @type [Hash]
     # @return [Hash<Symbol, Class>]
@@ -39,7 +40,8 @@ class SwagDev::Project::Tools
     # @return [Hash]
     # @see SwagDev.Project.Helper.Inflector
     def defaults
-      defaults = YAML.load_file("#{__dir__}/resources/config/tools.yml")
+      config = "#{__dir__}/resources/config/tools.yml"
+      defaults = YAML.load_file(config)
 
       Hash[defaults.collect { |k, v| [k.to_sym, v] }]
     end
@@ -51,6 +53,8 @@ class SwagDev::Project::Tools
   def initialize(items = {})
     @items = self.class.defaults.clone.merge(self.class.items).merge(items)
     @cache = {}
+    # @type [SwagDev::Project::Helper::Inflector]
+    @inflector = helper.get(:inflector)
   end
 
   # Get an instance from given name
@@ -76,7 +80,7 @@ class SwagDev::Project::Tools
     (@cache[name] ||= proc do
       klass = @items[name.to_sym]
 
-      make(name, klass) if klass
+      make(klass) if klass
     end.call)&.clone
   end
 
@@ -87,7 +91,7 @@ class SwagDev::Project::Tools
   # @return [Hash]
   def to_h
     results = @items.map do |name, klass|
-      [name, make(name, @cache[name] ||= klass)]
+      [name, make(@cache[name] ||= klass)]
     end
 
     Hash[results]
@@ -102,23 +106,14 @@ class SwagDev::Project::Tools
 
   protected
 
-  include SwagDev::Project::Concern::Helper
-  include SwagDev::Project::Concern::Sham
+  # @return [SwagDev::Project::Helper::Inflector]
+  attr_reader :inflector
 
-  SwagDev::Project::Concern::Sham.instance_methods.each { |m| protected m }
-
-  # Instantiate a ``Class`` (as ``klass``) eventually using a named ``sham``
+  # Instantiate a ``Class`` (as ``klass``)
   #
-  # @param [String|Symbol] name
   # @param [String|Symbol|Class] klass
   # @return [Object]
-  def make(name, klass)
-    klass = helper.get(:inflector).resolve(klass) unless klass.is_a?(Class)
-
-    klass.new do |i|
-      self.sham("tools/#{name}").to_h.each do |attr, value|
-        i.public_send("#{attr}=", value)
-      end
-    end
+  def make(klass)
+    (klass.is_a?(Class) ? klass : inflector.resolve(klass)).new
   end
 end
