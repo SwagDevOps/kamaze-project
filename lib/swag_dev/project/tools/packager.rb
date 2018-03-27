@@ -4,6 +4,7 @@ require_relative '../tools'
 require_relative 'base_tool'
 
 # rubocop:disable Style/Documentation
+
 class SwagDev::Project::Tools
   class Packager < BaseTool
     class Filesystem
@@ -18,6 +19,7 @@ class SwagDev::Project::Tools
     require_relative 'packager/filesystem/operator/utils'
   end
 end
+
 # rubocop:enable Style/Documentation
 
 # Provides a packager
