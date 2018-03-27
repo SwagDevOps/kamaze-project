@@ -3,9 +3,8 @@
 require_relative '../tools/debug'
 
 # rubocop:disable Style/Documentation
-class Object
-  # rubocop:enable Style/Documentation
 
+class Object
   private
 
   # Print arguments in pretty form
@@ -19,3 +18,5 @@ class Object
     objs.size <= 1 ? objs.first : objs
   end
 end
+
+# rubocop:enable Style/Documentation
