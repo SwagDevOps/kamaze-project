@@ -22,17 +22,17 @@ gem 'version_info', '~> 1.9'
 
 # supported tools ----------------------------------------------------
 
-gem 'pry', '~> 0.11'
 gem 'rubocop', '~> 0.54'
 gem 'yard', '~> 0.9'
 
 # --------------------------------------------------------------------
-# 'rspec' is also supported, but we don't force to use it
+# 'rspec' and 'pry' are also supported, but we don't force to use it
 
 # development, doc, test ---------------------------------------------
 
 group :development do
   gem 'bootsnap', '~> 1.2'
+  gem 'pry', '~> 0.11'
   gem 'sys-proc', '~> 1.0', '>= 1.0.4'
 
   # 'listen' is used to "watch"
