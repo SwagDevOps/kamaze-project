@@ -77,5 +77,17 @@ The ``listen`` gem is optional, due to
 [several system incompatibilities][guard/listen#issues-limitations];
 ``listen`` gem is only used by some "``watch`` optional tasks".
 
+### Troubles with ``rugged`` gem
+
+Some dependencies are required to install ``rugged`` with native extensions:
+
+* ``make`` or ``gmake``
+* ``cmake``
+* ``pkg-config``
+* ``libssl-dev`` (asked for OpenSSL TLS backend)
+
+depending on Linux distributions, and/or package managers,
+dependency names are likely to change.
+
 [rubygems/specification#name]: http://guides.rubygems.org/specification-reference/#name
 [guard/listen#issues-limitations]: https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations
