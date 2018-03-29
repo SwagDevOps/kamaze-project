@@ -26,6 +26,7 @@ FactoryBot.define do
           :licenser,
           :process_locker,
           :rubocop,
+          :shell,
           :vagrant,
           :yardoc,
           :yardoc_watcher].shuffle)
