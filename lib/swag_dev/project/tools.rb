@@ -7,8 +7,6 @@ require 'yaml'
 
 # Tools provider
 #
-# Classes called tools can use ``sham`` to be instantiated.
-# Shams are used (in a block initialize method) to set attributes.
 # Tools are instantiated on demand,
 # each demand generates a fresh new tool instance, avoiding
 # the risk to reuse a previous altered version of a tool.

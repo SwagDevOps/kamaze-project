@@ -8,7 +8,7 @@ module SwagDev
 
   class Project
     module Concern
-      [nil, :env, :mode, :helper, :sham,
+      [nil, :env, :mode, :helper,
        :tasks, :versionable, :tools].each do |req|
         require_relative "project/concern/#{req}".gsub(%r{/$}, '')
       end
