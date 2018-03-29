@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 
-begin
-  patch = require 'listen'
-rescue LoadError
-  patch = false
+patchable = lambda do
+  if Gem::Specification.find_all_by_name('listen').any?
+    require 'listen'
+    return YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
+  end
+
+  false
 end
 
 # @see https://github.com/guard/listen/wiki/Duplicate-directory-errors
 #
 # Listen >=2.8
 # patch to silence duplicate directory errors. USE AT YOUR OWN RISK
-if patch and YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
+if patchable.call
   if Gem::Version.new(Listen::VERSION) >= Gem::Version.new('2.8.0')
     # rubocop:disable all
     module Listen
