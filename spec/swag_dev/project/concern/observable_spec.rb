@@ -33,4 +33,10 @@ describe Class, :concern, :'concern/observable' do
       it { expect(subject.protected_methods).to include(func) }
     end
   end
+
+  context '.observer_peers' do
+    subject { build('concern/observable').described_class.new }
+
+    it { expect(subject.__send__(:observer_peers)).to be_a(Hash) }
+  end
 end
