@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
+require_relative '../tools'
 
 # Apply provided license on project files
 #
@@ -135,9 +135,7 @@ class SwagDev::Project::Tools::Licenser
   def process
     yield self if block_given?
 
-    files.each do |file|
-      apply_license(file)
-    end
+    files.each { |file| apply_license(file) }
 
     self
   end
@@ -166,11 +164,12 @@ class SwagDev::Project::Tools::Licenser
   def apply_license(file)
     content    = file.read
     licensable = !content.scan(license_regexp)[0] and !license.strip.empty?
+    output     = self.output || file
 
     if licensable
       content = license_lines(content.lines).join('')
 
-      (output || file).write(content)
+      output.write(content)
     end
 
     file
