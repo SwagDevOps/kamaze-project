@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
+require_relative '../tools'
 require 'etc'
 require 'fileutils'
 require 'pathname'
