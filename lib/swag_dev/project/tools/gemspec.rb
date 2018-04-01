@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools'
-require 'swag_dev/project/tools/packager'
+require_relative '../tools'
+require_relative 'packager'
 
 # Module providng several tools based on gemspec reader/writer
 module SwagDev::Project::Tools::Gemspec
