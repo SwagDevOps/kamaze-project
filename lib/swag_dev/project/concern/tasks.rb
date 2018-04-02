@@ -23,8 +23,8 @@ module SwagDev::Project::Concern::Tasks
   # @param [Array] tasks
   def tasks=(tasks)
     @tasks = (@tasks.to_a + tasks.to_a).map(&:to_s).map do |tn|
-      { ':': '/', '-': '_' }
-        .each { |k, v| tn = tn.tr(k.to_s, v) }
+      { ':': '/', '-': '_' }.each { |k, v| tn = tn.tr(k.to_s, v) }
+
       tn
     end.map(&:to_sym).uniq
   end
