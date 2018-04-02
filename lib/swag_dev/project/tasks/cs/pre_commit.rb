@@ -1,6 +1,4 @@
-# rubocop:disable Naming/FileName
 # frozen_string_literal: true
-# rubocop:enable Naming/FileName
 
 # Sample of use (``.git/hooks/pre-commit``):
 #
@@ -9,8 +7,6 @@
 #
 # exec bundle exec rake cs:pre-commit
 # ```
-
-tools = SwagDev.project.tools
 
 # process files (index) ----------------------------------------------
 index = lambda do
