@@ -25,6 +25,7 @@ FactoryBot.define do
           :git,
           :licenser,
           :process_locker,
+          :rspec,
           :rubocop,
           :shell,
           :vagrant,
