@@ -8,9 +8,19 @@ class SwagDev::Project::Tools
   end
 end
 
-# Provide wrapper based on ``rspec``
+# Provide wrapper based on top of ``RSpec::Core::Runner``
 #
-# Intended to easyfy
+# Sample of use:
+#
+# ```ruby
+# tools.fetch(:rspec).tap do |rspec|
+#   rspec.tags = args[:tags].to_s.split(',').map(&:strip)
+# end.run
+# ```
+#
+# @see https://www.relishapp.com/rspec/rspec-core/docs/command-line/rake-task
+# @see https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/runner.rb
+# @see https://relishapp.com/rspec/rspec-core/v/2-4/docs/command-line/tag-option
 class SwagDev::Project::Tools::Rspec
   # Default arguments used by ``RSpec::Core::Runner``
   #
