@@ -31,14 +31,18 @@ module SwagDev::Project::Concern::Tasks
 
   # Load tasks
   #
-  # Tasks are loaded only when ``Rake::DSL`` is defined
+  # Tasks are loaded only when ``Rake::DSL`` is defined.
+  # ``DSL::Definition`` is loaded during tasks loading.
   #
+  # @see SwagDev::Project::DSL::Definition
   # @return [self]
   def tasks_load!
     if Kernel.const_defined?('Rake::DSL')
-      base = Pathname.new('swag_dev/project/tasks')
+      ns = Pathname.new('swag_dev/project')
 
-      self.tasks.each { |req| require base.join(req.to_s).to_s }
+      [ns.join('dsl/setup'),
+       tasks.map { |task| ns.join("tasks/#{task}") }]
+        .flatten.map(&:to_s).each { |req| require req }
     end
 
     self
