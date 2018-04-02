@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
 require 'rake'
+require 'swag_dev/project'
 
 SwagDev.project do |c|
   c.subject = SwagDev::Project
@@ -21,4 +21,4 @@ end.load!
 
 task default: [:gem]
 
-task spec: [:test] if SwagDev.project.path('spec').directory?
+task spec: [:test] if project.path('spec').directory?
