@@ -4,7 +4,6 @@ require_relative '../tools'
 require_relative 'base_tool'
 require 'pathname'
 require 'yard'
-require 'logger'
 
 # rubocop:disable Style/Documentation
 
@@ -24,33 +23,28 @@ end
 class SwagDev::Project::Tools::Yardoc
   include Watchable
 
-  # Options used by {YARD::CLI::Yardoc}
+  # Options used by ``YARD::CLI::Yardoc``
   #
   # @type [Hash]
   # @return [Hash]
   attr_accessor :options
 
-  # @type [Fixnum]
   # @return [Fixnum]
-  attr_accessor :log_level
-
-  # Options to pass to {YARD::CLI::Stats}
-  #
-  # @return [Array<String>] the options passed to the stats utility
-  attr_accessor :stats_options
-
   def run
-    core.run('--no-stats')
-    YARD::CLI::Stats.run(*stats_options)
+    retcode = core.run
+    retcode = retcode ? 0 : 1 if [true, false].include?(retcode)
+
+    retcode
   end
 
   # Get output directory (default SHOULD be ``doc``)
   #
   # @return [Pathname]
   def output_dir
-    path = core.options.serializer.basepath.gsub(%r{^\./+}, '')
-
-    ::Pathname.new(path)
+    core.options
+        .yield_self(&:serializer)
+        .yield_self(&:basepath).gsub(%r{^\./+}, '')
+        .yield_self { |path| ::Pathname.new(path) }
   end
 
   alias call run
@@ -59,18 +53,18 @@ class SwagDev::Project::Tools::Yardoc
 
   def setup
     @options ||= {}
-    @log_level ||= Logger::ERROR
-    @stats_options ||= (@stats_options || []) + ['--use-cache']
+  end
+
+  def mutable_attributes
+    [:options]
   end
 
   # @return [YARD::CLI::Yardoc]
   def core
-    yard = YARD::CLI::Yardoc.new
-    yard.__send__(:log).level = Logger::ERROR if yard.respond_to?(:log, true)
+    YARD::CLI::Yardoc.new.tap do |yard|
+      yard.parse_arguments([])
 
-    yard.parse_arguments([])
-    options.to_h.each { |k, v| yard.options[k.to_sym] = v }
-
-    yard
+      options.to_h.each { |k, v| yard.options[k.to_sym] = v }
+    end
   end
 end
