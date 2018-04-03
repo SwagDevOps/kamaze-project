@@ -77,6 +77,13 @@ class SwagDev::Project::Tools::Rspec
     }.fetch(caller_locations(1..1).first.path == __FILE__)
   end
 
+  # Denote fail (call exit with status code) on error
+  #
+  # @return [Boolean]
+  def fail_on_error?
+    !!fail_on_error
+  end
+
   protected
 
   def setup
