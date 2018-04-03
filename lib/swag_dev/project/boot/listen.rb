@@ -9,13 +9,14 @@ patchable = lambda do
   false
 end
 
+# rubocop:disable all
+
 # @see https://github.com/guard/listen/wiki/Duplicate-directory-errors
 #
 # Listen >=2.8
 # patch to silence duplicate directory errors. USE AT YOUR OWN RISK
 if patchable.call
   if Gem::Version.new(Listen::VERSION) >= Gem::Version.new('2.8.0')
-    # rubocop:disable all
     module Listen
       class Record
         class SymlinkDetector
@@ -25,6 +26,7 @@ if patchable.call
         end
       end
     end
-    # rubocop:enable all
   end
 end
+
+# rubocop:enable all
