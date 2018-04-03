@@ -106,7 +106,7 @@ class SwagDev::Project::Tools::Console::Output
 
   # Bufferize given arguments
   #
-  # @param [Array<String>] *strings
+  # @param [Array<String>] strings
   # @return [Array<String>]
   def bufferize(*strings)
     strings.to_a.map { |s| Buffer.new(self, s) }
