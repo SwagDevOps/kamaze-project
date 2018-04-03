@@ -3,7 +3,7 @@
 require 'swag_dev/project/tools/yardoc'
 require 'pathname'
 
-describe SwagDev::Project::Tools::Yardoc do
+describe SwagDev::Project::Tools::Yardoc, :tools, :'tools/yardoc' do
   build('tools/yardoc')
     .describe_instance_methods
     .each do |method, counts|
@@ -15,9 +15,9 @@ describe SwagDev::Project::Tools::Yardoc do
   it { expect(subject).to be_a(SwagDev::Project::Tools::BaseTool) }
 end
 
-describe SwagDev::Project::Tools::Yardoc do
+describe SwagDev::Project::Tools::Yardoc, :tools, :'tools/yardoc' do
   context '#mutable_attributes' do
-    it { expect(subject.mutable_attributes).to be_empty }
+    it { expect(subject.mutable_attributes).to eq([:options]) }
   end
 
   context '#output_dir' do
