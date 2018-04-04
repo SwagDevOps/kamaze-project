@@ -49,14 +49,14 @@ class SwagDev::Project::Tools::Yardoc
 
   alias call run
 
+  def mutable_attributes
+    [:options]
+  end
+
   protected
 
   def setup
     @options ||= {}
-  end
-
-  def mutable_attributes
-    [:options]
   end
 
   # @return [YARD::CLI::Yardoc]
