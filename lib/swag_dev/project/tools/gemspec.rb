@@ -24,6 +24,4 @@ module SwagDev::Project::Tools::Gemspec
   [:packager,
    :reader, :writer,
    :builder, :packer].each { |req| require_relative "gemspec/#{req}" }
-
-  private_constant :Packager
 end
