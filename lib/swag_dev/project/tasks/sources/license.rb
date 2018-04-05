@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require_relative '../sources'
+writer = tools.fetch(:gemspec_writer)
 
 desc 'Apply license on (ruby) source files'
-task 'sources:license', [:output] => ['gem:gemspec'] do |task, args|
+task 'sources:license', [:output] => [writer.to_s] do |task, args|
   output  = args[:output] ? Pathname.new(args[:output]) : nil
-  project = SwagDev.project
-  builder = project.tools.fetch(:gemspec_builder)
+  builder = tools.fetch(:gemspec_builder)
 
   begin
-    project.tools.fetch(:licenser).process do |process|
+    tools.fetch(:licenser).process do |process|
       process.output  = output if output
       process.license = project.version_info.fetch(:license_header)
       process.files   = builder.source_files.select do |file|
@@ -17,7 +16,9 @@ task 'sources:license', [:output] => ['gem:gemspec'] do |task, args|
         file.extname.gsub(/^\./, '') == 'rb'
       end
     end
-  rescue SystemExit, Interrupt, Errno::EPIPE => e
-    exit(e.class.const_get(:Errno)) if e.is_a?(Errno::EPIPE)
+  rescue SystemExit, Interrupt
+    exit(Errno::ECANCELED::Errno)
+  rescue Errno::EPIPE => e
+    exit(e.class.const_get(:Errno))
   end
 end

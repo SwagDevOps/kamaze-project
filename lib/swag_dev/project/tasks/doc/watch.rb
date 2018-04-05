@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../doc'
+require 'rake/clean'
 
-tools = SwagDev.project.tools
+# rubocop:disable Lint/UselessAssignment
 
 # Display start time
 #
@@ -14,19 +14,22 @@ time = proc do
   tools.fetch(:console).stdout.puts("{{green:#{stime}}}")
 end
 
+# rubocop:enable Lint/UselessAssignment
+
+# clobber -----------------------------------------------------------
+tools.fetch(:yardoc).tap do |yardoc|
+  CLOBBER.include(yardoc.output_dir)
+end
+
 # watch --------------------------------------------------------------
-
 desc 'Watch documentation changes'
-task :'doc:watch' do
+task :'doc:watch' do |task|
   # ENV['LISTEN_GEM_DEBUGGING'] = '2'
-  watcher = tools.fetch(:yardoc_watcher)
-
   tools.fetch(:process_locker).lock!(:doc_watch) do
-    # rubocop:disable Lint/HandleExceptions
     begin
-      watcher.watch(true)
+      tools.fetch(:yardoc_watcher).watch(true)
     rescue SystemExit, Interrupt
+      exit(Errno::ECANCELED::Errno)
     end
-    # rubocop:enable Lint/HandleExceptions
   end
 end

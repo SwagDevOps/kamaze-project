@@ -1,18 +1,15 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'swag_dev/project'
 require 'rake/clean'
 
-yardoc = SwagDev.project.tools.fetch(:yardoc)
+tools.fetch(:yardoc).tap do |yardoc|
+  CLOBBER.include(yardoc.output_dir)
+end.yield_self do |yardoc|
+  desc 'Generate documentation (using YARD)'
+  task doc: [] do |task|
+    yardoc.run
 
-# clobber -----------------------------------------------------------
-
-CLOBBER.include(yardoc.output_dir)
-
-# tasks -------------------------------------------------------------
-
-desc 'Generate documentation (using YARD)'
-task doc: [] do
-  yardoc.run
+    task.reenable
+  end
 end

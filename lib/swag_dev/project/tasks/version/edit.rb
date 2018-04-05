@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
-
 desc 'Edit version file'
-task 'version:edit' do
+task 'version:edit' do |task|
   require 'tty/editor'
 
-  TTY::Editor.open(SwagDev.project.subject.VERSION.file_name)
+  TTY::Editor.open(project.subject.VERSION.file_name)
+  task.reenable
 end

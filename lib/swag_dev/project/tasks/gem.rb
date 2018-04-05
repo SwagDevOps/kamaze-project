@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
-
 # Require base tasks -------------------------------------------------
 [:gemspec, :build].each { |req| require_relative "gem/#{req}" }
 

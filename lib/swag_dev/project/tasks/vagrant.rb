@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
 require 'rake/clean'
 require 'shellwords'
 require 'yaml'
 
-vagrant = SwagDev.project.tools.fetch(:vagrant)
+vagrant = tools.fetch(:vagrant)
 
 CLOBBER.include('Vagrantfile')
 
@@ -16,7 +15,6 @@ end
 task 'vagrant:init': ['Vagrantfile']
 
 # :vagrant -----------------------------------------------------------
-
 {
   'rsync-auto': 'Watch all rsync synced folders',
   'status': 'Current machine states',
@@ -33,13 +31,12 @@ desc 'Dump config'
 task 'vagrant:dump', [:box_id] => ['vagrant:init'] do |task, args|
   dump = args[:box_id] ? vagrant.boxes.fetch(args[:box_id]) : vagrant.boxes
 
-  $stdout.puts(YAML.dump(dump))
+  STDOUT.puts(YAML.dump(dump))
 
   task.reenable
 end
 
 # :vagrant:vm --------------------------------------------------------
-
 vagrant.boxes.each_key do |box_id|
   task_ns = "vagrant:vm:#{box_id}"
   {

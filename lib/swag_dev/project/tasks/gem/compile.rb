@@ -3,15 +3,13 @@
 require 'rake/clean'
 require_relative '../gem'
 
-tools  = SwagDev.project.tools
 packer = tools.fetch(:gemspec_packer)
+writer = tools.fetch(:gemspec_writer)
 
-# Generate gemspec file (when missing) -------------------------------
+# generate gemspec file (when missing) -------------------------------
+writer.write unless packer.ready?
 
-tools.fetch(:gemspec_writer).write unless packer.ready?
-
-# Tasks --------------------------------------------------------------
-
+# tasks --------------------------------------------------------------
 packer.packables.each do |packable|
   CLOBBER.include(packable)
 
