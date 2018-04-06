@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern'
-require 'swag_dev/project/tools'
+require_relative '../concern'
+require_relative '../../project/tools_provider'
 require 'active_support/concern'
 
 # Provides access to tools
@@ -14,12 +14,11 @@ module SwagDev::Project::Concern::Tools
   #
   # @return [Hash]
   def tools
-    @tools ||= {}
-
-    SwagDev::Project::Tools.new(@tools)
+    @tools ||= SwagDev::Project::ToolsProvider.new
   end
 
+  # @param [Hash] tools
   def tools=(tools)
-    SwagDev::Project::Tools.items = tools.to_h
+    @tools = self.tools.merge!(tools)
   end
 end
