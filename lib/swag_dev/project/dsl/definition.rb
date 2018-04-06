@@ -17,23 +17,21 @@ module SwagDev::Project::DSL::Definition
   #
   # @return [SwagDev::Project]
   def project
-    project_dsl_storage[:project] ||= SwagDev.project
+    @project_dsl_stored ||= SwagDev.project
   end
 
   # Get tools
   #
-  # @return [SwagDev::Project::Tools]
+  # @return [SwagDev::Project::ToolsProvider]
   def tools
-    project_dsl_storage[:tools] ||= project.tools
+    project.tools
   end
 
   private
 
-  def project_dsl_storage
-    @project_dsl_storage ||= {}
-  end
+  def project_dsl_reset
+    @project_dsl_stored = nil
 
-  def project_dsl_storage_reset
-    @project_dsl_storage = {}
+    self
   end
 end
