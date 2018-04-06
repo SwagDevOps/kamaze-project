@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project'
-require 'swag_dev/project/struct'
+require_relative '../project'
+require_relative 'struct'
 
 # Generic config(urator) class
 #
