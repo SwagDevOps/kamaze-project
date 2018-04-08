@@ -60,7 +60,7 @@ class SwagDev::Project::ToolsProvider
     self
   end
 
-  # Get an instance from given name
+  # Get a fresh instance with given name
   #
   # @param [Symbol] name
   # @return [Object]
@@ -73,7 +73,7 @@ class SwagDev::Project::ToolsProvider
     self[name]
   end
 
-  # Get an instance from given name
+  # Get a fresh instance with given name
   #
   # @param [Symbol] name
   # @return [Object]
@@ -83,8 +83,8 @@ class SwagDev::Project::ToolsProvider
     (@cache[name] ||= proc do
       klass = @items[name.to_sym]
 
-      make(klass) if klass
-    end.call)&.clone
+      classify(klass) if klass
+    end.call)&.new
   end
 
   alias get fetch
@@ -94,7 +94,7 @@ class SwagDev::Project::ToolsProvider
   # @return [Hash]
   def to_h
     results = @items.map do |name, klass|
-      [name, make(@cache[name] ||= klass)]
+      [name, classify(@cache[name] ||= klass)]
     end
 
     Hash[results]
@@ -115,8 +115,8 @@ class SwagDev::Project::ToolsProvider
   # Instantiate a ``Class`` (as ``klass``)
   #
   # @param [String|Symbol|Class] klass
-  # @return [Object]
-  def make(klass)
-    (klass.is_a?(Class) ? klass : inflector.resolve(klass)).new
+  # @return [Class]
+  def classify(klass)
+    klass.is_a?(Class) ? klass : inflector.resolve(klass)
   end
 end
