@@ -63,6 +63,7 @@ class SwagDev::Project::ToolsProvider
   # @param [Hash] items
   # @return [self]
   def merge!(items)
+    items.each_key { |k| @cache.delete(k.to_sym) }
     @items.merge(items)
 
     self
