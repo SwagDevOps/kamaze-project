@@ -27,12 +27,17 @@ class SwagDev::Project::ToolsProvider
   include SwagDev::Project::Concern::Helper
 
   class << self
+    # @return [Hash]
+    def defaults
+      items.freeze
+    end
+
+    protected
+
     # Default tools
     #
     # Tools default values can be ``Class`` or ``String`` (or ``Symbol``),
     # when value is not a ``Class``, it is resolved using ``inflector``
-    #
-    # @todo permit ``SwagDev::Project`` to set its own tools
     #
     # @return [Hash]
     # @see SwagDev.Project.Helper.Inflector
@@ -46,7 +51,7 @@ class SwagDev::Project::ToolsProvider
 
   # @param [Hash] items
   def initialize(items = {})
-    @items = self.class.items.clone.merge(items)
+    @items = Hash[self.class.defaults].merge(items)
     @cache = {}
     # @type [SwagDev::Project::Helper::Inflector]
     @inflector = helper.get(:inflector)
