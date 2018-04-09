@@ -27,6 +27,11 @@ class SwagDev::Project::ToolsProvider
   include SwagDev::Project::Concern::Helper
 
   class << self
+    # Default tools
+    #
+    # Tools default values can be ``Class`` or ``String`` (or ``Symbol``),
+    # when value is not a ``Class``, it is resolved using ``inflector``
+    #
     # @return [Hash]
     def defaults
       items.freeze
@@ -34,13 +39,11 @@ class SwagDev::Project::ToolsProvider
 
     protected
 
-    # Default tools
+    # Get items
     #
-    # Tools default values can be ``Class`` or ``String`` (or ``Symbol``),
-    # when value is not a ``Class``, it is resolved using ``inflector``
+    # Items are collected from a YAML file.
     #
     # @return [Hash]
-    # @see SwagDev.Project.Helper.Inflector
     def items
       config = "#{__dir__}/resources/config/tools.yml"
       defaults = YAML.load_file(config)
