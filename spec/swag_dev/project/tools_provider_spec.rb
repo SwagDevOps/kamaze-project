@@ -3,6 +3,8 @@
 require 'swag_dev/project/tools_provider'
 
 describe SwagDev::Project::ToolsProvider, :tools_provider do
+  it { expect(described_class).to respond_to(:defaults).with(0).arguments }
+
   it { expect(subject).to respond_to(:to_h).with(0).arguments }
   it { expect(subject).to respond_to(:get).with(1).arguments }
   it { expect(subject).to respond_to(:fetch).with(1).arguments }
