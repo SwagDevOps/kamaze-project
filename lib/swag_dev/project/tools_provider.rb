@@ -89,11 +89,12 @@ class SwagDev::Project::ToolsProvider
   def [](name)
     return nil unless member?(name)
 
-    (@cache[name] ||= proc do
-      klass = @items[name.to_sym]
+    @cache[name] ||= proc do
+      @items[name.to_sym]
+        .yield_self { |klass| classify(klass) if klass }
+    end.call
 
-      classify(klass) if klass
-    end.call)&.new
+    @cache[name]&.new
   end
 
   alias get fetch
