@@ -36,9 +36,17 @@ class SwagDev::Project::Tools::BaseTool
     nil
   end
 
+  # Mut(at)e attributes
+  #
+  # After initialization, attributes given has mutable
+  # become ``ro`` (protected setter)
+  #
+  # @return [self]
   def attrs_mute!
     mutable_attributes.each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
+
+    self
   end
 end
