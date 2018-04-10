@@ -102,13 +102,9 @@ class SwagDev::Project::ToolsProvider
   #
   # @return [Hash]
   def to_h
-    results = @items.map do |name, klass|
-      klass = classify(klass)
-
-      [name, @cache[name] ||= klass]
-    end
-
-    Hash[results]
+    @items.map do |name, klass|
+      [name, @cache[name] ||= classify(klass)]
+    end.yield_self { |results| Hash[results] }
   end
 
   # Returns ``true`` if the given key is present
