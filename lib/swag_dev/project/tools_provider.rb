@@ -17,10 +17,10 @@ end
 # Sample of use:
 #
 # ```ruby
-# project.tools.get(:licenser).process do |licenser|
-#   process.license     = project.version_info.fetch(:license_header)
-#   process.patterns    = ['bin/*', 'lib/**/**.rb']
-#   process.output      = STDOUT
+# project.tools.fetch(:licenser).process do |licenser|
+#   process.license  = project.version_info.fetch(:license_header)
+#   process.patterns = ['bin/*', 'lib/**/**.rb']
+#   process.output   = STDOUT
 # end
 # ```
 class SwagDev::Project::ToolsProvider
