@@ -85,7 +85,7 @@ class SwagDev::Project::ToolsProvider
   # Get a fresh instance with given name
   #
   # @param [Symbol] name
-  # @return [Object]
+  # @return [Object|nil]
   def [](name)
     return nil unless member?(name)
 
@@ -103,7 +103,9 @@ class SwagDev::Project::ToolsProvider
   # @return [Hash]
   def to_h
     results = @items.map do |name, klass|
-      [name, classify(@cache[name] ||= klass)]
+      klass = classify(klass)
+
+      [name, @cache[name] ||= klass]
     end
 
     Hash[results]
