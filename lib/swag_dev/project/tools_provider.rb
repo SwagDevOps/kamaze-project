@@ -119,16 +119,23 @@ class SwagDev::Project::ToolsProvider
 
   protected
 
-  # @return [SwagDev::Project::Helper::Inflector]
-  def inflector
-    helper.get(:inflector)
+  # Resolve given class path
+  #
+  # @see SwagDev::Project::Helper::Inflector
+  # @param [Symbol|String] klass
+  # @return [Class]
+  def resolve(klass)
+    # @type [SwagDev::Project::Helper::Inflector]
+    inflector = helper.get(:inflector)
+
+    inflector.resolve(klass)
   end
 
-  # Instantiate a ``Class`` (as ``klass``)
+  # Retrieve ``Class`` if necessary with given identifier
   #
   # @param [String|Symbol|Class] klass
   # @return [Class]
   def classify(klass)
-    klass.is_a?(Class) ? klass : inflector.resolve(klass)
+    klass.is_a?(Class) ? klass : self.resolve(klass)
   end
 end
