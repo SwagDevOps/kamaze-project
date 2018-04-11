@@ -56,13 +56,12 @@ class SwagDev::Project::ToolsProvider
   def initialize(items = {})
     @items = Hash[self.class.defaults].merge(items)
     @cache = {}
-    # @type [SwagDev::Project::Helper::Inflector]
-    @inflector = helper.get(:inflector)
   end
 
   # @param [Hash] items
   # @return [self]
   def merge!(items)
+    items = Hash[items.map { |k, v| [k.to_sym, v] }]
     items.each_key { |k| @cache.delete(k.to_sym) }
     @items.merge(items)
 
@@ -71,30 +70,29 @@ class SwagDev::Project::ToolsProvider
 
   # Get a fresh instance with given name
   #
-  # @param [Symbol] name
+  # @param [Symbol|String] name
   # @return [Object]
   # @raise [KeyError]
   def fetch(name)
-    unless member?(name)
-      raise KeyError, "key not found: :#{name}"
-    end
+    raise KeyError, "key not found: :#{name}" unless member?(name)
 
     self[name]
   end
 
   # Get a fresh instance with given name
   #
-  # @param [Symbol] name
+  # @param [Symbol|String] name
   # @return [Object|nil]
   def [](name)
+    name = name.to_sym
+
     return nil unless member?(name)
 
-    @cache[name] ||= proc do
-      @items[name.to_sym]
-        .yield_self { |klass| classify(klass) if klass }
-    end.call
+    @cache[name] ||= @items.fetch(name).yield_self do |klass|
+      classify(klass)
+    end
 
-    @cache[name]&.new
+    @cache.fetch(name).new
   end
 
   alias get fetch
@@ -111,15 +109,20 @@ class SwagDev::Project::ToolsProvider
 
   # Returns ``true`` if the given key is present
   #
+  # @param [Symbol|String] name
   # @return [Boolean]
-  def member?(key)
-    @items.member?(key.to_sym)
+  def member?(name)
+    name = name.to_sym
+
+    @items.member?(name)
   end
 
   protected
 
   # @return [SwagDev::Project::Helper::Inflector]
-  attr_reader :inflector
+  def inflector
+    helper.get(:inflector)
+  end
 
   # Instantiate a ``Class`` (as ``klass``)
   #
