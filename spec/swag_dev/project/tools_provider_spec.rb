@@ -31,9 +31,13 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
     end
   end
 
-  build('tools').keys do |k|
+  build('tools').keys.each do |k|
     context "#to_h[#{k}]" do
-      it { subject.to_h[k].to be_a(Class) }
+      it do
+        # @todo really vague, all present tools SHOULD inherit from BaseTool
+        expect(subject.to_h[k]).to be_a(Object)
+        expect(subject.to_h[k]).not_to be_a(String)
+      end
     end
   end
 end
@@ -47,6 +51,15 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
     it do
       expect { subject.fetch("fake_#{SecureRandom.hex[0..8]}") }
         .to raise_error(KeyError)
+    end
+
+    build('tools').keys.shuffle.each do |k|
+      it do
+        # use ``to_h`` method before a ``fetch``
+        tool = subject.to_h[k]
+
+        expect(subject.fetch(k)).to be_a(tool.class)
+      end
     end
   end
 end
