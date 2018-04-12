@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 require_relative '../project'
-require_relative '../project/concern/helper'
 
 class SwagDev::Project
   class ToolsProvider
+    class Resolver
+    end
   end
 end
+
+require_relative 'tools_provider/resolver'
 
 # Tools provider
 #
 # Tools are instantiated on demand,
-# each demand generates a fresh new tool instance, avoiding
-# the risk to reuse a previous altered version of a tool.
+# each demand generates a fresh new tool instance, avoiding risk
+# to reuse a previous altered version of a tool.
 #
 # Sample of use:
 #
@@ -24,8 +27,6 @@ end
 # end
 # ```
 class SwagDev::Project::ToolsProvider
-  include SwagDev::Project::Concern::Helper
-
   class << self
     # Default tools
     #
@@ -56,6 +57,7 @@ class SwagDev::Project::ToolsProvider
   def initialize(items = {})
     @items = Hash[self.class.defaults].merge(items)
     @cache = {}
+    @resolver = Resolver.new
   end
 
   # @param [Hash] items
@@ -89,7 +91,7 @@ class SwagDev::Project::ToolsProvider
     return nil unless member?(name)
 
     @cache[name] ||= @items.fetch(name).yield_self do |klass|
-      classify(klass)
+      resolver.classify(klass)
     end
 
     @cache.fetch(name).new
@@ -102,7 +104,7 @@ class SwagDev::Project::ToolsProvider
   # @return [Hash]
   def to_h
     @items
-      .map { |k, v| [k, @cache[k] ||= classify(v)] }
+      .map { |k, v| [k, @cache[k] ||= resolver.classify(v)] }
       .yield_self { |results| Hash[results] }
       .yield_self { |items| Hash[items.collect { |k, v| [k, v.new] }] }
   end
@@ -119,23 +121,6 @@ class SwagDev::Project::ToolsProvider
 
   protected
 
-  # Resolve given class path
-  #
-  # @see SwagDev::Project::Helper::Inflector
-  # @param [Symbol|String] klass
-  # @return [Class]
-  def resolve(klass)
-    # @type [SwagDev::Project::Helper::Inflector]
-    inflector = helper.get(:inflector)
-
-    inflector.resolve(klass)
-  end
-
-  # Retrieve ``Class`` if necessary with given identifier
-  #
-  # @param [String|Symbol|Class] klass
-  # @return [Class]
-  def classify(klass)
-    klass.is_a?(Class) ? klass : self.resolve(klass)
-  end
+  # @return [Resolver]
+  attr_reader :resolver
 end
