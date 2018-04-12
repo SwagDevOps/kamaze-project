@@ -64,8 +64,9 @@ class SwagDev::Project::ToolsProvider
   # @return [self]
   def merge!(items)
     items = Hash[items.map { |k, v| [k.to_sym, v] }]
-    items.each_key { |k| @cache.delete(k.to_sym) }
-    @items.merge(items)
+    @cache.delete_if { |k| items.member?(k) }
+
+    @items.merge!(items)
 
     self
   end
@@ -123,4 +124,8 @@ class SwagDev::Project::ToolsProvider
 
   # @return [Resolver]
   attr_reader :resolver
+
+  attr_reader :items
+
+  attr_reader :cache
 end
