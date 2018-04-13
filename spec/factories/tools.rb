@@ -2,6 +2,7 @@
 
 require 'securerandom'
 
+# Return tools as a Hash with Class(es) indexed by string
 random_tools = lambda do |times = 10|
   Array.new(times).map do |i|
     srnd = SecureRandom.hex[0..8]
