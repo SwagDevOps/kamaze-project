@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools_provider'
 require 'securerandom'
+require 'swag_dev/project/tools_provider'
 
 describe SwagDev::Project::ToolsProvider, :tools_provider do
   it { expect(described_class).to respond_to(:defaults).with(0).arguments }
@@ -59,6 +59,34 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
         tool = subject.to_h[k]
 
         expect(subject.fetch(k)).to be_a(tool.class)
+      end
+    end
+  end
+end
+
+# Provide, not so evident, proofs of success for ``merge!``
+describe SwagDev::Project::ToolsProvider, :tools_provider do
+  context '#merge!.fetch(k)' do
+    let(:random_tools) { build('tools').random_tools }
+
+    it do
+      subject.merge!(random_tools)
+
+      random_tools.each do |k, v|
+        expect(subject.fetch(k)).to be_a(v)
+        expect(subject.fetch(k)).to respond_to(:random_name)
+      end
+    end
+  end
+
+  context '#merge!.fetch(k).random_name' do
+    let(:random_tools) { build('tools').random_tools }
+
+    it do
+      subject.merge!(random_tools)
+
+      random_tools.each do |k, v|
+        expect(subject.fetch(k).random_name).to eq(k.to_s)
       end
     end
   end
