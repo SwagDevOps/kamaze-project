@@ -29,8 +29,8 @@ Gem::Specification.new do |s|
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
 
-  s.add_runtime_dependency "activesupport", ["~> 5.1"]
-  s.add_runtime_dependency "cli-ui", [">= 1.0.0", "~> 1.0"]
+  s.add_runtime_dependency "activesupport", ["~> 5.2"]
+  s.add_runtime_dependency "cli-ui", ["~> 1.1"]
   s.add_runtime_dependency "cliver", ["= 0.3.2"]
   s.add_runtime_dependency "dotenv", ["~> 2.2"]
   s.add_runtime_dependency "gemspec_deps_gen", ["= 1.1.2"]
@@ -51,7 +51,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "github-markup", ["~> 2.0"]
   s.add_development_dependency "redcarpet", ["~> 3.4"]
   s.add_development_dependency "factory_bot", ["~> 4.8"]
-  s.add_development_dependency "mocha", ["~> 1.4"]
+  s.add_development_dependency "mocha", ["~> 1.5"]
   s.add_development_dependency "rspec", ["~> 3.7"]
 end
 

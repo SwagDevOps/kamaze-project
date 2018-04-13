@@ -6,8 +6,8 @@ source 'https://rubygems.org'
 
 # base ---------------------------------------------------------------
 
-gem 'activesupport', '~> 5.1'
-gem 'cli-ui', '~> 1.0', '>= 1.0.0'
+gem 'activesupport', '~> 5.2'
+gem 'cli-ui', '~> 1.1'
 gem 'cliver', '= 0.3.2'
 gem 'dotenv', '~> 2.2'
 gem 'gemspec_deps_gen', '= 1.1.2'
@@ -47,6 +47,6 @@ end
 
 group :test, :development do
   gem 'factory_bot', '~> 4.8'
-  gem 'mocha', '~> 1.4'
+  gem 'mocha', '~> 1.5'
   gem 'rspec', '~> 3.7'
 end
