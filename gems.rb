@@ -15,7 +15,7 @@ gem 'process_lock', '~> 0.1'
 gem 'rake', '~> 12.3'
 gem 'rugged', '~> 0.27'
 gem 'tenjin', '~> 0.7'
-gem 'tty-editor', '~> 0.3'
+gem 'tty-editor', '~> 0.4'
 gem 'tty-screen', '~> 0.6', '>= 0.6.2'
 gem 'version_info', '~> 1.9'
 
