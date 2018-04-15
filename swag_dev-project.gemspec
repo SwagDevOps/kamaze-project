@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rake", ["~> 12.3"]
   s.add_runtime_dependency "rugged", ["~> 0.27"]
   s.add_runtime_dependency "tenjin", ["~> 0.7"]
-  s.add_runtime_dependency "tty-editor", ["~> 0.3"]
+  s.add_runtime_dependency "tty-editor", ["~> 0.4"]
   s.add_runtime_dependency "tty-screen", [">= 0.6.2", "~> 0.6"]
   s.add_runtime_dependency "version_info", ["~> 1.9"]
   s.add_runtime_dependency "rubocop", ["~> 0.54"]
