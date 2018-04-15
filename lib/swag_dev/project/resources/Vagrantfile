@@ -7,6 +7,24 @@
 #
 # @see SwagDev::Project::Tools::Vagrant
 
+require 'pp'
+require 'pathname'
+
+# requires -----------------------------------------------------------
+requires_from_boxes = lambda do |boxes|
+  pwd = ::Pathname.new(Dir.pwd)
+
+  Array.new.tap do |requires|
+    boxes.each do |box, box_config|
+      requires.concat(box_config['requires'] || [])
+    end
+  end.map do |req|
+    req = pwd.join(req.to_s).realpath if pwd.join(req.to_s).file?
+    require req.to_s
+    req
+  end
+end
+
 # synced folders -----------------------------------------------------
 synced_folders_config = lambda do |config, box_config|
   (box_config['synced_folders'] || []).each do |s|
@@ -34,6 +52,7 @@ end
 machine_config = lambda do |config, name, box_config, &block|
   config.vm.define name, autostart: false do |machine|
     machine.vm.box = box_config.fetch('image')
+    # @todo Implement box_version
 
     block&.call(machine)
   end
@@ -80,9 +99,10 @@ end
 
 # configure ----------------------------------------------------------
 Vagrant.configure(2) do |config|
+  requires_from_boxes.call(boxes)
   boxes.each do |box, box_config|
-    synced_folders_config.call(config, box_config)
     modifyvm_config.call(config, box_config)
+    synced_folders_config.call(config, box_config)
 
     machine_config.call(config, box, box_config) do |machine|
       machine.vm.guest = box_config['guest'] if box_config['guest']
