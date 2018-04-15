@@ -13,6 +13,8 @@ curl -sSL 'https://get.rvm.io' | bash -s 'stable'
 rvm install "${RUBY_VERSION}" \
     --disable-binary --movable --auto-dotfiles --autolibs=0
 
+rvm use "${RUBY_VERSION}"
+
 # profile ------------------------------------------------------------
 sed -e "1s/^/export RUBY_VERSION=${RUBY_VERSION}\n/" \
     -e '$ a\\' \
