@@ -1,35 +1,40 @@
 #!/usr/bin/env sh
-
 set -e
 
 # @see https://github.com/nicdoye/alpine-rvm-gcc/blob/master/Dockerfile
-# requirements -------------------------------------------------------
-export PACKAGES
-PACKAGES="${PACKAGES} bash bash-completion sed tar shadow"
-PACKAGES="${PACKAGES} htop pstree curl vim"
-PACKAGES="${PACKAGES} gcc gnupg curl ruby bash procps musl-dev make"
-PACKAGES="${PACKAGES} linux-headers zlib zlib-dev ruby-dev"
-PACKAGES="${PACKAGES} openssl openssl-dev libssl1.0"
-# libgit2/rugged  ----------------------------------------------------
-PACKAGES="${PACKAGES} cmake pkgconf"
 
 # packages installation ----------------------------------------------
+# bash + misc utils (2, 3) + compilation + libgit2/rugged (-1)
+PACKAGES=$(cat <<'EOF'
+bash bash-completion
+curl sed tar shadow
+htop pstree vim
+gcc gnupg procps musl-dev make
+linux-headers zlib zlib-dev ruby ruby-dev
+openssl openssl-dev libssl1.0
+cmake pkgconf
+EOF
+)
+
 apk update
 for i in $(echo $PACKAGES | sed -e "s#\s\+#\n#g" | sort -u); do
     printf "Installing %s...\n" "$i"
-    apk add "$i"
+    apk add "$i" || exit 95 # EOPNOTSUPP
 done
 
 # bash setup ---------------------------------------------------------
-echo '. /etc/profile 2>/dev/null' > /home/vagrant/.profile
-echo '. "${HOME}/.bashrc" 2>/dev/null' >> /home/vagrant/.profile
-for i in /home/vagrant /root; do
-    echo 'gem: --no-ri --no-rdoc' > "${i}/.gemrc"
-done
+(set -e
+ cd /home/vagrant
+
+ tee .profile <<EOF > /dev/null
+. /etc/profile 2>/dev/null
+. "\${HOME}/.bashrc" 2>/dev/null
+EOF
+)
 
 # permissions + misc  ------------------------------------------------
 chown -Rf 'vagrant:vagrant' '/home/vagrant'
-rm -rf /home/*/*.iso
+rm -f /home/*/*.iso
 chmod o+r /proc/devices
 
 head -1 /etc/motd | tee /etc/motd
