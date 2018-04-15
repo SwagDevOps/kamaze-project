@@ -51,8 +51,9 @@ end
 # machine config -----------------------------------------------------
 machine_config = lambda do |config, name, box_config, &block|
   config.vm.define name, autostart: false do |machine|
-    machine.vm.box = box_config.fetch('image')
-    # @todo Implement box_version
+    box, version = box_config.fetch('image').split(':')
+    machine.vm.box = box
+    machine.vm.box_version = version if version
 
     block&.call(machine)
   end
@@ -82,8 +83,8 @@ end
 if YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
   require 'listen'
 
+  # rubocop:disable all
   if Gem::Version.new(Listen::VERSION) >= Gem::Version.new('2.8.0')
-    # rubocop:disable all
     module Listen
       class Record
         class SymlinkDetector
@@ -93,8 +94,8 @@ if YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
         end
       end
     end
-    # rubocop:enable all
   end
+  # rubocop:enable all
 end
 
 # configure ----------------------------------------------------------
