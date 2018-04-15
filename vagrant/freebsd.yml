@@ -1,7 +1,7 @@
 # @see https://atlas.hashicorp.com/bento/boxes/freebsd-11.0
 # @see https://groups.google.com/forum/#!topic/vagrant-up/dNnloUOVCI4
 ---
-image: 'bento/freebsd-11.0'
+image: 'bento/freebsd-11.0:2.3.8'
 provider: :virtualbox
 guest: :freebsd
 modifyvm:
@@ -76,9 +76,13 @@ provisions:
     :path: 'vagrant/freebsd/provisions/files-bin.sh'
   - :type: :shell
     :run: always
+    :preserve_order: true
+    :inline: 'vsh rm -rfv .bundle/config'
+  - :type: :shell
+    :run: always
     :privileged: false
     :preserve_order: true
-    :inline: 'vsh bundle install --frozen --clean --jobs=$(nproc)'
+    :inline: 'vsh bundle install --no-deployment --clean --path vendor/bundle --jobs=$(nproc)'
 ssh:
   aliases:
     bundle: 'vsh bundle'
