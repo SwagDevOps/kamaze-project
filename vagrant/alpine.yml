@@ -1,7 +1,7 @@
 # @see https://github.com/maier/vagrant-alpine
 # vagrant plugin install vagrant-alpine
 ---
-image: 'alpine/alpine64'
+image: 'alpine/alpine64:3.7.0'
 provider: :virtualbox
 requires:
   - 'vagrant-alpine/plugin'
