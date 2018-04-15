@@ -8,15 +8,32 @@ set -e
 curl -sSL 'https://get.rvm.io' | bash -s 'stable'
 . /etc/profile.d/rvm.sh
 
-rvm use "${RUBY_VERSION}" || {
-    rvm install "${RUBY_VERSION}"
-    rvm use "${RUBY_VERSION}"
-}
+rvm install "${RUBY_VERSION}" \
+    --disable-binary --auto-dotfiles --autolibs=0
+
+rvm use "${RUBY_VERSION}"
 
 gem install --conservative    \
             --no-user-install \
             --no-post-install-message bundler
 
-ln -sfv \
-   "/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin/ruby" \
-   "/usr/local/bin/ruby$(echo ${RUBY_VERSION} | perl -pe 's#([0-9]+)\.([0-9]+)\.([0-9]+)$#$1.$2#')"
+# profile ------------------------------------------------------------
+tee /etc/profile <<EOF > /dev/null
+# System-wide .profile file for sh(1).
+#
+# Uncomment this to give you the default 4.2 behavior, where disk
+# information is shown in K-Blocks
+# BLOCKSIZE=K; export BLOCKSIZE
+#
+# For the setting of languages and character sets please see
+# login.conf(5) and in particular the charset and lang options.
+# For full locales list check /usr/share/locale/*
+# You should also read the setlocale(3) man page for information
+# on how to achieve more precise control of locale settings.
+
+export RUBY_VERSION=${RUBY_VERSION}
+
+. /etc/profile.d/rvm.sh 2> /dev/null
+
+rvm use "\$RUBY_VERSION" >/dev/null 2>&1
+EOF
