@@ -17,6 +17,8 @@ gem install --conservative    \
             --no-user-install \
             --no-post-install-message bundler
 
+pw groupmod rvm -m vagrant
+
 # profile ------------------------------------------------------------
 tee /etc/profile <<EOF > /dev/null
 # System-wide .profile file for sh(1).
