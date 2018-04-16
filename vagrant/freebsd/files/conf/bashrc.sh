@@ -44,7 +44,6 @@ shopt -s dotglob    # dotfiles returned in path-name expansion
 
 (test -z "${HOSTNAME}" && ifconfig em0 &>/dev/null) && {
     export HOSTNAME=$(ifconfig em0 | awk '$1 == "inet" {print $2}')
-    # export HOSTNAME=$(hostname -I | awk '{print $1}')
 }
 
 PS1='\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '

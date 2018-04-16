@@ -4,6 +4,7 @@
 image: 'bento/freebsd-11.0:2.3.8'
 provider: :virtualbox
 guest: :freebsd
+hostname: 'freebsd'
 modifyvm:
   - ['memory', 128]
   - ['cpus', 1]
