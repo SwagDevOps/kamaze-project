@@ -15,6 +15,8 @@ rvm install "${RUBY_VERSION}" \
 
 rvm use "${RUBY_VERSION}"
 
+usermod -a -G rvm vagrant
+
 # profile ------------------------------------------------------------
 sed -e "1s/^/export RUBY_VERSION=${RUBY_VERSION}\n/" \
     -e '$ a\\' \
