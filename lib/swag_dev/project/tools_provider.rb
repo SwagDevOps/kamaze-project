@@ -71,6 +71,24 @@ class SwagDev::Project::ToolsProvider
     self
   end
 
+  # Associates the value given by value with the given key.
+  #
+  # @param [String|Symbol] name
+  # @param [Class] value
+  def []=(name, value)
+    merge!(name => value)
+  end
+
+  # Prevents further modifications.
+  #
+  # See also ``Object#frozen?``.
+  #
+  # @return [self]
+  def freeze
+    @items.freeze
+    super
+  end
+
   # Get a fresh instance with given name
   #
   # @param [Symbol|String] name
@@ -125,7 +143,13 @@ class SwagDev::Project::ToolsProvider
   # @return [Resolver]
   attr_reader :resolver
 
+  # Base items, before (if needed) resolution.
+  #
+  # @return [Hash]
   attr_reader :items
 
+  # Used to avoid classes resolution.
+  #
+  # @return [Hash]
   attr_reader :cache
 end
