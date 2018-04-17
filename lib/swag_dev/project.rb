@@ -50,9 +50,6 @@ class SwagDev::Project
   include Concern::Versionable
   include Concern::Tools
 
-  # @return [Pathname]
-  attr_reader :working_dir
-
   # Project name
   #
   # @return [Symbol]
@@ -91,6 +88,8 @@ class SwagDev::Project
 
     self.name ||= ENV.fetch('PROJECT_NAME')
     self.subject ||= subject!
+
+    self.tools.freeze
   end
 
   # Get subject version_info
@@ -124,8 +123,6 @@ class SwagDev::Project
   end
 
   protected
-
-  attr_writer :working_dir
 
   alias gem_name name
 

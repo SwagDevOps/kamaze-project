@@ -11,7 +11,6 @@ class SwagDev::Project::Helper::Project::Config < SwagDev::Project::Config
   def defaults
     {
       tasks: nil,
-      working_dir: Dir.pwd,
       name: nil,
       subject: nil,
       tools: {}
