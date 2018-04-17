@@ -92,3 +92,18 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
     end
   end
 end
+
+describe SwagDev::Project::ToolsProvider, :tools_provider do
+  let(:random_tools) { build('tools').random_tools }
+  let(:target) { build('tools').keys[0] }
+  let(:replacement) { random_tools.to_a[0][1] }
+
+  # replace an original tool by a arbitrary class
+  context '.fetch(k).class' do
+    it do
+      subject[target] = replacement
+
+      expect(subject.fetch(target).class).to eq(replacement)
+    end
+  end
+end
