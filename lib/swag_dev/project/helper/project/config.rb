@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/helper/project'
-require 'swag_dev/project/config'
+require_relative '../project'
+require_relative '../../config'
 
 # Config used to configure ``SwagDev::Project``
 #
