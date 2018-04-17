@@ -10,6 +10,7 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
   it { expect(subject).to respond_to(:get).with(1).arguments }
   it { expect(subject).to respond_to(:fetch).with(1).arguments }
   it { expect(subject).to respond_to('[]').with(1).arguments }
+  it { expect(subject).to respond_to('[]=').with(2).arguments }
   it { expect(subject).to respond_to('member?').with(1).arguments }
   it { expect(subject).to respond_to('merge!').with(1).arguments }
 end
