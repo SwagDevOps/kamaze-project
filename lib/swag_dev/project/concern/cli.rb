@@ -4,6 +4,8 @@ require_relative '../concern'
 require 'active_support/concern'
 
 # Concern for CLI
+#
+# This module provides base methods focused on ``retcode``.
 module SwagDev::Project::Concern::Cli
   extend ActiveSupport::Concern
 
@@ -18,9 +20,11 @@ module SwagDev::Project::Concern::Cli
     ACCESSORS
   end
 
+  # Status code usable to eventually initiates the termination.
+  #
   # @return [Fixnum]
   def retcode
-    @retcode ||= 0
+    @retcode || 0
   end
 
   # Denote execution is a success.
