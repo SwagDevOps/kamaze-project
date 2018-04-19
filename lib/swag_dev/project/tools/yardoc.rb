@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
-require_relative 'base_tool'
 require 'pathname'
 require 'yard'
 
 # rubocop:disable Style/Documentation
 
-class SwagDev::Project::Tools
+module SwagDev::Project::Tools
   class Yardoc < BaseTool
   end
 

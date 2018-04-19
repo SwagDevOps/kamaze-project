@@ -6,7 +6,7 @@ require 'pathname'
 
 # rubocop:disable Style/Documentation
 
-class SwagDev::Project::Tools
+module SwagDev::Project::Tools
   class Git < BaseTool
     # @abstract
     class Util

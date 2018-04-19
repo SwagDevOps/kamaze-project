@@ -3,15 +3,10 @@
 require_relative '../tools'
 require_relative '../observable'
 
-class SwagDev::Project::Tools
-  class BaseTool < SwagDev::Project::Observable
-  end
-end
-
 # Provides base for tools
 #
 # @abstract
-class SwagDev::Project::Tools::BaseTool
+class SwagDev::Project::Tools::BaseTool < SwagDev::Project::Observable
   def initialize
     dispatch_event(:before_setup)
     setup

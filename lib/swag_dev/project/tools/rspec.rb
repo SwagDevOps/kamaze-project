@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
-require_relative 'base_tool'
-
-class SwagDev::Project::Tools
-  class Rspec < BaseTool
-  end
-end
 
 # Provide wrapper based on top of ``RSpec::Core::Runner``
 #
@@ -21,7 +15,7 @@ end
 # @see https://www.relishapp.com/rspec/rspec-core/docs/command-line/rake-task
 # @see https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/runner.rb
 # @see https://relishapp.com/rspec/rspec-core/v/2-4/docs/command-line/tag-option
-class SwagDev::Project::Tools::Rspec
+class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
   # Default arguments used by ``RSpec::Core::Runner``
   #
   # @type [Array|Arguments]

@@ -39,7 +39,7 @@ require_relative '../tools'
 #   process.output      = STDOUT
 # end
 # ```
-class SwagDev::Project::Tools::Licenser
+class SwagDev::Project::Tools::Licenser < SwagDev::Project::Tools::BaseTool
   # License chapter/header
   #
   # @return [String]

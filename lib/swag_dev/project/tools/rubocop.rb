@@ -7,7 +7,7 @@ require 'rubocop'
 
 # rubocop:disable Style/Documentation
 
-class SwagDev::Project::Tools
+module SwagDev::Project::Tools
   class Rubocop < BaseTool
     class Arguments < Array
       require_relative 'rubocop/arguments'

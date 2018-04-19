@@ -8,10 +8,15 @@ require 'tmpdir'
 require 'process_lock'
 require 'active_support/inflector'
 
+module SwagDev::Project::Tools
+  class ProcessLocker < BaseTool
+  end
+end
+
 # Process Locker
 #
 # @see https://github.com/ianheggie/process_lock
-class SwagDev::Project::Tools::ProcessLocker
+class SwagDev::Project::Tools::ProcessLocker < SwagDev::Project::Tools::BaseTool
   # Manage lock on given block
   #
   # @return [Object]

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/tools/gemspec'
+require_relative '../gemspec'
 require 'pathname'
 require 'gemspec_deps_gen'
 require 'tenjin'

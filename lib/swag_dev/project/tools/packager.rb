@@ -5,7 +5,7 @@ require_relative 'base_tool'
 
 # rubocop:disable Style/Documentation
 
-class SwagDev::Project::Tools
+module SwagDev::Project::Tools
   class Packager < BaseTool
     class Filesystem
       class Operator

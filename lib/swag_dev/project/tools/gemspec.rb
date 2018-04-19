@@ -5,10 +5,10 @@ require_relative 'packager'
 
 # Module providng several tools based on gemspec reader/writer
 module SwagDev::Project::Tools::Gemspec
-  class Reader
+  class Reader < SwagDev::Project::Tools::BaseTool
   end
 
-  class Writer
+  class Writer < SwagDev::Project::Tools::BaseTool
   end
 
   # @abstract

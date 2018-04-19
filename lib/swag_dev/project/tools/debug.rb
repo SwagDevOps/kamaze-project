@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'base_tool'
+require_relative '../tools'
 require 'tty/screen'
 require 'active_support/inflector'
-
-class SwagDev::Project::Tools
-  class Debug < BaseTool
-  end
-end
 
 # Provides colored pretty-printer automagically
 #
 # @see http://ruby-doc.org/stdlib-2.0.0/libdoc/pp/rdoc/PP.html
 # @see https://github.com/pry/pry
-class SwagDev::Project::Tools::Debug
+class SwagDev::Project::Tools::Debug < SwagDev::Project::Tools::BaseTool
   class << self
     # @return [Boolean]
     def warned?

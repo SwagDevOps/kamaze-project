@@ -1,15 +1,9 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
-require_relative 'base_tool'
-
-class SwagDev::Project::Tools
-  class Shell < BaseTool
-  end
-end
 
 # Provide a REPL (based on ``Pry``)
-class SwagDev::Project::Tools::Shell
+class SwagDev::Project::Tools::Shell < SwagDev::Project::Tools::BaseTool
   # REPL provider
   #
   # Allowing to replace ``Pry`` by ``IRB``, or any REPL
