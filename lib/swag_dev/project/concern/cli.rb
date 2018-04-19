@@ -29,4 +29,15 @@ module SwagDev::Project::Concern::Cli
   def success?
     retcode.zero?
   end
+
+  # Denote execution is a failure.
+  #
+  # @return [Boolean]
+  def failure?
+    !success?
+  end
+
+  alias failed? failure?
+
+  alias successful? success?
 end
