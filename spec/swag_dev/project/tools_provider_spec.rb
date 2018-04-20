@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'securerandom'
+require 'swag_dev/project/tools'
 require 'swag_dev/project/tools_provider'
 
 describe SwagDev::Project::ToolsProvider, :tools_provider do
@@ -35,9 +36,9 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
   build('tools').keys.each do |k|
     context "#to_h[#{k}]" do
       it do
-        # @todo really vague, all present tools SHOULD inherit from BaseTool
-        expect(subject.to_h[k]).to be_a(Object)
+        # SHOULD receive ``BaseTool`` instances
         expect(subject.to_h[k]).not_to be_a(String)
+        expect(subject.to_h[k]).to be_a(SwagDev::Project::Tools::BaseTool)
       end
     end
   end
@@ -98,7 +99,7 @@ describe SwagDev::Project::ToolsProvider, :tools_provider do
   let(:target) { build('tools').keys[0] }
   let(:replacement) { random_tools.to_a[0][1] }
 
-  # replace an original tool by a arbitrary class
+  # replace an original tool by an arbitrary class
   context '.fetch(k).class' do
     it do
       subject[target] = replacement
