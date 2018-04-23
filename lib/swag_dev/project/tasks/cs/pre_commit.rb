@@ -10,9 +10,10 @@
 
 # process files (index) ----------------------------------------------
 index = lambda do
-  hooks = tools.fetch(:git).hooks
-  hooks[:pre_commit].process_index(allow_empty: true) do |files|
-    return 0 if files.reject(&:deleted?).empty?
+  hook = tools.fetch(:git).hooks[:pre_commit]
+
+  hook.process_index(allow_empty: true) do |files|
+    return nil if files.reject(&:deleted?).empty?
 
     tools.fetch(:rubocop).prepare do |c|
       c.patterns = files.reject(&:deleted?).map(&:to_s)
@@ -42,7 +43,7 @@ after = lambda do |retcode|
 
   messages.each do |type, message|
     unless message.nil?
-      tools.fetch(:console).public_send("std#{type}").puts(message)
+      tools.fetch(:console).public_send("std#{type}").puts(message + "\n")
     end
   end
 
@@ -51,5 +52,9 @@ end
 
 # task ---------------------------------------------------------------
 task 'cs:pre-commit' do
-  index.call.yield_self { |retcode| after.call(retcode) }
+  begin
+    index.call
+  rescue SystemExit => e
+    after.call(e.status)
+  end
 end
