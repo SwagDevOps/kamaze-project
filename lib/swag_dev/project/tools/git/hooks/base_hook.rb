@@ -1,11 +1,17 @@
 # frozen_string_literal: true
 
 require_relative '../hooks'
+require_relative '../../../concern/cli/with_exit_on_failure'
+
+# rubocop:disable Style/Documentation
 
 class SwagDev::Project::Tools::Git::Hooks
   class BaseHook
+    include SwagDev::Project::Concern::Cli::WithExitOnFailure
   end
 end
+
+# rubocop:enable Style/Documentation
 
 # Base Hook
 class SwagDev::Project::Tools::Git::Hooks::BaseHook
