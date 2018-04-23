@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
-require_relative 'base_tool'
+require_relative '../concern/cli/with_exit_on_failure'
 require 'pathname'
 require 'rubocop'
 
@@ -32,18 +32,16 @@ end
 # end.run
 # ```
 class SwagDev::Project::Tools::Rubocop
+  include SwagDev::Project::Concern::Cli::WithExitOnFailure
+
   # Default arguments used by ``Rubocop::CLI``
   #
   # @type [Array|Arguments]
   # @return [Arguments]
   attr_accessor :defaults
 
-  # @type [Boolean]
-  # @return [Boolean]
-  attr_accessor :fail_on_error
-
   def mutable_attributes
-    [:defaults, :fail_on_error]
+    [:defaults]
   end
 
   def prepare
@@ -60,11 +58,12 @@ class SwagDev::Project::Tools::Rubocop
     self
   end
 
-  # Reset arguments
+  # Reset arguments + retcode
   #
   # @return [self]
   def reset
     @arguments = nil
+    self.retcode = nil
 
     self
   end
@@ -91,17 +90,19 @@ class SwagDev::Project::Tools::Rubocop
     '--' != arguments.last
   end
 
+  # @return [self]
   def run
     prepare if arguments.to_a.empty?
 
-    retcode = 0
-    retcode = core.run(arguments.to_a) if runnable?
+    with_exit_on_failure do
+      if runnable?
+        self.retcode = core.run(arguments.to_a)
 
-    reset.on_error(retcode)
-  end
+        reset
+      end
+    end
 
-  def fail_on_error?
-    !!@fail_on_error
+    self
   end
 
   protected
@@ -110,17 +111,6 @@ class SwagDev::Project::Tools::Rubocop
 
   def setup
     @defaults = Arguments.new(@defaults.to_a)
-    @fail_on_error = true if @fail_on_error.nil?
-  end
-
-  # Abort execution on error
-  #
-  # @param [Fixnum] code
-  # @return [Fixnum]
-  def on_error(code)
-    (exit(code) if fail_on_error?) unless code.zero?
-
-    code
   end
 
   # @return [YARD::CLI::Yardoc]
