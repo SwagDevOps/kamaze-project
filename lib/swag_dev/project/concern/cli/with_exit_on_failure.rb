@@ -10,16 +10,7 @@ require_relative '../cli'
 module SwagDev::Project::Concern::Cli::WithExitOnFailure
   include SwagDev::Project::Concern::Cli
 
-  # Denote program SOULD exit in ``with_exit_on_failure`` blocks.
-  #
-  # @return [Boolean]
-  def exit_on_failure?
-    !!(@exit_on_failure.nil? ? true : @exit_on_failure)
-  end
-
   protected
-
-  attr_writer :exit_on_failure
 
   # Initiates termination by raising ``SystemExit`` exception
   # depending on ``success`` of given block.
@@ -32,9 +23,7 @@ module SwagDev::Project::Concern::Cli::WithExitOnFailure
   def with_exit_on_failure
     result = yield(self)
 
-    if exit_on_failure? and failure?
-      exit(retcode)
-    end
+    exit(retcode) if failure?
 
     result
   end
