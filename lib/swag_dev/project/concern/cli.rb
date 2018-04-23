@@ -24,14 +24,14 @@ module SwagDev::Project::Concern::Cli
   #
   # @return [Fixnum]
   def retcode
-    @retcode || 0
+    @retcode || Errno::NOERROR::Errno
   end
 
   # Denote execution is a success.
   #
   # @return [Boolean]
   def success?
-    retcode.zero?
+    Errno::NOERROR::Errno == retcode
   end
 
   # Denote execution is a failure.
