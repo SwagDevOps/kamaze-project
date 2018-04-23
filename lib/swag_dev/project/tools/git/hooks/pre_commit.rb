@@ -47,9 +47,9 @@ class SwagDev::Project::Tools::Git::Hooks::PreCommit
   # to continue processing even if ``empty`` or ``unsafe``.
   def process_index(options = {})
     index = _process_index(repository.status.index, options)
+    self.retcode = Errno::NOERROR::Errno
 
     yield(index.to_a.freeze) if block_given?
-    # exit(Errno::NOERROR::Errno)
   end
 
   protected
@@ -60,9 +60,8 @@ class SwagDev::Project::Tools::Git::Hooks::PreCommit
   #
   # @return [SwagDev::Project::Tools::Git::Status::Index]
   def _process_index(index, options = {})
-    with_exit_on_failure do
-      index = options[:index] || repository.status.index
-      { empty: Errno::ECANCELED, unsafe: Errno::EOPNOTSUPP }.each do |type, v|
+    { empty: Errno::ECANCELED, unsafe: Errno::EOPNOTSUPP }.each do |type, v|
+      with_exit_on_failure do
         key = "allow_#{type}".to_sym
         options[key] = options.keys.include?(key) ? !!options[key] : false
 
