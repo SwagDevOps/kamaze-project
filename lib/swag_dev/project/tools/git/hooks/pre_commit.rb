@@ -26,8 +26,7 @@ end
 class SwagDev::Project::Tools::Git::Hooks::PreCommit
   # Process index (files)
   #
-  # Returns a status code, SHOULD return ``0`` on success,
-  # any other value SHOULD denote a error.
+  # Exits with a status code, raising ``SystemExit``.
   #
   # | code    | constant              | reason          |
   # |---------|-----------------------|-----------------|
@@ -42,7 +41,10 @@ class SwagDev::Project::Tools::Git::Hooks::PreCommit
   #     Empty index is processed (``false``)
   # @yield [Array<SwagDev::Project::Tools::Git::Status::File>]
   # @yieldreturn [Fixnum]
-  # @return [Fixnum]
+  # @raise [SystemExit]
+  #
+  # ``allow_empty`` and ``allow_unsafe`` options are available,
+  # to continue processing even if ``empty`` or ``unsafe``.
   def process_index(options = {})
     index = options[:index] || repository.status.index
     { empty: Errno::ECANCELED, unsafe: Errno::EOPNOTSUPP }.each do |type, v|
@@ -50,9 +52,10 @@ class SwagDev::Project::Tools::Git::Hooks::PreCommit
       options[key] = options.keys.include?(key) ? !!options[key] : false
 
       next if options[key]
-      return v.const_get(:Errno) if index.public_send("#{type}?")
+      exit(v.const_get(:Errno)) if index.public_send("#{type}?")
     end
 
-    block_given? ? yield(index.to_a.freeze) : Errno::NOERROR::Errno
+    yield(index.to_a.freeze) if block_given?
+    # exit(Errno::NOERROR::Errno)
   end
 end
