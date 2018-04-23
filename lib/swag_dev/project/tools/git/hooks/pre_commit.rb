@@ -43,19 +43,34 @@ class SwagDev::Project::Tools::Git::Hooks::PreCommit
   # @yieldreturn [Fixnum]
   # @raise [SystemExit]
   #
-  # ``allow_empty`` and ``allow_unsafe`` options are available,
+  # ``:allow_empty`` and ``:allow_unsafe`` options are available,
   # to continue processing even if ``empty`` or ``unsafe``.
   def process_index(options = {})
-    index = options[:index] || repository.status.index
-    { empty: Errno::ECANCELED, unsafe: Errno::EOPNOTSUPP }.each do |type, v|
-      key = "allow_#{type}".to_sym
-      options[key] = options.keys.include?(key) ? !!options[key] : false
-
-      next if options[key]
-      exit(v.const_get(:Errno)) if index.public_send("#{type}?")
-    end
+    index = _process_index(repository.status.index, options)
 
     yield(index.to_a.freeze) if block_given?
     # exit(Errno::NOERROR::Errno)
+  end
+
+  protected
+
+  # @param [SwagDev::Project::Tools::Git::Status::Index] index
+  # @param [Hash] options
+  # @raise [SystemExit]
+  #
+  # @return [SwagDev::Project::Tools::Git::Status::Index]
+  def _process_index(index, options = {})
+    with_exit_on_failure do
+      index = options[:index] || repository.status.index
+      { empty: Errno::ECANCELED, unsafe: Errno::EOPNOTSUPP }.each do |type, v|
+        key = "allow_#{type}".to_sym
+        options[key] = options.keys.include?(key) ? !!options[key] : false
+
+        next if options[key]
+        self.retcode = v.const_get(:Errno) if index.public_send("#{type}?")
+      end
+    end
+
+    index
   end
 end
