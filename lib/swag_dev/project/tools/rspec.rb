@@ -96,6 +96,7 @@ class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
     RSpec::Core::Runner
   end
 
+  # @return [Array<String>]
   def options_arguments
     options_files = Pathname.new(Dir.pwd).join('.rspec')
     defaults = []
