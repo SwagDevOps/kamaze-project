@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "activesupport", ["~> 5.2"]
   s.add_runtime_dependency "cli-ui", ["~> 1.1"]
   s.add_runtime_dependency "cliver", ["= 0.3.2"]
-  s.add_runtime_dependency "dotenv", ["~> 2.3"]
+  s.add_runtime_dependency "dotenv", ["~> 2.4"]
   s.add_runtime_dependency "gemspec_deps_gen", ["= 1.1.2"]
   s.add_runtime_dependency "process_lock", ["~> 0.1"]
   s.add_runtime_dependency "rake", ["~> 12.3"]
