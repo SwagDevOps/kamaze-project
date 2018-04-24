@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 desc 'Run test suites'
-task :test, [:tags] do |task, args|
+task :test do |task, args|
+  tags = args.extras
+
   tools.fetch(:rspec).tap do |rspec|
-    rspec.tags = args[:tags].to_s.split(',').map(&:strip)
+    rspec.tags = tags
   end.run
 end
