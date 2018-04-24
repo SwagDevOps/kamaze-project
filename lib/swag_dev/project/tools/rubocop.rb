@@ -58,16 +58,6 @@ class SwagDev::Project::Tools::Rubocop
     self
   end
 
-  # Reset arguments + retcode
-  #
-  # @return [self]
-  def reset
-    @arguments = nil
-    self.retcode = nil
-
-    self
-  end
-
   # Arguments used by ``CLI`` (during execution/``run``)
   #
   # @return [Arguments]
@@ -90,6 +80,7 @@ class SwagDev::Project::Tools::Rubocop
     '--' != arguments.last
   end
 
+  # @raise [SystemExit]
   # @return [self]
   def run
     prepare if arguments.to_a.empty?
@@ -111,6 +102,16 @@ class SwagDev::Project::Tools::Rubocop
 
   def setup
     @defaults = Arguments.new(@defaults.to_a)
+  end
+
+  # Reset arguments + retcode
+  #
+  # @return [self]
+  def reset
+    @arguments = nil
+    self.retcode = nil
+
+    self
   end
 
   # @return [YARD::CLI::Yardoc]
