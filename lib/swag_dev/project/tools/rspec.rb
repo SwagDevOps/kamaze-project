@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../tools'
+require_relative '../concern/cli/with_exit_on_failure'
 
 # Provide wrapper based on top of ``RSpec::Core::Runner``
 #
@@ -16,6 +17,8 @@ require_relative '../tools'
 # @see https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/runner.rb
 # @see https://relishapp.com/rspec/rspec-core/v/2-4/docs/command-line/tag-option
 class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
+  include SwagDev::Project::Concern::Cli::WithExitOnFailure
+
   # Default arguments used by ``RSpec::Core::Runner``
   #
   # @type [Array|Arguments]
@@ -29,28 +32,22 @@ class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
   # @return [Array<String>]
   attr_accessor :tags
 
-  # @type [Boolean]
-  # @return [Boolean]
-  attr_accessor :fail_on_error
-
   def mutable_attributes
-    [:defaults, :stdout, :stderr, :fail_on_error]
+    [:defaults, :stdout, :stderr]
   end
 
-  # Reset arguments
-  #
+  # @raise [SystemExit]
   # @return [self]
-  def reset
-    @arguments = nil
+  def run
+    with_exit_on_failure do
+      options = arguments.concat(options_arguments).map(&:to_s)
+
+      self.retcode = core.run(options, stderr, stdout).to_i
+
+      reset
+    end
 
     self
-  end
-
-  def run
-    options = arguments.concat(options_arguments).map(&:to_s)
-    retcode = core.run(options, stderr, stdout).to_i
-
-    reset.on_error(retcode)
   end
 
   # Arguments used by ``CLI`` (during execution/``run``)
@@ -71,14 +68,17 @@ class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
     }.fetch(caller_locations(1..1).first.path == __FILE__)
   end
 
-  # Denote fail (call exit with status code) on error
-  #
-  # @return [Boolean]
-  def fail_on_error?
-    !!fail_on_error
-  end
-
   protected
+
+  # Reset arguments + retcode
+  #
+  # @return [self]
+  def reset
+    @arguments = nil
+    self.retcode = nil
+
+    self
+  end
 
   def setup
     reset
@@ -87,7 +87,6 @@ class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
     @stdout ||= STDOUT
     @stderr ||= STDERR
     @defaults ||= []
-    @fail_on_error = true if @fail_on_error.nil?
   end
 
   # @return [RSpec::Core::Runner]
@@ -95,16 +94,6 @@ class SwagDev::Project::Tools::Rspec < SwagDev::Project::Tools::BaseTool
     require 'rspec/core'
 
     RSpec::Core::Runner
-  end
-
-  # Abort execution on error
-  #
-  # @param [Fixnum] code
-  # @return [Fixnum]
-  def on_error(code)
-    (exit(code) if fail_on_error?) unless code.zero?
-
-    code
   end
 
   def options_arguments
