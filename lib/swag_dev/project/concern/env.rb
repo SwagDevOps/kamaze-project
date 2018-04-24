@@ -6,6 +6,15 @@ require 'dotenv'
 require 'pathname'
 
 # Load dotenv file
+#
+# Storing configuration in the environment is one of the tenets of a
+# twelve-factor app. Anything that is likely to change between
+# deployment environments, such as resource handles for databases or
+# credentials for external services should be extracted
+# from the code into environment variables.
+#
+# @see https://github.com/bkeepers/dotenv
+# @see http://12factor.net/config
 module SwagDev::Project::Concern::Env
   extend ActiveSupport::Concern
 
