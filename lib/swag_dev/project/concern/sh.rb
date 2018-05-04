@@ -9,22 +9,24 @@ require 'active_support/concern'
 module SwagDev::Project::Concern::Sh
   extend ActiveSupport::Concern
 
-  # @!attribute [r] last_shell_runner_status
-  #   @return [Process::Status] last_shell_runner_status
+  # @!attribute [rw] shell_runner_last_status
+  #   @return [Process::Status]
 
   included do
     class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
         protected
 
-        attr_writer :last_shell_runner_status
+        attr_accessor :shell_runner_last_status
+
+        attr_writer :shell_runner_debug
     ACCESSORS
   end
 
-  # Status code usable to eventually initiates the termination.
+  # Denote shell runner is in debug mode.
   #
-  # @return [Process::Status|nil]
-  def last_shell_runner_status
-    @last_shell_runner_status
+  # @return [Boolean]
+  def shell_runner_debug?
+    @shell_runner_debug.nil? ? true : @shell_runner_debug
   end
 
   protected
@@ -51,12 +53,15 @@ module SwagDev::Project::Concern::Sh
   # @return [Proc]
   def create_shell_runner(cmd)
     proc do |ok, status|
-      self.last_shell_runner_status = status
+      self.shell_runner_last_status = status
 
-      unless ok
-        command = debug_cmd(cmd.clone)
-
-        warn("Command failed with status (#{retcode}):\n#{command}")
+      if !ok and shell_runner_debug?
+        # rubocop:disable Layout/IndentHash
+        warn("Command failed with status (%<retcode>s):\n# %<command>s" % {
+               retcode: status.exitstatus,
+               command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
+             })
+        # rubocop:enable Layout/IndentHash
       end
     end
   end
@@ -68,7 +73,7 @@ module SwagDev::Project::Concern::Sh
   def debug_cmd(cmd)
     options = cmd.last.is_a?(Hash) ? cmd.delete_at(-1) : {}
 
-    '# %<command>s' % {
+    '%<command>s' % {
       command: [
         (cmd[0].is_a?(Hash) ? cmd.delete_at(0) : {}).to_a.map do |v|
           "#{v[0]}=#{Shellwords.shellescape(v[1])}"
