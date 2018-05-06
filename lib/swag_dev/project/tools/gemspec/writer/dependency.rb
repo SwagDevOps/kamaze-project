@@ -35,6 +35,8 @@ class SwagDev::Project::Tools::Gemspec::Writer::Dependency
     self
   end
 
+  # Get dependencies hash representation.
+  #
   # @return [Hash<Symbol, Gem::Dependency>]
   def to_h
     out = {}
@@ -47,23 +49,50 @@ class SwagDev::Project::Tools::Gemspec::Writer::Dependency
     out
   end
 
+  # Get dependencies string representation.
+  #
   # @return [String]
   def to_s
     lines = []
 
-    to_h.each do |type, gems|
+    self.to_h.each do |type, gems|
       gems.each do |gem|
-        lines << [
-          "  #{spec_name}.add_#{type}_dependency ",
-          "\"#{gem.name}\", #{gem.requirements_list}"
-        ].join('')
+        lines << make_spec_line(gem, type)
       end
     end
 
     lines.join("\n").rstrip
   end
 
+  # Get dependencies array representation.
+  #
+  # @return [Array<Gem::Dependency>]
+  def to_a
+    out = []
+
+    @dependencies.each do |type, gems|
+      next unless @keep.include?(type)
+
+      out.concat(gems)
+    end
+
+    out
+  end
+
   protected
 
   attr_reader :spec_name
+
+  # @param [Bundler::Dependency] gem
+  # @param [String|Symbol] type
+  # @return [String]
+  def make_spec_line(gem, type)
+    '%<spacer>s%<spec_name>s.%<method>s "%<gem>s", %<requirements>s' % {
+      spacer: "\s" * 2,
+      spec_name: spec_name,
+      method: "add_#{type}_dependency",
+      gem: gem.name,
+      requirements: gem.requirements_list
+    }
+  end
 end
