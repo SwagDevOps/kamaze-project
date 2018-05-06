@@ -60,13 +60,29 @@ class SwagDev::Project::Tools::Gemspec::Writer
       .flatten.fetch(0)
   end
 
+  # Get dependencies indexed by type.
+  #
+  # @return [Hash<Symbol, Gem::Dependency>]
+  def dependencies
+    dependencies = { runtime: [], development: [] }
+    self.deps_gen.yield_self do |deps|
+      { default: :runtime, development: :development }.each do |k, type|
+        dependencies[type] = deps.bundler_gems(k).to_a.freeze
+      end
+    end
+
+    dependencies.freeze
+  end
+
   # Get template's context (variables)
   #
   # @return [Hahsh]
   def context
+    require_relative 'writer/dependency'
+
     {
       name: project.name,
-      dependencies: deps_gen.generate_project_dependencies(spec_id).strip,
+      dependencies: Dependency.new(dependencies, spec_id),
     }.yield_self do |variables|
       project.version_info.merge(variables)
     end
