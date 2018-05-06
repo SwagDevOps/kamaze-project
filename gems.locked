@@ -123,7 +123,7 @@ DEPENDENCIES
   factory_bot (~> 4.8)
   gemspec_deps_gen (= 1.1.2)
   github-markup (~> 2.0)
-  i18n (~> 0)
+  i18n (~> 0.6, >= 0.6.6)
   interesting_methods (~> 0.1)
   listen (~> 3.1)
   mocha (~> 1.5)

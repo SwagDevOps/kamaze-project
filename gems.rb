@@ -19,7 +19,7 @@ gem 'tty-screen', '>= 0.6.2', '< 0.7'
 gem 'version_info', '~> 1.9'
 # activesupport_inflector
 gem 'activesupport-inflector', '~> 0.1', '< 0.2'
-gem 'i18n', '~> 0'
+gem 'i18n', '~> 0.6', '>= 0.6.6'
 
 # supported tools ----------------------------------------------------
 
