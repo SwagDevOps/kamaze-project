@@ -20,7 +20,7 @@ require_relative '../writer'
 # puts dependency.keep(:runtime).to_s
 # ```
 class SwagDev::Project::Tools::Gemspec::Writer::Dependency
-  # @param [Hash{Symbol => Gem::Dependency}] dependencies
+  # @param [Hash<Symbol, Gem::Dependency>] dependencies
   # @param [String] spec_name
   def initialize(dependencies, spec_name = 's')
     @dependencies = dependencies.to_h.freeze
@@ -35,7 +35,7 @@ class SwagDev::Project::Tools::Gemspec::Writer::Dependency
     self
   end
 
-  # @return [Hash{Symbol => Gem::Dependency}]
+  # @return [Hash<Symbol, Gem::Dependency>]
   def to_h
     out = {}
     @dependencies.each do |type, gems|
