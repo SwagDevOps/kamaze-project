@@ -2,9 +2,9 @@
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
 # rubocop:disable all
 
-# Should follow the higher required_ruby_version
-# at the moment, gem with higher required_ruby_version is activesupport
-# but requires version >= 2.3.0 with safe navigation operator &
+# MUST follow the higher required_ruby_version
+# gem with higher required_ruby_version was activesupport
+# but requires version >= 2.3.0 due to safe navigation operator &
 
 Gem::Specification.new do |s|
   s.name        = 'swag_dev-project'
@@ -44,16 +44,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "i18n", [">= 0.6.6", "~> 0.6"]
   s.add_runtime_dependency "rubocop", ["~> 0.55"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
-  s.add_development_dependency "bootsnap", ["~> 1.3"]
-  s.add_development_dependency "interesting_methods", ["~> 0.1"]
-  s.add_development_dependency "pry", ["~> 0.11"]
-  s.add_development_dependency "sys-proc", [">= 1.0.4", "~> 1.0"]
-  s.add_development_dependency "listen", ["~> 3.1"]
-  s.add_development_dependency "github-markup", ["~> 2.0"]
-  s.add_development_dependency "redcarpet", ["~> 3.4"]
-  s.add_development_dependency "factory_bot", ["~> 4.8"]
-  s.add_development_dependency "mocha", ["~> 1.5"]
-  s.add_development_dependency "rspec", ["~> 3.7"]
 end
 
 # Local Variables:
