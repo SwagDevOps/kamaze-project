@@ -87,7 +87,7 @@ class SwagDev::Project::Tools::Gemspec::Writer::Dependency
   # @param [String|Symbol] type
   # @return [String]
   def make_spec_line(gem, type)
-    '%<spacer>s%<spec_name>s.%<method>s "%<gem>s", %<requirements>s' % {
+    '%<spacer>s%<spec_name>s.%<method>s("%<gem>s", %<requirements>s)' % {
       spacer: "\s" * 2,
       spec_name: spec_name,
       method: "add_#{type}_dependency",
