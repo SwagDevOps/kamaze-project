@@ -16,24 +16,13 @@ require 'tenjin'
 class SwagDev::Project::Tools::Gemspec::Writer
   attr_writer :templated
 
-  attr_writer :project
-
-  def initialize
-    @templated = 'gemspec.tpl'
-
-    yield self if block_given?
-
-    [:project, :templated].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
-  end
-
-  # Get project
-  #
   # @see SwagDev.project
-  # @return [Object|SwagDev::Project]
-  def project
-    @project || SwagDev.project
+  # @type [Object|SwagDev::Project]
+  # @return [SwagDev::Project]
+  attr_accessor :project
+
+  def mutable_attributes
+    [:templated, :project]
   end
 
   # Get path (almost filename) to templated gemspec
@@ -68,16 +57,16 @@ class SwagDev::Project::Tools::Gemspec::Writer
       .flatten.fetch(0)
   end
 
-  # Get template's context
+  # Get template's context (variables)
   #
   # @return [Hahsh]
   def context
-    dependencies = deps_gen.generate_project_dependencies(spec_id).strip
-
-    project
-      .version_info
-      .merge(name: project.name,
-             dependencies: dependencies)
+    {
+      name: project.name,
+      dependencies: deps_gen.generate_project_dependencies(spec_id).strip,
+    }.yield_self do |variables|
+      project.version_info.merge(variables)
+    end
   end
 
   # Get generated/templated content
@@ -97,6 +86,11 @@ class SwagDev::Project::Tools::Gemspec::Writer
   end
 
   protected
+
+  def setup
+    @templated ||= 'gemspec.tpl'
+    @project   ||= SwagDev.project
+  end
 
   # Get ``GemspecDepsGen`` instance
   #
