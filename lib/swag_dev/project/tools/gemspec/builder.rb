@@ -44,6 +44,10 @@ class SwagDev::Project::Tools::Gemspec::Builder
     ::Pathname.new(file_path)
   end
 
+  def ready?
+    gemspec_reader.read(Hash)[:full_name].nil? ? false : super
+  end
+
   alias buildable? ready?
 
   # Get path do gemspec present in ``src`` dir
