@@ -10,12 +10,12 @@
 
 $LOAD_PATH.unshift(__dir__)
 
-mode = (ENV['PROJECT_MODE'] || 'development').to_sym
 lock = Dir.chdir("#{__dir__}/..") do
   [['gems.rb', 'gems.locked'], ['Gemfile', 'Gemfile.lock']]
     .map { |m| Dir.glob(m).size >= 2 }
     .include?(true)
 end
+mode = (ENV['PROJECT_MODE'] || lock ? 'development' : 'production').to_sym
 
 if lock
   require 'rubygems'
