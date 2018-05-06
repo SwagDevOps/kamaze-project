@@ -1,25 +1,24 @@
 # frozen_string_literal: true
 
 require_relative '../concern'
-require 'active_support/concern'
 
 # Concern for Sh
 #
 # This module provides a wrapper around ``Rake::FileUtilsExt.sh()``
 module SwagDev::Project::Concern::Sh
-  extend ActiveSupport::Concern
-
   # @!attribute [rw] shell_runner_last_status
   #   @return [Process::Status]
 
-  included do
-    class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
+  class << self
+    def included(base)
+      base.class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
         protected
 
         attr_accessor :shell_runner_last_status
 
         attr_writer :shell_runner_debug
-    ACCESSORS
+      ACCESSORS
+    end
   end
 
   # Denote shell runner is in debug mode.

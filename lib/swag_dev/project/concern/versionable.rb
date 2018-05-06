@@ -4,13 +4,16 @@ require_relative '../concern'
 
 require 'pathname'
 require 'version_info'
-require 'active_support/concern'
 
 # Provides a standardized way to use ``VersionInfo``
 module SwagDev::Project::Concern::Versionable
-  extend ActiveSupport::Concern
+  class << self
+    def included(base)
+      base.extend(ClassMethods)
 
-  included { version_info }
+      base.version_info
+    end
+  end
 
   # Class methods
   module ClassMethods

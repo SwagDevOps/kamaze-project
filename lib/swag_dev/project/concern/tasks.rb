@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../concern'
-require 'active_support/concern'
 
 # Concern tasks
 #
 # Stores tasks to enable and provides method to load them
 module SwagDev::Project::Concern::Tasks
-  extend ActiveSupport::Concern
-
   # Get tasks
   #
   # @return [Array<Symbol>]

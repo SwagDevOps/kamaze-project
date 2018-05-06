@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern'
-require 'active_support/concern'
+require_relative '../concern'
 require 'dotenv'
 require 'pathname'
 
@@ -16,17 +15,17 @@ require 'pathname'
 # @see https://github.com/bkeepers/dotenv
 # @see http://12factor.net/config
 module SwagDev::Project::Concern::Env
-  extend ActiveSupport::Concern
-
   # @!attribute [r] env_loaded
   #   @return [Hash] loaded environment
 
-  included do
-    class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
+  class << self
+    def included(base)
+      base.class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
         protected
 
         attr_writer :env_loaded
-    ACCESSORS
+      ACCESSORS
+    end
   end
 
   # Loaded environment

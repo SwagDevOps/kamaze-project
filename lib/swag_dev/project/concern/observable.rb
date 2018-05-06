@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../concern'
-require 'active_support/concern'
 
 # Observable provides the methods for managing the associated observers.
 #
@@ -38,11 +37,13 @@ require 'active_support/concern'
 # end
 # ```
 module SwagDev::Project::Concern::Observable
-  extend ActiveSupport::Concern
+  class << self
+    def included(base)
+      base.extend(ClassMethods)
+    end
+  end
 
-  included { |base| base.extend(ClassMethods) }
-
-  # Class methods for observable
+  # Class methods
   module ClassMethods
     # Add observer.
     #

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/concern'
 require_relative '../reader'
 require_relative '../concern'
 
@@ -10,11 +9,13 @@ require_relative '../concern'
 #
 # @see SwagDev::Project::Tools::Gemspec::Reader
 module SwagDev::Project::Tools::Gemspec::Concern::Reading
-  extend ActiveSupport::Concern
+  class << self
+    def included(base)
+      return if base.respond_to?(:'gemspec_reader=')
 
-  included do
-    unless self.respond_to?(:'gemspec_reader=')
-      attr_writer :gemspec_reader
+      base.class_eval <<-"ACCESSORS", __FILE__, __LINE__ + 1
+        attr_writer :gemspec_reader
+      ACCESSORS
     end
   end
 

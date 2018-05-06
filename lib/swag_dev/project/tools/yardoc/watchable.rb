@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../yardoc'
-require 'active_support/concern'
 
 # rubocop:disable Style/Documentation
 
@@ -26,8 +25,6 @@ end
 #
 # Instance of ``YARD::CLI::Yardoc`` is retrieved through ``core`` method
 module SwagDev::Project::Tools::Yardoc::Watchable
-  extend ActiveSupport::Concern
-
   # Get paths
   #
   # @return [Array<Pathname>]

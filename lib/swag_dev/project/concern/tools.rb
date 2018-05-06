@@ -2,14 +2,11 @@
 
 require_relative '../concern'
 require_relative '../../project/tools_provider'
-require 'active_support/concern'
 
 # Provides access to tools
 #
 # Tools provide an extensibility mechanism
 module SwagDev::Project::Concern::Tools
-  extend ActiveSupport::Concern
-
   # Get tools
   #
   # @return [Hash]
