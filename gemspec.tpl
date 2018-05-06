@@ -2,9 +2,9 @@
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
 # rubocop:disable all
 
-# Should follow the higher required_ruby_version
-# at the moment, gem with higher required_ruby_version is activesupport
-# but requires version >= 2.3.0 with safe navigation operator &
+# MUST follow the higher required_ruby_version
+# gem with higher required_ruby_version was activesupport
+# but requires version >= 2.3.0 due to safe navigation operator &
 
 Gem::Specification.new do |s|
   s.name        = '#{@name}'
