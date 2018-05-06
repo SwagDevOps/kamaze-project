@@ -14,6 +14,9 @@ require 'tenjin'
 # @see templated
 # @see SwagDev::Project
 class SwagDev::Project::Tools::Gemspec::Writer
+  # Set path (almost filename) to templated gemspec
+  #
+  # @type [String|Pathname]
   attr_writer :templated
 
   # @see SwagDev.project
