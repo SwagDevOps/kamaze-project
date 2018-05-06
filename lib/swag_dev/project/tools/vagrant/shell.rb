@@ -62,8 +62,6 @@ class SwagDev::Project::Tools::Vagrant::Shell
   def execute(*params, &block)
     env = preserved_env
 
-    pp(executable, to_a, params)
-
     Bundler.with_clean_env do
       with_exit_on_failure do
         [env].concat(to_a.concat(params)).push(options).yield_self do |cmd|
