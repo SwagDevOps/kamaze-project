@@ -5,11 +5,11 @@ require 'rake/clean'
 builder = tools.fetch(:gemspec_builder)
 writer = tools.fetch(:gemspec_writer)
 
-# clobber ------------------------------------------------------------
-CLOBBER.include(builder.package_dir)
-
 # Generate gemspec file (when missing) -------------------------------
 writer.write unless builder.buildable?
+
+# clobber ------------------------------------------------------------
+CLOBBER.include(builder.package_dir)
 
 # task ---------------------------------------------------------------
 file builder.buildable => builder.source_files.to_a.map(&:to_s) do
