@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
 
-  #{@dependencies}
+  #{@dependencies.keep(:runtime).to_s.lstrip}
 end
 
 # Local Variables:
