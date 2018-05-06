@@ -6,7 +6,6 @@ source 'https://rubygems.org'
 
 # base ---------------------------------------------------------------
 
-gem 'activesupport', '~> 5.2'
 gem 'cli-ui', '~> 1.1'
 gem 'cliver', '= 0.3.2'
 gem 'dotenv', '~> 2.4'
@@ -18,6 +17,9 @@ gem 'tenjin', '~> 0.7'
 gem 'tty-editor', '~> 0.4'
 gem 'tty-screen', '~> 0.6', '>= 0.6.2'
 gem 'version_info', '~> 1.9'
+# activesupport_inflector
+gem 'i18n', '~> 0'
+gem 'activesupport-inflector', '>= 0.1'
 
 # supported tools ----------------------------------------------------
 

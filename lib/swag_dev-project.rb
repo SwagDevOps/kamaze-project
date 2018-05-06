@@ -28,7 +28,7 @@ if lock
       cache_dir:            "#{__dir__}/../cache",
       development_mode:     true,
       load_path_cache:      true,
-      autoload_paths_cache: true,
+      autoload_paths_cache: false,
       disable_trace:        true,
       compile_cache_iseq:   true,
       compile_cache_yaml:   true

@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "tty-editor", ["~> 0.4"]
   s.add_runtime_dependency "tty-screen", [">= 0.6.2", "~> 0.6"]
   s.add_runtime_dependency "version_info", ["~> 1.9"]
+  s.add_runtime_dependency "i18n", ["~> 0"]
   s.add_runtime_dependency "rubocop", ["~> 0.55"]
   s.add_runtime_dependency "yard", ["~> 0.9"]
   s.add_development_dependency "bootsnap", ["~> 1.3"]
