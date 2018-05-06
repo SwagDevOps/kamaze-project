@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 require_relative '../vagrant'
+require_relative '../../concern/cli/with_exit_on_failure'
+require_relative '../../concern/sh'
 require 'pathname'
+require 'shellwords'
 
 class SwagDev::Project::Tools::Vagrant
   class Shell
@@ -13,6 +16,9 @@ end
 # Options are passed to ``Rake::FileUtilsExt.sh()``.
 # Executable can be defined through ``options``.
 class SwagDev::Project::Tools::Vagrant::Shell
+  include SwagDev::Project::Concern::Cli::WithExitOnFailure
+  include SwagDev::Project::Concern::Sh
+
   # @return [Hash]
   attr_reader :options
 
@@ -56,8 +62,16 @@ class SwagDev::Project::Tools::Vagrant::Shell
   def execute(*params, &block)
     env = preserved_env
 
+    pp(executable, to_a, params)
+
     Bundler.with_clean_env do
-      sh(*[env].concat(to_a.concat(params)), &block)
+      with_exit_on_failure do
+        [env].concat(to_a.concat(params)).push(options).yield_self do |cmd|
+          sh(*cmd, &block)
+        end
+
+        self.retcode = self.shell_runner_last_status.exitstatus
+      end
     end
   end
 
@@ -78,42 +92,5 @@ class SwagDev::Project::Tools::Vagrant::Shell
     end
 
     env
-  end
-
-  # Run given (``cmd``) system command.
-  #
-  # If multiple arguments are given the command is run directly
-  # (without the shell, same semantics as Kernel::exec and Kernel::system).
-  #
-  # @see [Rake::FileUtilsExt]
-  # @see https://github.com/ruby/rake/blob/68ef9140c11d083d8bb7ee5da5b0543e3a7df73d/lib/rake/file_utils.rb#L44
-  def sh(*cmd, &block)
-    require 'rake'
-    require 'rake/file_utils'
-
-    block ||= create_shell_runner(cmd)
-
-    unless cmd.last.is_a?(Hash) and !cmd.last.empty?
-      cmd.push(options.clone)
-    end
-
-    ::Rake::FileUtilsExt.sh(*cmd, &block)
-  end
-
-  # Get shell block
-  #
-  # @param [Array] cmd
-  # @return [Proc]
-  def create_shell_runner(cmd)
-    proc do |ok, status|
-      retcode = status.exitstatus
-
-      unless ok
-        warn(["Command failed with status (#{retcode}):",
-              cmd.to_s.gsub(/\s+/, ' '),].join("\n"))
-
-        exit(retcode) if retcode
-      end
-    end
   end
 end
