@@ -6,13 +6,18 @@ require 'pathname'
   if file.exist?
     # desc "Reformat #{file} file"
     task file.to_s do
-      file.read.lines
-          .sort_by(&:downcase)
-          .map(&:rstrip)
-          .reject(&:empty?)
-          .reject { |m| m[0] == '#' }
-          .join("\n")
-          .tap { |content| file.write(content) }
+      lines = file.read.lines
+                  .map(&:rstrip)
+                  .reject(&:empty?)
+                  .reject { |m| m[0] == '#' }
+                  .sort_by(&:downcase)
+
+      {
+        regular: lines.clone.reject { |m| m[0] == '!' }.freeze,
+        inverse: lines.clone.keep_if { |m| m[0] == '!' }.freeze,
+      }.values.flatten.yield_self do |rules|
+        rules.join("\n").tap { |content| file.write(content) }
+      end
     end
   end
 end
