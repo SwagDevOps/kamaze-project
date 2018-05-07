@@ -1,0 +1,9 @@
+include:
+  - ./**/*.rb
+exclude:
+  - ./spec/**/*
+  - ./build/**/*
+plugins:
+  - runtime
+required:
+  - './lib/swag_dev-project.rb'

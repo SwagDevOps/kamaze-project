@@ -1,5 +1,3 @@
-!/.env
-!/.gitignore
 *.gem
 *.swp
 *_flymake.*
@@ -12,3 +10,6 @@
 /vagrant/*.override.yml
 /Vagrantfile
 /vendor/
+!/.env
+!/.gitignore
+!/.solargraph.yml
