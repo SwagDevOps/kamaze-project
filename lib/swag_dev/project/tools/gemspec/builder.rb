@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'file_utils'
 require 'rubygems'
 require 'rubygems/gem_runner'
 
@@ -19,12 +20,21 @@ require_relative 'packager'
 # builder.build if builder.ready?
 # ```
 class SwagDev::Project::Tools::Gemspec::Builder
+  # Build ``.gem`` file
+  #
   # @return [self]
   def build
     prepare
 
-    Dir.chdir(buildable.dirname) do
-      Gem::GemRunner.new.run(build_args)
+    buildable_dir = self.buildable.dirname.realpath
+
+    # dive into ``src`` file
+    Dir.chdir(gemspec_srcfile.dirname) do
+      Gem::GemRunner.new.run(build_args).yield_self do |file|
+        FileUtils.mv(file, buildable_dir)
+
+        buildable_dir.join(file)
+      end
     end
 
     self
@@ -77,7 +87,7 @@ class SwagDev::Project::Tools::Gemspec::Builder
   # @return [Array<String>]
   def build_args
     Dir.chdir(pwd) do
-      [:build, '--norc', gemspec_srcfile].map(&:to_s)
+      [:build, gemspec_srcfile, '--norc'].map(&:to_s)
     end
   end
 end
