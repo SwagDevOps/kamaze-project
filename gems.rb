@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # base ---------------------------------------------------------------
 
 gem 'cli-ui', '~> 1.1'
-gem 'cliver', '= 0.3.2'
+gem 'cliver', '>= 0.3.2', '< 0.4'
 gem 'dotenv', '~> 2.4'
 gem 'gemspec_deps_gen', '= 1.1.2'
 gem 'process_lock', '~> 0.1'
@@ -19,7 +19,7 @@ gem 'tty-screen', '>= 0.6.2', '< 0.7'
 gem 'version_info', '~> 1.9'
 # activesupport_inflector
 gem 'activesupport-inflector', '~> 0.1', '< 0.2'
-gem 'i18n', '~> 0.6', '>= 0.6.6'
+gem 'i18n', '>= 0.6.6', '< 1.1'
 
 # supported tools ----------------------------------------------------
 
