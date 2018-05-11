@@ -2,9 +2,10 @@
 
 require 'pathname'
 require 'cliver'
-require 'fileutils'
-require 'rake/file_utils'
+
 require_relative '../packer'
+require_relative '../../../concern/sh'
+require_relative '../../../concern/cli/with_exit_on_failure'
 
 # Build/pack a buildable
 #
@@ -13,7 +14,8 @@ require_relative '../packer'
 #
 # During execution, command ``chdir`` to ``src_dir``.
 class SwagDev::Project::Tools::Gemspec::Packer::Command
-  include FileUtils
+  include SwagDev::Project::Concern::Cli::WithExitOnFailure
+  include SwagDev::Project::Concern::Sh
 
   # Executable used by command
   attr_accessor :executable
@@ -72,9 +74,13 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
 
   def execute
     Dir.chdir(pwd.join(src_dir)) do
-      Bundler.with_clean_env do
-        sh(*([ENV.to_h] + self.to_a))
+      with_exit_on_failure do
+        Bundler.with_clean_env do
+          sh(*([ENV.to_h] + self.to_a))
+        end
       end
+
+      self.retcode = self.shell_runner_last_status.exitstatus
     end
   end
 
