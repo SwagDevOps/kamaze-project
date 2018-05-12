@@ -20,18 +20,18 @@ mode = (ENV['PROJECT_MODE'] || lock ? 'development' : 'production').to_sym
 if lock
   require 'rubygems'
   require 'bundler/setup'
+end
 
-  if :development == mode
-    require 'bootsnap'
+if lock and :development == mode
+  require 'bootsnap'
 
-    Bootsnap.setup(
-      cache_dir:            "#{__dir__}/../cache",
-      development_mode:     true,
-      load_path_cache:      true,
-      autoload_paths_cache: false,
-      disable_trace:        true,
-      compile_cache_iseq:   true,
-      compile_cache_yaml:   true
-    )
-  end
+  Bootsnap.setup(
+    cache_dir:            "#{__dir__}/../cache",
+    development_mode:     true,
+    load_path_cache:      true,
+    autoload_paths_cache: false,
+    disable_trace:        true,
+    compile_cache_iseq:   true,
+    compile_cache_yaml:   true
+  )
 end
