@@ -10,7 +10,7 @@ require_relative '../status'
 # git status -z | sed "s/\x0/\n/g"
 # ```
 class SwagDev::Project::Tools::Git::Status::Decorator
-  # @param [SwagDev::Project::Tools::Git::Status]
+  # @param [SwagDev::Project::Tools::Git::Status] status
   def initialize(status)
     @status = status
   end
@@ -28,6 +28,6 @@ class SwagDev::Project::Tools::Git::Status::Decorator
 
   protected
 
-  # @param [SwagDev::Project::Tools::Git::Status]
+  # @return [SwagDev::Project::Tools::Git::Status]
   attr_reader :status
 end

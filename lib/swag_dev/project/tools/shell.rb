@@ -62,7 +62,7 @@ class SwagDev::Project::Tools::Shell < SwagDev::Project::Tools::BaseTool
 
   # Require any gem based on ``Gem::Specification``
   #
-  # @param [String|Symbol] spec_name
+  # @param [String|Symbol] gem_name
   # @param [String|Symbol] req_name
   # @return [Boolean]
   def require_any(gem_name, req_name = nil)

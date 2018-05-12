@@ -14,7 +14,7 @@ class SwagDev::Project::Observer
   class << self
     # Subscribe to given class.
     #
-    # @param [Class] observed
+    # @param [Class] observed_class
     # @return [self]
     def observe(observed_class, func = nil)
       observed_class.add_observer(*[self, func].compact)

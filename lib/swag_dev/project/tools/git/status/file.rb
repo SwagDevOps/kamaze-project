@@ -20,7 +20,7 @@ class SwagDev::Project::Tools::Git::Status::File
   attr_reader :flags
 
   # @param [Pathname|String] path
-  # @param [Hash] status
+  # @param [Hash] flags
   # @param [Pathname|String] base_dir
   def initialize(path, flags, base_dir = Dir.pwd)
     @base_dir = ::Pathname.new(base_dir).freeze
