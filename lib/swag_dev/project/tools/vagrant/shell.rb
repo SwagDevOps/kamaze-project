@@ -79,6 +79,8 @@ class SwagDev::Project::Tools::Vagrant::Shell
   #
   # @param [ENV|Hash] from
   # @return [Hash]
+  #
+  # @todo refactor
   def preserved_env(from = ENV)
     env = {}
     from = from.to_h
