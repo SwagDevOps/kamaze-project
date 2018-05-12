@@ -9,6 +9,7 @@ source 'https://rubygems.org'
 gem 'cli-ui', '~> 1.1'
 gem 'cliver', '>= 0.3.2', '< 0.4'
 gem 'dotenv', '~> 2.4'
+gem 'dry-inflector', '~> 0.1', '< 0.2'
 gem 'gemspec_deps_gen', '= 1.1.2'
 gem 'process_lock', '~> 0.1'
 gem 'rake', '~> 12.3'
@@ -17,8 +18,6 @@ gem 'tenjin', '~> 0.7'
 gem 'tty-editor', '~> 0.4'
 gem 'tty-screen', '>= 0.6.2', '< 0.7'
 gem 'version_info', '~> 1.9'
-# activesupport_inflector
-gem 'dry-inflector', '~> 0.1', '< 0.2'
 
 # supported tools ----------------------------------------------------
 
@@ -34,6 +33,7 @@ group :development do
   gem 'bootsnap', '~> 1.3'
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.11'
+  gem 'pry-coolline', '~> 0.2'
   gem 'sys-proc', '~> 1.0', '>= 1.0.5'
 
   # 'listen' is used to "watch"
