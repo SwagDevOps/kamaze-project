@@ -5,9 +5,9 @@ require 'swag_dev/project/helper'
 # Inflector built on top of ``ActiveSupport::Inflector``
 class SwagDev::Project::Helper::Inflector
   def initialize
-    require 'active_support/inflector'
+    require 'dry/inflector'
 
-    @inflector = ActiveSupport::Inflector
+    @inflector = Dry::Inflector.new
   end
 
   # Load constant from a loadable/requirable path
