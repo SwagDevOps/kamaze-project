@@ -19,11 +19,10 @@ class SwagDev::Project::Tools::Gemspec::Packer
   # @return [Array<Pathname>]
   def packables
     specification.executables.map do |executable|
-      path = package_dirs.fetch(:bin)
-                         .join(executable)
-                         .to_s.gsub(%r{^./}, '')
-
-      ::Pathname.new(path)
+      package_dirs.fetch(:bin)
+                  .join(executable)
+                  .to_s.gsub(%r{^./}, '')
+                  .yield_self { |path| ::Pathname.new(path) }
     end
   end
 
@@ -58,10 +57,10 @@ class SwagDev::Project::Tools::Gemspec::Packer
 
     self.package_labels = [:src, :tmp, :bin]
     self.purgeables     = [:bin]
-    self.package_name   = [
-      config.fetch(:host_os),
-      config.fetch(:host_cpu)
-    ].join('/')
+    self.package_name   = '%<os>s/%<arch>s' % {
+      os: config.fetch(:host_os),
+      arch: config.fetch(:host_cpu)
+    }
   end
 
   # Get command for (packing) a given packable
@@ -71,13 +70,14 @@ class SwagDev::Project::Tools::Gemspec::Packer
   def command_for(packable)
     bin_dir = ::Pathname.new(specification.bin_dir)
 
-    Command.new do |command|
-      command.executable = compiler
-      command.pwd        = pwd
-      command.src_dir    = package_dirs.fetch(:src)
-      command.tmp_dir    = package_dirs.fetch(:tmp)
-      command.bin_dir    = bin_dir
-      command.packable   = packable
+    Dir.chdir(pwd) do
+      Command.new do |command|
+        command.executable = compiler
+        command.src_dir    = package_dirs.fetch(:src)
+        command.tmp_dir    = package_dirs.fetch(:tmp)
+        command.bin_dir    = bin_dir
+        command.packable   = packable
+      end
     end
   end
 end
