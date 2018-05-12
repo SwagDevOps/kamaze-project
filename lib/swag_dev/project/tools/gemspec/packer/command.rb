@@ -18,7 +18,9 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   include SwagDev::Project::Concern::Sh
 
   # Executable used by command
-  attr_accessor :executable
+  #
+  # @type [String|Symbol]
+  attr_writer :executable
 
   # Filepath to the product issued by command
   attr_accessor :packable
@@ -34,22 +36,33 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   # The path to source files
   attr_accessor :src_dir
 
-  # Original path where main program is executed
-  attr_accessor :pwd
+  # @return [Pathname]
+  attr_reader :pwd
 
   class InitializationError < RuntimeError
   end
 
+  # @raise InitializationError
   def initialize
     yield self
 
-    @pwd ||= Dir.pwd
     @executable ||= :rubyc
+    @pwd = ::Pathname.new(Dir.pwd)
 
-    process_attrs
+    [:executable, :packable, :tmp_dir, :bin_dir].each do |m|
+      self.singleton_class.class_eval { protected "#{m}=" }
 
-    @pwd = ::Pathname.new(@pwd)
-    @executable = ::Pathname.new(Cliver.detect!(@executable))
+      next unless self.__send__(m).nil?
+
+      raise InitializationError, "#{m} must be set, got nil"
+    end
+  end
+
+  # Executable used by command
+  #
+  # @return [Pathname]
+  def executable
+    ::Pathname.new(Cliver.detect!(@executable)).freeze
   end
 
   # Get path to "compiled" input file
@@ -92,7 +105,7 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
   #
   # @raise InitializationError
   def process_attrs
-    [:executable, :packable, :pwd, :tmp_dir, :bin_dir].each do |m|
+    [:executable, :packable, :tmp_dir, :bin_dir].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
 
       if self.__send__(m).nil?
