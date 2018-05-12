@@ -79,10 +79,10 @@ class SwagDev::Project::Tools::Gemspec::Packer::Command
       with_exit_on_failure do
         Bundler.with_clean_env do
           sh(*[env].concat(self.to_a))
+
+          self.retcode = self.shell_runner_last_status.exitstatus
         end
       end
-
-      self.retcode = self.shell_runner_last_status.exitstatus
     end
   end
 
