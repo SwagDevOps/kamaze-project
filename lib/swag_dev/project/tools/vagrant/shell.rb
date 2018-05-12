@@ -66,9 +66,9 @@ class SwagDev::Project::Tools::Vagrant::Shell
       with_exit_on_failure do
         [env].concat(to_a.concat(params)).push(options).yield_self do |cmd|
           sh(*cmd, &block)
-        end
 
-        self.retcode = self.shell_runner_last_status.exitstatus
+          self.retcode = self.shell_runner_last_status.exitstatus
+        end
       end
     end
   end
