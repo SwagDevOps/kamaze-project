@@ -2,7 +2,7 @@
 
 require 'swag_dev/project/helper'
 
-# Inflector built on top of ``ActiveSupport::Inflector``
+# Inflector built on top of ``Dry::Inflector``
 class SwagDev::Project::Helper::Inflector
   def initialize
     require 'dry/inflector'
