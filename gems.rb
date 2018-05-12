@@ -34,7 +34,7 @@ group :development do
   gem 'bootsnap', '~> 1.3'
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.11'
-  gem 'sys-proc', '~> 1.0', '>= 1.0.4'
+  gem 'sys-proc', '~> 1.0', '>= 1.0.5'
 
   # 'listen' is used to "watch"
   # but could be incompatible with some systems
