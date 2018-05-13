@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'lib/swag_dev-project'
+require_relative 'lib/kamaze-project'
 require 'sys/proc'
 
 Sys::Proc.progname = nil

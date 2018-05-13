@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern/cli'
+require 'kamaze/project/concern/cli'
 
 FactoryBot.define do
   factory 'concern/cli', class: FactoryStruct do
@@ -8,7 +8,7 @@ FactoryBot.define do
       @subjects ||= []
 
       @subjects[seq] = Class.new do
-        include SwagDev::Project::Concern::Cli
+        include Kamaze::Project::Concern::Cli
       end.new
     end
   end

@@ -6,4 +6,4 @@ exclude:
 plugins:
   - runtime
 required:
-  - './lib/swag_dev-project.rb'
+  - './lib/kamaze-project.rb'

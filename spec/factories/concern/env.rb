@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern'
+require 'kamaze/project/concern'
 
 # Files are described by path and data (content loaded as env)
 sample_files = {
@@ -19,7 +19,7 @@ FactoryBot.define do
       @subjects ||= []
 
       @subjects[seq] = Class.new do
-        include SwagDev::Project::Concern::Env
+        include Kamaze::Project::Concern::Env
       end.new
     end
 

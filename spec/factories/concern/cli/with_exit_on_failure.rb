@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern/cli/with_exit_on_failure'
+require 'kamaze/project/concern/cli/with_exit_on_failure'
 
 FactoryBot.define do
   factory 'concern/cli/with_exit_on_failure', class: FactoryStruct do
@@ -8,7 +8,7 @@ FactoryBot.define do
       @subjects ||= []
 
       @subjects[seq] = Class.new do
-        # include SwagDev::Project::Concern::Env
+        # include Kamaze::Project::Concern::Env
       end.new
     end
   end

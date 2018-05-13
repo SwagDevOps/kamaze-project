@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 [
-  'lib/swag_dev-project',
+  'lib/kamaze-project',
   'rake'
 ].each { |req| require_relative "../#{req}" }
 

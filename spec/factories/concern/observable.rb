@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swag_dev/project/concern/observable'
+require 'kamaze/project/concern/observable'
 
 FactoryBot.define do
   factory 'concern/observable', class: FactoryStruct do
@@ -8,7 +8,7 @@ FactoryBot.define do
       @described_classes ||= []
 
       @described_classes[seq] = Class.new do
-        include SwagDev::Project::Concern::Observable
+        include Kamaze::Project::Concern::Observable
       end
     end
   end

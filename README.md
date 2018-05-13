@@ -1,4 +1,4 @@
-# swag_dev-project
+# kamaze-project
 
 This gem is intended to provide a bunch of recurrent dev tasks, such as:
 
@@ -20,11 +20,11 @@ This gem keeps ease of use (and DRY) in mind.
 Sample of use:
 
 ```ruby
-require 'swag_dev/project'
+require 'kamaze/project'
 
-SwagDev.project do |c|
-  c.subject = SwagDev::Project
-  c.name    = :'swag_dev-project'
+Kamaze.project do |c|
+  c.subject = Kamaze::Project
+  c.name    = :'kamaze-project'
   c.tasks   = [
     :'cs:correct', :'cs:control',
     :doc, :'doc:watch',
@@ -55,7 +55,7 @@ export CPPFLAGS='-P'
 On the other hand, ``.env`` file COULD define the ``project`` name:
 
 ```sh
-export PROJECT_NAME='swag_dev-project
+export PROJECT_NAME='kamaze-project
 ```
 
 When ``project`` name is defined, on instantiation, the ``PROJECT_NAME``

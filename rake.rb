@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'rake'
-require 'swag_dev/project'
+require 'kamaze/project'
 
-SwagDev.project do |c|
-  c.subject = SwagDev::Project
-  c.name = 'swag_dev-project'
+Kamaze.project do |c|
+  c.subject = Kamaze::Project
+  c.name = 'kamaze-project'
   c.tasks = [
     :cs, :'cs:pre-commit',
     :doc, :'doc:watch',
