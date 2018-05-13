@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("cli-ui", ["~> 1.1"])
   s.add_runtime_dependency("cliver", ["< 0.4", ">= 0.3.2"])
   s.add_runtime_dependency("dotenv", ["~> 2.4"])
+  s.add_runtime_dependency("dry-inflector", ["< 0.2", "~> 0.1"])
   s.add_runtime_dependency("gemspec_deps_gen", ["= 1.1.2"])
   s.add_runtime_dependency("process_lock", ["~> 0.1"])
   s.add_runtime_dependency("rake", ["~> 12.3"])
@@ -40,7 +41,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("tty-editor", ["~> 0.4"])
   s.add_runtime_dependency("tty-screen", ["< 0.7", ">= 0.6.2"])
   s.add_runtime_dependency("version_info", ["~> 1.9"])
-  s.add_runtime_dependency("dry-inflector", ["< 0.2", "~> 0.1"])
   s.add_runtime_dependency("rubocop", ["~> 0.55"])
   s.add_runtime_dependency("yard", ["~> 0.9"])
 end
