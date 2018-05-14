@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
    .map { |f| File.file?(f) ? f : nil }.compact
 
   s.add_runtime_dependency("cli-ui", ["~> 1.1"])
-  s.add_runtime_dependency("cliver", ["< 0.4", ">= 0.3.2"])
+  s.add_runtime_dependency("cliver", ["~> 0.3"])
   s.add_runtime_dependency("dotenv", ["~> 2.4"])
   s.add_runtime_dependency("dry-inflector", ["< 0.2", "~> 0.1"])
   s.add_runtime_dependency("gemspec_deps_gen", ["= 1.1.2"])

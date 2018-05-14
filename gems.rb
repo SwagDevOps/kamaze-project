@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # base ---------------------------------------------------------------
 
 gem 'cli-ui', '~> 1.1'
-gem 'cliver', '>= 0.3.2', '< 0.4'
+gem 'cliver', '~> 0.3'
 gem 'dotenv', '~> 2.4'
 gem 'dry-inflector', '~> 0.1', '< 0.2'
 gem 'gemspec_deps_gen', '= 1.1.2'
