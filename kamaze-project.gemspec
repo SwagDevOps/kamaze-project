@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
   s.email       = 'dimitri@arrigoni.me'
-  s.homepage    = 'https://github.com/SwagDevOps/kamaze'
+  s.homepage    = 'https://github.com/SwagDevOps/kamaze-project'
 
   s.required_ruby_version = '>= 2.3.0'
   s.require_paths = ['lib']
