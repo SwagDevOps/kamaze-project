@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'file_utils'
+require 'fileutils'
 require 'rubygems'
 require 'rubygems/gem_runner'
 
