@@ -6,6 +6,7 @@
 ].each { |req| require_relative "../#{req}" }
 
 [
+  :env,
   :constants,
   :progname,
   :factory_struct,
