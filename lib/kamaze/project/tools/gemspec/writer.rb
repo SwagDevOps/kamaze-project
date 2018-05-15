@@ -2,7 +2,6 @@
 
 require_relative '../gemspec'
 require 'pathname'
-require 'gemspec_deps_gen'
 require 'tenjin'
 
 # Class intended to generate ``gemspec`` file from a template
@@ -60,29 +59,22 @@ class Kamaze::Project::Tools::Gemspec::Writer
       .flatten.fetch(0)
   end
 
-  # Get dependencies indexed by type.
+  # Get dependency
   #
-  # @return [Hash<Symbol, Gem::Dependency>]
-  def dependencies
-    dependencies = { runtime: [], development: [] }
-    self.deps_gen.yield_self do |deps|
-      { default: :runtime, development: :development }.each do |k, type|
-        dependencies[type] = deps.bundler_gems(k).to_a.freeze
-      end
-    end
+  # @return [Dependency]
+  def dependency
+    require_relative 'writer/dep_gen'
 
-    dependencies.freeze
+    DepGen.new(spec_id).dependency
   end
 
   # Get template's context (variables)
   #
   # @return [Hahsh]
   def context
-    require_relative 'writer/dependency'
-
     {
       name: project.name,
-      dependencies: Dependency.new(dependencies, spec_id),
+      dependencies: dependency,
     }.yield_self do |variables|
       project.version_info.merge(variables)
     end
