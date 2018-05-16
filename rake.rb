@@ -21,4 +21,8 @@ end.load!
 
 task default: [:gem]
 
-task spec: [:test] if project.path('spec').directory?
+if project.path('spec').directory?
+  task :spec do |task, args|
+    Rake::Task[:test].invoke(*args.to_a)
+  end
+end
