@@ -132,7 +132,7 @@ DEPENDENCIES
   rake (~> 12.3)
   redcarpet (~> 3.4)
   rspec (~> 3.7)
-  rubocop (~> 0.55)
+  rubocop (~> 0.56)
   rugged (~> 0.27)
   sys-proc (~> 1.0, >= 1.0.5)
   tenjin (~> 0.7)
