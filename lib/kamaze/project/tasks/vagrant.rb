@@ -31,7 +31,7 @@ desc 'Dump config'
 task 'vagrant:dump', [:box_id] => ['vagrant:init'] do |task, args|
   dump = args[:box_id] ? vagrant.boxes.fetch(args[:box_id]) : vagrant.boxes
 
-  STDOUT.puts(YAML.dump(dump))
+  $stdout.puts(YAML.dump(dump))
 
   task.reenable
 end
