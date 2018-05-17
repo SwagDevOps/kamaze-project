@@ -18,7 +18,7 @@ require_relative 'output/buffer'
 # @see http://ruby-doc.org/core-2.1.3/IO.html
 class Kamaze::Project::Tools::Console::Output
   # @param [IO] to
-  def initialize(to = STDOUT)
+  def initialize(to = $stdout)
     @output = to
   end
 
