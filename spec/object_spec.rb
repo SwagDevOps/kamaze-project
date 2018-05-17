@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Style/MultilineIfModifier
-describe Object, :core_ext, :'core_ext/object', :development do
+describe Object, :core_ext, :'core_ext/object', :pp, :development do
   let(:subject) do
     # ``pp`` method SHOULD be ``private``
     subject = described_class.new
