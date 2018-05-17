@@ -55,7 +55,7 @@ export CPPFLAGS='-P'
 On the other hand, ``.env`` file COULD define the ``project`` name:
 
 ```sh
-export PROJECT_NAME='kamaze-project
+export PROJECT_NAME='kamaze-project'
 ```
 
 When ``project`` name is defined, on instantiation, the ``PROJECT_NAME``
