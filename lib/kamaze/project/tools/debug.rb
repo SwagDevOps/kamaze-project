@@ -38,7 +38,7 @@ class Kamaze::Project::Tools::Debug < Kamaze::Project::Tools::BaseTool
   # @param [IO] out
   # @param [Fixnum] width
   # @see http://ruby-doc.org/stdlib-2.2.0/libdoc/pp/rdoc/PP.html
-  def dump(obj, out = STDOUT, width = nil)
+  def dump(obj, out = $stdout, width = nil)
     width ||= TTY::Screen.width || 79
 
     printer_for(out).pp(obj, out, width)
