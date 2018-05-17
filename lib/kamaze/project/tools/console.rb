@@ -22,8 +22,8 @@ class Kamaze::Project::Tools::Console
   attr_writer :stderr
 
   def setup
-    @stdout ||= STDOUT
-    @stderr ||= STDERR
+    @stdout ||= $stdout
+    @stderr ||= $stderr
   end
 
   # @return [Output]
