@@ -9,7 +9,7 @@
 # ```
 
 # process files (index) ----------------------------------------------
-index = lambda do
+process = lambda do
   hook = tools.fetch(:git).hooks[:pre_commit]
 
   hook.process_index(allow_empty: true) do |files|
@@ -53,7 +53,7 @@ end
 # task ---------------------------------------------------------------
 task 'cs:pre-commit' do
   begin
-    index.call
+    process.call
   rescue SystemExit => e
     after.call(e.status)
   end
