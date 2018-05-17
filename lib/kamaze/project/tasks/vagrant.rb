@@ -37,7 +37,9 @@ task 'vagrant:dump', [:box_id] => ['vagrant:init'] do |task, args|
 end
 
 # :vagrant:vm --------------------------------------------------------
-vagrant.boxes.each_key do |box_id|
+vagrant.boxes.each do |box_id, config|
+  next if config['disabled']
+
   task_ns = "vagrant:vm:#{box_id}"
   {
     up: [:halt],

@@ -114,6 +114,8 @@ end
 Vagrant.configure(2) do |config|
   requires_from_boxes.call(boxes)
   boxes.each do |box, box_config|
+    next if box_config['disabled']
+
     modifyvm_config.call(config, box_config)
     synced_folders_config.call(config, box_config)
 
