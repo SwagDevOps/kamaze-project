@@ -84,8 +84,8 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
     reset
 
     @tags = []
-    @stdout ||= STDOUT
-    @stderr ||= STDERR
+    @stdout ||= $stdout
+    @stderr ||= $stderr
     @defaults ||= []
   end
 
