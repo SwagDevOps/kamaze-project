@@ -85,12 +85,14 @@ class Kamaze::Project::Tools::Rubocop
   def run
     prepare if arguments.to_a.empty?
 
-    with_exit_on_failure do
-      if runnable?
-        self.retcode = core.run(arguments.to_a)
-
-        reset
+    if runnable?
+      with_exit_on_failure do
+        core.run(arguments.to_a).yield_self do |retcode|
+          self.retcode = retcode
+        end
       end
+
+      reset
     end
 
     self
