@@ -17,14 +17,8 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   attr_writer :project
 
-  def initialize
-    yield self if block_given?
-
-    @gem_name ||= project.name
-
-    [:project, :gem_name].each do |m|
-      self.singleton_class.class_eval { protected "#{m}=" }
-    end
+  def mutable_attributes
+    [:project, :gem_name]
   end
 
   # @return [Pathname]
@@ -60,5 +54,11 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # @return [Object|Kamaze::Project]
   def project
     @project || Kamaze.project
+  end
+
+  protected
+
+  def setup
+    @gem_name ||= project.name
   end
 end
