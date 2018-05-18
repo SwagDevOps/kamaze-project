@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'kamaze/project/tools/gemspec'
-require 'kamaze/project/tools/gemspec/reader/decorator'
+require_relative '../gemspec'
+require_relative 'reader/decorator'
+
 require 'pathname'
 require 'rubygems'
 
@@ -16,38 +17,41 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   attr_writer :project
 
-  attr_writer :working_dir
-
   def initialize
-    @working_dir = Dir.pwd
-
     yield self if block_given?
 
     @gem_name ||= project.name
 
-    [:project, :gem_name, :working_dir].each do |m|
+    [:project, :gem_name].each do |m|
       self.singleton_class.class_eval { protected "#{m}=" }
     end
   end
 
-  # Read gemspec
-  #
-  # @param [nil|Class|Symbol] as
-  # @return [Gem::Specification|Object]
-  def read(as = nil)
-    spec = nil
-    Dir.chdir(working_dir) do
-      spec = Gem::Specification.load(self.spec_file.to_s)
-    end
-
-    as ? Decorator.new(spec).to(as) : spec
+  # @return [Pathname]
+  def pwd
+    ::Pathname.new(Dir.pwd)
   end
 
-  # Get spec file path (SHOULD be absolute path)
+  # Read gemspec (as given ``type``)
+  #
+  # Return ``Gem::Specification`` or given ``type``
+  #
+  # @raise [ArgumentError] when type is not supported
+  # @param [nil|Class|Symbol] as_type
+  # @return [Gem::Specification|Object]
+  def read(type = nil)
+    Dir.chdir(pwd) do
+      spec = Gem::Specification.load(self.spec_file.to_s)
+
+      type ? Decorator.new(spec).to(type) : spec
+    end
+  end
+
+  # Get (gem)spec file path
   #
   # @return [Pathname]
   def spec_file
-    working_dir.join("#{project.name}.gemspec")
+    pwd.join("#{project.name}.gemspec")
   end
 
   # Get project
@@ -56,9 +60,5 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # @return [Object|Kamaze::Project]
   def project
     @project || Kamaze.project
-  end
-
-  def working_dir
-    Pathname.new(@working_dir).realpath
   end
 end
