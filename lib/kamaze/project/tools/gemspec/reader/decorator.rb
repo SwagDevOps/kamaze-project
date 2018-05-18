@@ -23,9 +23,11 @@ class Kamaze::Project::Tools::Gemspec::Reader::Decorator
   # @raise [ArgumentError]
   # @see methods
   def to(type)
-    raise ArgumentError, "invalid type: #{type}" unless methods[type]
-
-    self.__send__(methods.fetch(type))
+    method = methods_mapping.fetch(type)
+  rescue KeyError
+    raise ArgumentError, "invalid type: #{type}"
+  else
+    self.__send__(method)
   end
 
   protected
@@ -36,10 +38,10 @@ class Kamaze::Project::Tools::Gemspec::Reader::Decorator
   # Provides methods mapping
   #
   # @return [Hash]
-  def methods
+  def methods_mapping
     {
-      Hash => :decorate_to_h,
-      hash: :decorate_to_h,
+      Hash => :decorate_to_hash,
+      hash: :decorate_to_hash,
       OpenStruct => :decorate_to_ostruct,
       ostruct: :decorate_to_ostruct,
       open_struct: :decorate_to_ostruct,
@@ -49,7 +51,7 @@ class Kamaze::Project::Tools::Gemspec::Reader::Decorator
   # Decorate to obtain a ``Hash``
   #
   # @return [Hash]
-  def decorate_to_h
+  def decorate_to_hash
     result = {}
 
     spec.instance_variables.each do |k|
