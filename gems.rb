@@ -16,7 +16,6 @@ gem 'rugged', '~> 0.27'
 gem 'tenjin', '~> 0.7'
 gem 'tty-editor', '~> 0.4'
 gem 'tty-screen', '>= 0.6.2', '< 0.7'
-gem 'version_info', '~> 1.9'
 
 # supported tools ----------------------------------------------------
 
