@@ -6,7 +6,7 @@ require 'yaml'
 require 'pathname'
 require 'dry/inflector'
 
-# Define version using a YAML file.
+# Describe version using a YAML file.
 #
 # @see https://github.com/jcangas/version_info
 class Kamaze::Project::Version
@@ -17,11 +17,23 @@ class Kamaze::Project::Version
 
   # @param [String] file_name
   def initialize(file_name = self.class.file_name)
-    @file_name = file_name
+    @file_name = file_name.freeze
 
     self.load_file
         .map { |k, v| self.attr_set(k, v) }
         .yield_self { |loaded| @loaded = loaded.to_h }
+  end
+
+  # Denote version has enough (mninimal) attributes defined.
+  #
+  # @return [Boolean]
+  def valid?
+    ![:major, :minor, :patch]
+      .map { |method| public_send(method) }
+      .map { |v| v.to_s.empty? ? nil : v }
+      .include?(nil)
+  rescue NameError
+    false
   end
 
   # @return [String]
@@ -32,6 +44,14 @@ class Kamaze::Project::Version
   # @return [Hash]
   def to_h
     loaded.clone.freeze
+  end
+
+  # Return the path as a String.
+  #
+  # @see https://ruby-doc.org/stdlib-2.5.0/libdoc/pathname/rdoc/Pathname.html#method-i-to_path
+  # @return [String]
+  def to_path
+    file_name.to_s
   end
 
   class << self
@@ -52,18 +72,13 @@ class Kamaze::Project::Version
     YAML.load_file(file_name)
   end
 
-  # @return [Dry::Inflector]
-  def inflector
-    Dry::Inflector.new
-  end
-
-  # Define attribute (as ro attr) and set value.
+  # Define attribute (as ``ro`` attr) and set value.
   #
   # @param [String|Symbol] attr_name
   # @param [Object] attr_value
   # @return [Array]
   def attr_set(attr_name, attr_value)
-    inflector = self.inflector
+    inflector = Dry::Inflector.new
     attr_name = inflector.underscore(attr_name.to_s)
 
     self.singleton_class.class_eval do
