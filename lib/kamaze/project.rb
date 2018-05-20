@@ -9,9 +9,19 @@ module Kamaze
   class Project
     module Concern
       [nil, :env, :mode, :helper,
-       :tasks, :versionable, :tools].each do |req|
+       :tasks, :tools].each do |req|
         require_relative "project/concern/#{req}".gsub(%r{/$}, '')
       end
+    end
+
+    require_relative 'project/version'
+
+    VERSION = Version.new.freeze
+
+    # @see Kamaze::Project::Version
+    # @return [Object]
+    def version
+      subject.const_get('VERSION')
     end
   end
 
@@ -47,7 +57,6 @@ class Kamaze::Project
   include Concern::Mode
   include Concern::Helper
   include Concern::Tasks
-  include Concern::Versionable
   include Concern::Tools
 
   # Project name
@@ -90,19 +99,6 @@ class Kamaze::Project
     self.subject ||= subject!
 
     self.tools.freeze
-  end
-
-  # Get subject version_info
-  #
-  # @return [Hash]
-  def version_info
-    const = subject.const_get(:VERSION)
-    vinfo = const.respond_to?(:to_h) ? const.to_h : {}
-
-    vinfo.merge(
-      name: self.name,
-      version: const.to_s
-    ).freeze
   end
 
   # @return [Pathname]

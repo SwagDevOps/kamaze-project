@@ -74,9 +74,10 @@ class Kamaze::Project::Tools::Gemspec::Writer
   def context
     {
       name: project.name,
+      version: project.version,
       dependencies: dependency,
     }.yield_self do |variables|
-      project.version_info.merge(variables)
+      project.version.to_h.merge(variables)
     end
   end
 

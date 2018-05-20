@@ -21,7 +21,7 @@ require_relative 'tools_provider/resolver'
 #
 # ```ruby
 # project.tools.fetch(:licenser).process do |licenser|
-#   process.license  = project.version_info.fetch(:license_header)
+#   process.license  = project.version.license_header
 #   process.patterns = ['bin/*', 'lib/**/**.rb']
 #   process.output   = STDOUT
 # end

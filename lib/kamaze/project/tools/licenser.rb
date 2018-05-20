@@ -8,7 +8,7 @@ require_relative '../tools'
 #
 # ```ruby
 # Licenser.process do |pr|
-#    pr.license  = project.version_info.fetch(:license_header)
+#    pr.license  = project.version.license_header
 #    pr.patterns = ['bin/*', 'lib/**/**.rb']
 # end
 # ```
@@ -32,9 +32,10 @@ require_relative '../tools'
 #   c.tasks = []
 # end
 #
+# version = project.subject.const_get('VERSION')
 # licenser = Kamaze::Project::Tools::Licenser.process do |process|
 #   process.working_dir = project.working_dir
-#   process.license     = project.version_info.fetch(:license_header)
+#   process.license     = project.version.license_header
 #   process.patterns    = ['bin/*', 'lib/**/**.rb']
 #   process.output      = STDOUT
 # end
@@ -77,7 +78,7 @@ class Kamaze::Project::Tools::Licenser < Kamaze::Project::Tools::BaseTool
     @working_dir ||= Dir.pwd
     @patterns    ||= []
     @files       ||= []
-    @license     ||= '' # project.version_info.fetch(:license_header)
+    @license     ||= '' # project.version.license_header
   end
 
   # Get working-dir
