@@ -50,7 +50,6 @@ module Kamaze::Project::Concern::Observable
     # @param [Class] observer_class
     # @return [self]
     def add_observer(observer_class, func = :handle_event)
-      @observer_peers ||= {}
       func = func.to_sym
 
       unless observer_class.instance_methods.include?(func)
@@ -58,7 +57,7 @@ module Kamaze::Project::Concern::Observable
         raise NoMethodError, m
       end
 
-      @observer_peers[observer_class] = func
+      observer_peers[observer_class] = func
 
       self
     end
@@ -82,8 +81,10 @@ module Kamaze::Project::Concern::Observable
       self
     end
 
-    protected def observer_peers
-      @observer_peers || {}
+    protected
+
+    def observer_peers
+      @observer_peers ||= {}
     end
   end
 
