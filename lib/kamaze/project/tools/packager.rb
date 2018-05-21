@@ -34,13 +34,15 @@ class Kamaze::Project::Tools::Packager
 
   def initialize
     @initialized = false
+    # fs mutable attributes are accessibles during initialization
+    # @see method_missing
+    @fs = Filesystem.new
+
     yield self if block_given?
 
-    @fs ||= self.class.const_get(:Filesystem).new
-    setup
+    super
 
     @initialized = true
-    attrs_mute!
   end
 
   # Denote class is initialized
