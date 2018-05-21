@@ -31,7 +31,7 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # Return ``Gem::Specification`` or given ``type``
   #
   # @raise [ArgumentError] when type is not supported
-  # @param [nil|Class|Symbol] as_type
+  # @param [nil|Class|Symbol] type
   # @return [Gem::Specification|Object]
   def read(type = nil)
     Dir.chdir(pwd) do
