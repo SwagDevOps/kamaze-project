@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("tenjin", ["~> 0.7"])
   s.add_runtime_dependency("tty-editor", ["~> 0.4"])
   s.add_runtime_dependency("tty-screen", ["< 0.7", ">= 0.6.2"])
-  s.add_runtime_dependency("version_info", ["~> 1.9"])
   s.add_runtime_dependency("rubocop", ["~> 0.56"])
   s.add_runtime_dependency("yard", ["~> 0.9"])
 end
