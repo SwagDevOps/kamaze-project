@@ -26,17 +26,9 @@ Kamaze.project do |project|
   project.subject = Kamaze::Project
   project.name    = :'kamaze-project'
   project.tasks   = [
-    'cs:correct',
-    'cs:control',
-    'cs:pre-commit',
-    :doc,
-    'doc:watch',
-    :gem,
-    'gem:compile',
-    :shell,
-    'sources:license',
-    :test,
-    'version:edit',
+    'cs:correct', 'cs:control', 'cs:pre-commit',
+    'doc', 'doc:watch', 'gem', 'gem:compile',
+    'shell', 'sources:license', 'test', 'version:edit',
   ]
 end.load!
 ```
