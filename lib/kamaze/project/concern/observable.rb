@@ -83,13 +83,14 @@ module Kamaze::Project::Concern::Observable
 
     protected
 
+    # @return [Hash]
     def observer_peers
       @observer_peers ||= {}
     end
   end
 
   def initialize
-    initialize_observers
+    observer_peers_initialize
   end
 
   protected
@@ -97,14 +98,14 @@ module Kamaze::Project::Concern::Observable
   # @return [Hash|nil]
   attr_reader :observer_peers
 
-  # Initialize observers (as seen in ``self.class.observer_peers``)
+  # Initialize observers (defined from ``self.class.observer_peers``)
   #
   # @return [self]
-  def initialize_observers
-    @observer_peers ||= {}
-
-    self.class.__send__(:observer_peers).to_h.each do |k, v|
-      @observer_peers[k.new] = v
+  def observer_peers_initialize
+    (@observer_peers ||= {}).yield_self do |observer_peers|
+      self.class.__send__(:observer_peers).to_h.each do |k, v|
+        observer_peers[k.new] = v
+      end
     end
 
     self
