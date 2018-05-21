@@ -73,6 +73,9 @@ are also provided; such as ``rubyc`` or ``vagrant``.
 Furthermore, adding a new tool is really easy.
 
 ```ruby
+require 'kamaze/project'
+require 'kamaze/project/tools/base_tool'
+
 class AwesomeTool < Kamaze::Project::Tools::BaseTool
   def run
     # do something awesome
