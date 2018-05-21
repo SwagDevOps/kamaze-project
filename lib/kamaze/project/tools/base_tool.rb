@@ -8,6 +8,8 @@ require_relative '../observable'
 # @abstract
 class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   def initialize
+    super()
+
     dispatch_event(:before_setup)
     setup
     dispatch_event(:after_setup)
