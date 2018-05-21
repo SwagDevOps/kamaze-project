@@ -116,7 +116,7 @@ module Kamaze::Project::Concern::Observable
   # @return [self]
   def dispatch_event(event, *args)
     observer_peers.to_h.each do |k, v|
-      k.__send__(*[event, self].concat(args))
+      k.__send__(v, *[event, self].concat(args))
     end
 
     self

@@ -2,14 +2,11 @@
 
 require_relative '../project'
 
-class Kamaze::Project
-  class Observer
-  end
-end
-
 # Observer class
 #
 # @abstract
+# @see Kamaze::Project::Observable
+# @see Kamaze::Project::Concern::Observable
 class Kamaze::Project::Observer
   class << self
     # Subscribe to given class.
@@ -27,7 +24,7 @@ class Kamaze::Project::Observer
   #
   # @return [self]
   def handle_event(func, *args)
-    self.public_send(func, *args) if self.respond_to?(func)
+    self.__send__(func, *args) if self.respond_to?(func, true)
 
     self
   end
