@@ -22,17 +22,21 @@ Sample of use:
 ```ruby
 require 'kamaze/project'
 
-Kamaze.project do |c|
-  c.subject = Kamaze::Project
-  c.name    = :'kamaze-project'
-  c.tasks   = [
-    :'cs:correct', :'cs:control',
-    :doc, :'doc:watch',
-    :gem, :'gem:compile',
+Kamaze.project do |project|
+  project.subject = Kamaze::Project
+  project.name    = :'kamaze-project'
+  project.tasks   = [
+    'cs:correct',
+    'cs:control',
+    'cs:pre-commit',
+    :doc,
+    'doc:watch',
+    :gem,
+    'gem:compile',
     :shell,
-    :'sources:license',
+    'sources:license',
     :test,
-    :'version:edit',
+    'version:edit',
   ]
 end.load!
 ```
@@ -64,6 +68,35 @@ Furthermore a ``mode`` SHOULD be defined, using environment:
 
 ```sh
 export PROJECT_MODE='development'
+```
+
+## Tools
+
+``Kamaze::Project`` provides several ``tools``. Tools are aimed to afford
+easy-to-use and agnostic integration (with low dependency to ``rake``)
+of tools such as ``gem``, ``rubocop``, ``rspec`` or ``yardoc``.
+Some ``cli`` tools integrations, when it is not possible to do otherwise,
+are also provided; such as ``rubyc`` or ``vagrant``.
+
+Furthermore, adding a new tool is really easy.
+
+```ruby
+class AwesomeTool < Kamaze::Project::Tools::BaseTool
+  def run
+    # do something awesome
+  end
+end
+
+Kamaze.project do |project|
+  # initialization (as seen above)
+
+  project.tools = {
+    awesome: AwesomeTool,
+  }
+end.load!
+
+# your tool is accessible (through DSL):
+tools.fetch(:awesome)
 ```
 
 ## Dependencies (``gems``)
