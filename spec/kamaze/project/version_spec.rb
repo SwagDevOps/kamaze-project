@@ -43,3 +43,21 @@ describe Kamaze::Project::Version, :version do
     it { expect(described_class.__send__(:file_name).file?).to be(true) }
   end
 end
+
+# testing an invalid (not complete description)
+describe Kamaze::Project::Version, :version do
+  let(:file_name) { build('version').samples.fetch('invalid_patch') }
+  let(:subject) { described_class.new(file_name) }
+
+  context '#valid?' do
+    it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_s' do
+    it do
+      regexp = /undefined local variable or method `patch' for #/
+
+      expect { subject.to_s }.to raise_error(NameError, regexp)
+    end
+  end
+end
