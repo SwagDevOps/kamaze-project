@@ -29,7 +29,9 @@ describe Class, :concern, :'concern/observable' do
   context '.protected_methods' do
     subject { build('concern/observable').described_class.new }
 
-    [:dispatch_event, :observer_peers, :initialize_observers].each do |func|
+    [:dispatch_event,
+     :observer_peers,
+     :observer_peers_initialize].each do |func|
       it { expect(subject.protected_methods).to include(func) }
     end
   end
