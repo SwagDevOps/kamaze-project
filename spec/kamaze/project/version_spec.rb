@@ -70,7 +70,7 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing on invalid (not complete description), missing major
+# testing on invalid (incomplete description), missing major
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_major') }
   let(:subject) { described_class.new(file_name) }
@@ -88,7 +88,7 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing on invalid (not complete description), missing minor
+# testing on invalid (incomplete description), missing minor
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_minor') }
   let(:subject) { described_class.new(file_name) }
@@ -106,7 +106,7 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing on invalid (not complete description), missing patch
+# testing on invalid (incomplete description), missing patch
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_patch') }
   let(:subject) { described_class.new(file_name) }
