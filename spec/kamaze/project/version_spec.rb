@@ -44,7 +44,43 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing an invalid (not complete description)
+# testing an invalid (not complete description) on major
+describe Kamaze::Project::Version, :version do
+  let(:file_name) { build('version').samples.fetch('invalid_major') }
+  let(:subject) { described_class.new(file_name) }
+
+  context '#valid?' do
+    it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_s' do
+    it do
+      regexp = /undefined local variable or method `major' for #/
+
+      expect { subject.to_s }.to raise_error(NameError, regexp)
+    end
+  end
+end
+
+# testing an invalid (not complete description) on minor
+describe Kamaze::Project::Version, :version do
+  let(:file_name) { build('version').samples.fetch('invalid_minor') }
+  let(:subject) { described_class.new(file_name) }
+
+  context '#valid?' do
+    it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_s' do
+    it do
+      regexp = /undefined local variable or method `minor' for #/
+
+      expect { subject.to_s }.to raise_error(NameError, regexp)
+    end
+  end
+end
+
+# testing an invalid (not complete description) on patch
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_patch') }
   let(:subject) { described_class.new(file_name) }
