@@ -21,7 +21,7 @@ class Kamaze::Project::Version
 
     self.load_file
         .map { |k, v| self.attr_set(k, v) }
-        .yield_self { |loaded| @loaded = loaded.to_h }
+        .yield_self { |loaded| @data_loaded = loaded.to_h }
   end
 
   # Denote version has enough (mninimal) attributes defined.
@@ -43,7 +43,7 @@ class Kamaze::Project::Version
 
   # @return [Hash]
   def to_h
-    loaded.clone.freeze
+    data_loaded.clone.freeze
   end
 
   # Return the path as a String.
@@ -65,7 +65,7 @@ class Kamaze::Project::Version
 
   protected
 
-  attr_reader :loaded
+  attr_reader :data_loaded
 
   # @return [Hash]
   def load_file
