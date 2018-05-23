@@ -27,6 +27,10 @@ describe Kamaze::Project::Version, :version do
     it { expect(subject.to_path).to be_a(String) }
   end
 
+  context '#to_h' do
+    it { expect(subject.to_h).to be_a(Hash) }
+  end
+
   context '#to_s' do
     it { expect(subject.to_s).to match(/^([0-9]+\.){2}[0-9]+$/) }
   end
@@ -44,7 +48,29 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing an invalid (not complete description) on major
+# testing on empty file
+describe Kamaze::Project::Version, :version do
+  let(:file_name) { build('version').samples.fetch('empty') }
+  let(:subject) { described_class.new(file_name) }
+
+  context '#valid?' do
+    it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_h' do
+    it { expect(subject.to_h).to be_empty }
+  end
+
+  context '#to_s' do
+    it do
+      regexp = /undefined local variable or method `major' for #/
+
+      expect { subject.to_s }.to raise_error(NameError, regexp)
+    end
+  end
+end
+
+# testing on invalid (not complete description), missing major
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_major') }
   let(:subject) { described_class.new(file_name) }
@@ -62,7 +88,7 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing an invalid (not complete description) on minor
+# testing on invalid (not complete description), missing minor
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_minor') }
   let(:subject) { described_class.new(file_name) }
@@ -80,7 +106,7 @@ describe Kamaze::Project::Version, :version do
   end
 end
 
-# testing an invalid (not complete description) on patch
+# testing on invalid (not complete description), missing patch
 describe Kamaze::Project::Version, :version do
   let(:file_name) { build('version').samples.fetch('invalid_patch') }
   let(:subject) { described_class.new(file_name) }
