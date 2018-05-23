@@ -69,7 +69,9 @@ class Kamaze::Project::Version
 
   # @return [Hash]
   def load_file
-    YAML.load_file(file_name)
+    YAML.load_file(file_name).yield_self do |data|
+      data == false ? {} : data
+    end
   end
 
   # Define attribute (as ``ro`` attr) and set value.
