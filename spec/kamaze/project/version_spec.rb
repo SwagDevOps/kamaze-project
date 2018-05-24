@@ -63,7 +63,7 @@ describe Kamaze::Project::Version, :version do
 
   context '#to_s' do
     it do
-      regexp = /undefined local variable or method `major' for #/
+      regexp = /undefined local variable or method `major'/
 
       expect { subject.to_s }.to raise_error(NameError, regexp)
     end
@@ -81,7 +81,7 @@ describe Kamaze::Project::Version, :version do
 
   context '#to_s' do
     it do
-      regexp = /undefined local variable or method `major' for #/
+      regexp = /undefined local variable or method `major'/
 
       expect { subject.to_s }.to raise_error(NameError, regexp)
     end
@@ -99,7 +99,7 @@ describe Kamaze::Project::Version, :version do
 
   context '#to_s' do
     it do
-      regexp = /undefined local variable or method `minor' for #/
+      regexp = /undefined local variable or method `minor'/
 
       expect { subject.to_s }.to raise_error(NameError, regexp)
     end
@@ -117,7 +117,7 @@ describe Kamaze::Project::Version, :version do
 
   context '#to_s' do
     it do
-      regexp = /undefined local variable or method `patch' for #/
+      regexp = /undefined local variable or method `patch'/
 
       expect { subject.to_s }.to raise_error(NameError, regexp)
     end
@@ -135,7 +135,7 @@ describe Kamaze::Project::Version, :version do
 
   context '#to_s' do
     it do
-      regexp = /undefined local variable or method `major' for #/
+      regexp = /undefined local variable or method `major'/
 
       expect { subject.to_s }.to raise_error(NameError, regexp)
     end
