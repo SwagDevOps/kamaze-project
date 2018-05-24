@@ -72,6 +72,8 @@ class Kamaze::Project::Version
     YAML.load_file(file_name).yield_self do |data|
       data == false ? {} : data
     end
+  rescue Errno::ENOENT
+    {}
   end
 
   # Define attribute (as ``ro`` attr) and set value.
