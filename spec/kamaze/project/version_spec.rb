@@ -58,7 +58,10 @@ describe Kamaze::Project::Version, :version do
   end
 
   context '#to_h' do
-    it { expect(subject.to_h).to be_empty }
+    it do
+      expect(subject.to_h).to be_a(Hash)
+      expect(subject.to_h).to be_empty
+    end
   end
 
   context '#to_s' do
@@ -131,6 +134,13 @@ describe Kamaze::Project::Version, :version do
 
   context '#valid?' do
     it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_h' do
+    it do
+      expect(subject.to_h).to be_a(Hash)
+      expect(subject.to_h).to be_empty
+    end
   end
 
   context '#to_s' do
