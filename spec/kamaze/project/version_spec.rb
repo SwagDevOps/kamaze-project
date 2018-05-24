@@ -123,3 +123,21 @@ describe Kamaze::Project::Version, :version do
     end
   end
 end
+
+# testing on inexisting file
+describe Kamaze::Project::Version, :version do
+  let(:file_name) { build('version').samples.fetch('random') }
+  let(:subject) { described_class.new(file_name) }
+
+  context '#valid?' do
+    it { expect(subject.valid?).to be(false) }
+  end
+
+  context '#to_s' do
+    it do
+      regexp = /undefined local variable or method `major' for #/
+
+      expect { subject.to_s }.to raise_error(NameError, regexp)
+    end
+  end
+end
