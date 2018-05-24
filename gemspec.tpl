@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
     'bin/*',
     'lib/**/*.rb',
     'lib/**/resources/**/**',
-    'lib/**/version_info.yml'
+    'lib/**/version.yml'
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
 
