@@ -8,10 +8,10 @@
 
 Gem::Specification.new do |s|
   s.name        = 'kamaze-project'
-  s.version     = '0.0.1'
+  s.version     = '1.0.0'
   s.date        = '2017-08-06'
   s.summary     = 'Automatize recurrent dev tasks with swag'
-  s.description = 'Provides a bunch of (rake) tasks to automatize with swag'
+  s.description = 'A bunch of (rake) tasks to automatize ypur development workflow with swag'
 
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
