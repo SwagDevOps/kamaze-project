@@ -14,7 +14,12 @@ task 'sources:license', [:output] => [writer.to_s] do |task, args|
       process.license = version.license_header
       process.files   = builder.source_files.select do |file|
         # @todo use a better ruby files recognition
-        file.extname.gsub(/^\./, '') == 'rb'
+        # @todo implement better exclusion
+        if file.extname.gsub(/^\./, '') == 'rb'
+          file.basename.to_s != 'gems.rb'
+        else
+          false
+        end
       end
     end
   rescue SystemExit, Interrupt
