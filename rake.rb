@@ -7,15 +7,9 @@ Kamaze.project do |c|
   c.subject = Kamaze::Project
   c.name = 'kamaze-project'
   c.tasks = [
-    :cs, :'cs:pre-commit',
-    :doc, :'doc:watch',
-    :gem, :'gem:install', :'gem:compile',
-    :'misc:gitignore',
-    :shell,
-    :'sources:license',
-    :test,
-    :vagrant,
-    :'version:edit',
+    'cs', 'cs:pre-commit', 'doc', 'doc:watch',
+    'gem', 'gem:install', 'gem:compile', 'misc:gitignore',
+    'shell', 'sources:license', 'test', 'vagrant', 'version:edit',
   ].shuffle
 end.load!
 
