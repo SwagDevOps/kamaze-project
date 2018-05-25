@@ -11,7 +11,7 @@ task 'sources:license', [:output] => [writer.to_s] do |task, args|
   begin
     tools.fetch(:licenser).process do |process|
       process.output  = output if output
-      process.license = version.fetch(:license_header)
+      process.license = version.license_header
       process.files   = builder.source_files.select do |file|
         # @todo use a better ruby files recognition
         file.extname.gsub(/^\./, '') == 'rb'
