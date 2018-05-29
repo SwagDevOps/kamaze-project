@@ -6,7 +6,7 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require_relative '../tools/debug'
+require_relative '../debug'
 
 # rubocop:disable Style/Documentation
 
@@ -18,7 +18,7 @@ class Object
   # @see https://ruby-doc.org/stdlib-2.4.0/libdoc/pp/rdoc/Kernel.html
   # @see https://github.com/topazproject/topaz/blob/master/lib-ruby/pp.rb
   def pp(*objs)
-    debug = Kamaze::Project::Tools::Debug.new
+    debug = Kamaze::Project::Debug.new
     objs.each { |obj| debug.dump(obj) }
 
     objs.size <= 1 ? objs.first : objs

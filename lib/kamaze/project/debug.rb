@@ -6,7 +6,7 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require_relative '../tools'
+require_relative '../project'
 require 'tty/screen'
 require 'active_support/inflector'
 
@@ -14,7 +14,12 @@ require 'active_support/inflector'
 #
 # @see http://ruby-doc.org/stdlib-2.0.0/libdoc/pp/rdoc/PP.html
 # @see https://github.com/pry/pry
-class Kamaze::Project::Tools::Debug < Kamaze::Project::Tools::BaseTool
+class Kamaze::Project::Debug
+  def initialize
+    @inflector ||= ActiveSupport::Inflector
+    @printers = available_printers
+  end
+
   class << self
     # @return [Boolean]
     def warned?
@@ -87,11 +92,6 @@ class Kamaze::Project::Tools::Debug < Kamaze::Project::Tools::BaseTool
 
   # @return [Class]
   attr_reader :inflector
-
-  def setup
-    @inflector ||= ActiveSupport::Inflector
-    @printers = available_printers
-  end
 
   # Load printers requirements (on demand)
   #
