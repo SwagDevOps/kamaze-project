@@ -7,8 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../project'
-require 'tty/screen'
-require 'dry/inflector'
 
 # Provides colored pretty-printer automagically
 #
@@ -16,7 +14,6 @@ require 'dry/inflector'
 # @see https://github.com/pry/pry
 class Kamaze::Project::Debug
   def initialize
-    @inflector = Dry::Inflector.new
     @printers = available_printers
   end
 
@@ -50,7 +47,7 @@ class Kamaze::Project::Debug
   # @param [Fixnum] width
   # @see http://ruby-doc.org/stdlib-2.2.0/libdoc/pp/rdoc/PP.html
   def dump(obj, out = $stdout, width = nil)
-    width ||= TTY::Screen.width || 79
+    width ||= screen_width || 79
 
     printer_for(out).pp(obj, out, width)
   end
@@ -90,8 +87,19 @@ class Kamaze::Project::Debug
   # @return [Boolean|nil]
   attr_reader :warned
 
-  # @return [Class]
-  attr_reader :inflector
+  # @return [Dry::Inflector]
+  def inflector
+    require 'dry/inflector'
+
+    Dry::Inflector.new
+  end
+
+  # @return [Integer]
+  def screen_width
+    require 'tty/screen'
+
+    TTY::Screen.width
+  end
 
   # Load printers requirements (on demand)
   #
