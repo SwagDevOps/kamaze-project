@@ -8,7 +8,7 @@
 
 require_relative '../project'
 require 'tty/screen'
-require 'active_support/inflector'
+require 'dry/inflector'
 
 # Provides colored pretty-printer automagically
 #
@@ -16,7 +16,7 @@ require 'active_support/inflector'
 # @see https://github.com/pry/pry
 class Kamaze::Project::Debug
   def initialize
-    @inflector ||= ActiveSupport::Inflector
+    @inflector = Dry::Inflector.new
     @printers = available_printers
   end
 
