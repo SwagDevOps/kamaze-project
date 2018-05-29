@@ -95,10 +95,9 @@ class Kamaze::Project::Tools::Rubocop
       with_exit_on_failure do
         core.run(arguments.to_a).yield_self do |retcode|
           self.retcode = retcode
+          reset
         end
       end
-
-      reset
     end
 
     self
@@ -117,7 +116,7 @@ class Kamaze::Project::Tools::Rubocop
   # @return [self]
   def reset
     @arguments = nil
-    self.retcode = nil
+    self.retcode = nil if retcode.to_i.zero?
 
     self
   end
