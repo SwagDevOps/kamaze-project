@@ -49,9 +49,8 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
       options = arguments.concat(options_arguments).map(&:to_s)
 
       self.retcode = core.run(options, stderr, stdout).to_i
-
-      reset
     end
+    reset
 
     self
   end
