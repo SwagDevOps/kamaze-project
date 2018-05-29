@@ -4,9 +4,9 @@ minor: 0
 patch: 0
 authors: ['Dimitri Arrigoni']
 email: 'dimitri@arrigoni.me'
-date: '2017-08-06'
+date: '2018-05-29'
 summary: 'Automatize recurrent dev tasks with swag'
-description: 'A bunch of (rake) tasks to automatize ypur development workflow with swag'
+description: 'A bunch of (rake) tasks to automatize your development workflow.'
 licenses: ['GPL-3.0']
 license_header: |
   Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
