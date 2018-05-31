@@ -3,8 +3,7 @@
 # rubocop:disable all
 
 # MUST follow the higher required_ruby_version
-# gem with higher required_ruby_version was activesupport
-# but requires version >= 2.3.0 due to safe navigation operator &
+# requires version >= 2.3.0 due to safe navigation operator &
 
 Gem::Specification.new do |s|
   s.name        = 'kamaze-project'
@@ -22,6 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files         = [
     '.yardopts',
+    '.rubocop.yml',
     'bin/*',
     'lib/**/*.rb',
     'lib/**/resources/**/**',
