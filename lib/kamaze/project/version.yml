@@ -1,10 +1,10 @@
 ---
 major: 1
 minor: 0
-patch: 1
+patch: 2
 authors: ['Dimitri Arrigoni']
 email: 'dimitri@arrigoni.me'
-date: '2018-05-29'
+date: '2018-05-31'
 summary: 'Automatize recurrent dev tasks with swag'
 description: 'A bunch of (rake) tasks to automatize your development workflow.'
 licenses: ['GPL-3.0']
