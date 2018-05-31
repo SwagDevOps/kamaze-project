@@ -12,7 +12,6 @@ require_relative '../concern'
 #
 # This module provides base methods focused on ``retcode``.
 module Kamaze::Project::Concern::Cli
-
   # @!attribute [r] retcode
   #   @return [Fixnum] retcode
 
