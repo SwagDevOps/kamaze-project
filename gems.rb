@@ -32,7 +32,7 @@ group :development do
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.11'
   gem 'pry-coolline', '~> 0.2'
-  gem 'sys-proc', '>= 1.0.5', '~> 1.0'
+  gem 'sys-proc', '~> 1.1'
 
   # 'listen' is used to "watch"
   # but could be incompatible with some systems
