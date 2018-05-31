@@ -4,6 +4,12 @@
 # https://github.com/bbatsov/rubocop/tree/master/config
 # https://raw.githubusercontent.com/bbatsov/rubocop/master/config/enabled.yml
 # https://github.com/tootsuite/mastodon/blob/master/.rubocop.yml
+# https://blog.percy.io/share-rubocop-rules-across-all-of-your-repos-f3281fbd71f8
+# ```yml
+# inherit_gem:
+#  kamaze-project:
+#    - .rubocop.yml
+# ```
 ---
 AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.3 }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
