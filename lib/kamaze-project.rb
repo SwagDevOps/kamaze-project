@@ -13,27 +13,26 @@ lock = Dir.chdir("#{__dir__}/..") do
     .map { |m| Dir.glob(m).size >= 2 }
     .include?(true)
 end
-mode = (ENV['PROJECT_MODE'] || lock ? 'development' : 'production').to_sym
 
 if lock
   require 'rubygems'
   require 'bundler/setup'
 end
 
-if lock and :development == mode
-  require 'yaml'
+if lock and :development == (ENV['PROJECT_MODE'] || 'development').to_sym
+  bootsnap_config = {
+    cache_dir:            "#{__dir__}/../cache",
+    development_mode:     true,
+    load_path_cache:      true,
+    autoload_paths_cache: false,
+    disable_trace:        true,
+    compile_cache_iseq:   true,
+    compile_cache_yaml:   true,
+  }
 
+  require 'yaml'
   unless YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
     require 'bootsnap'
-
-    Bootsnap.setup(
-      cache_dir:            "#{__dir__}/../cache",
-      development_mode:     true,
-      load_path_cache:      true,
-      autoload_paths_cache: false,
-      disable_trace:        true,
-      compile_cache_iseq:   true,
-      compile_cache_yaml:   true
-    )
+    Bootsnap.setup(bootsnap_config)
   end
 end
