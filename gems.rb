@@ -16,12 +16,11 @@ group :default do
   gem 'tty-editor', '~> 0.4'
   gem 'tty-screen', '>= 0.6.2', '~> 0.6'
   # supported tools --------------------------------------------------
-  gem 'rubocop', '~> 0.56'
-  gem 'yard', '~> 0.9'
+  gem 'pry', '~> 0.11'
 end
 
 # --------------------------------------------------------------------
-# 'rspec' and 'pry' are also supported
+# 'rspec', 'rubocop' and 'yard' are supported tools
 # but we don't force to use them
 # --------------------------------------------------------------------
 
@@ -29,6 +28,7 @@ group :development do
   gem 'bootsnap', '~> 1.3'
   gem 'interesting_methods', '~> 0.1'
   gem 'pry-coolline', '~> 0.2'
+  gem 'rubocop', '~> 0.56'
   gem 'sys-proc', '~> 1.1'
 
   # 'listen' is used to "watch"
@@ -38,8 +38,8 @@ end
 
 group :doc, :development do
   gem 'github-markup', '~> 2.0'
-  gem 'pry', '~> 0.11'
   gem 'redcarpet', '~> 3.4'
+  gem 'yard', '~> 0.9'
 end
 
 group :test, :development do
