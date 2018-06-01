@@ -9,7 +9,6 @@
 require_relative '../tools'
 require_relative '../concern/cli/with_exit_on_failure'
 require 'pathname'
-require 'rubocop'
 
 # rubocop:disable Style/Documentation
 
@@ -123,6 +122,8 @@ class Kamaze::Project::Tools::Rubocop
 
   # @return [YARD::CLI::Yardoc]
   def core
+    require 'rubocop'
+
     RuboCop::CLI.new
   end
 end
