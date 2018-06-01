@@ -10,13 +10,12 @@ group :default do
   gem 'dotenv', '~> 2.4'
   gem 'dry-inflector', '~> 0.1'
   gem 'process_lock', '~> 0.1'
+  gem 'pry', '~> 0.11'
   gem 'rake', '~> 12.3'
   gem 'rugged', '~> 0.27'
   gem 'tenjin', '~> 0.7'
   gem 'tty-editor', '~> 0.4'
   gem 'tty-screen', '>= 0.6.2', '~> 0.6'
-  # supported tools --------------------------------------------------
-  gem 'pry', '~> 0.11'
 end
 
 # --------------------------------------------------------------------
@@ -26,8 +25,6 @@ end
 
 group :development do
   gem 'bootsnap', '~> 1.3'
-  gem 'interesting_methods', '~> 0.1'
-  gem 'pry-coolline', '~> 0.2'
   gem 'rubocop', '~> 0.56'
   gem 'sys-proc', '~> 1.1'
 
@@ -36,13 +33,18 @@ group :development do
   gem 'listen', '~> 3.1'
 end
 
-group :doc, :development do
+group :development, :repl do
+  gem 'interesting_methods', '~> 0.1'
+  gem 'pry-coolline', '~> 0.2'
+end
+
+group :development, :doc do
   gem 'github-markup', '~> 2.0'
   gem 'redcarpet', '~> 3.4'
   gem 'yard', '~> 0.9'
 end
 
-group :test, :development do
+group :development, :test do
   gem 'factory_bot', '~> 4.8'
   gem 'fuubar', '~> 2.3'
   gem 'mocha', '~> 1.5'
