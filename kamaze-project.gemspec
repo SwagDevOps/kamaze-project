@@ -7,8 +7,8 @@
 
 Gem::Specification.new do |s|
   s.name        = 'kamaze-project'
-  s.version     = '1.0.2'
-  s.date        = '2018-05-31'
+  s.version     = '1.0.3'
+  s.date        = '2018-06-01'
   s.summary     = 'Automatize recurrent dev tasks with swag'
   s.description = 'A bunch of (rake) tasks to automatize your development workflow.'
 
