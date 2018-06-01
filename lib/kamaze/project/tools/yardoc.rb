@@ -8,7 +8,6 @@
 
 require_relative '../tools'
 require 'pathname'
-require 'yard'
 
 # rubocop:disable Style/Documentation
 
@@ -66,6 +65,8 @@ class Kamaze::Project::Tools::Yardoc
 
   # @return [YARD::CLI::Yardoc]
   def core
+    require 'yard'
+
     YARD::CLI::Yardoc.new.tap do |yard|
       yard.parse_arguments([])
 
