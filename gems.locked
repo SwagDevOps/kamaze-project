@@ -21,7 +21,7 @@ GEM
     equatable (0.5.0)
     factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    ffi (1.9.23)
+    ffi (1.9.24)
     fuubar (2.3.1)
       rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
