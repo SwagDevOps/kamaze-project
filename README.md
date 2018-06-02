@@ -13,6 +13,17 @@ and so on.
 Automation mostly relies on the ``gem`` (and ``gemspec``) standards,
 most tasks MUST run in a sufficient gem context.
 
+## Install
+
+
+```ruby
+gem 'kamaze-project', '~> 1.0'
+```
+
+```sh
+gem install kamaze-project
+```
+
 ## Ease of use
 
 This gem keeps ease of use (and DRY) in mind.
