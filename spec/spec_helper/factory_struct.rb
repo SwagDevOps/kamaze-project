@@ -1,11 +1,10 @@
 # frozen_string_literal: true
-# -*- coding: utf-8 -*-
 
 require 'ostruct'
 
 # Generic struct (ala OpenStruct)
 class FactoryStruct < OpenStruct
-  # rubocop:disable Style/MethodMissing
+  # rubocop:disable Style/MissingRespondToMissing
 
   # Introduces some strictness on ``OpenStruct#method_missing``
   #
@@ -22,5 +21,5 @@ class FactoryStruct < OpenStruct
 
     super
   end
-  # rubocop:enable Style/MethodMissing
+  # rubocop:enable Style/MissingRespondToMissing
 end
