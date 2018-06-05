@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
 require 'kamaze/project/tools/yardoc'
-require 'pathname'
 
 describe Kamaze::Project::Tools::Yardoc, :tools, :'tools/yardoc' do
-  build('tools/yardoc')
-    .describe_instance_methods
-    .each do |method, counts|
-    counts.each do |n|
-      it { expect(subject).to respond_to(method).with(n).arguments }
-    end
-  end
+  it { expect(subject).to respond_to(:options).with(0).arguments }
+  it { expect(subject).to respond_to(:run).with(0).arguments }
+  it { expect(subject).to respond_to(:call).with(0).arguments }
+  it { expect(subject).to respond_to(:output_dir).with(0).arguments }
+  it { expect(subject).to respond_to(:excluded).with(0).arguments }
+  it { expect(subject).to respond_to(:paths).with(0).arguments }
+  it { expect(subject).to respond_to(:files).with(0).arguments }
 
   it { expect(subject).to be_a(Kamaze::Project::Tools::BaseTool) }
 end

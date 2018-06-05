@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-require 'kamaze/project/tools'
 require 'kamaze/project/tools_provider'
 
 describe Kamaze::Project::ToolsProvider, :tools_provider do
@@ -18,7 +16,7 @@ end
 
 describe Kamaze::Project::ToolsProvider, :tools_provider do
   context '.defaults' do
-    build('tools').keys.each do |k|
+    sham!(:tools).keys.each do |k|
       it { expect(described_class.defaults.keys).to include(k) }
     end
   end
@@ -28,12 +26,12 @@ describe Kamaze::Project::ToolsProvider, :tools_provider do
   end
 
   context '#to_h.keys' do
-    build('tools').keys.each do |k|
+    sham!(:tools).keys.each do |k|
       it { expect(subject.to_h.keys).to include(k) }
     end
   end
 
-  build('tools').keys.each do |k|
+  sham!(:tools).keys.each do |k|
     context "#to_h[#{k}]" do
       it do
         # SHOULD receive ``BaseTool`` instances
@@ -46,16 +44,19 @@ end
 
 describe Kamaze::Project::ToolsProvider, :tools_provider do
   context '#[]' do
-    it { expect(subject["fake_#{SecureRandom.hex[0..8]}"]).to be(nil) }
+    let(:fake_key) { sham!(:tools).faker.call }
+
+    it { expect(subject[fake_key]).to be(nil) }
   end
 
   context '#fetch()' do
+    let(:fake_key) { sham!(:tools).faker.call }
+
     it do
-      expect { subject.fetch("fake_#{SecureRandom.hex[0..8]}") }
-        .to raise_error(KeyError)
+      expect { subject.fetch(fake_key) }.to raise_error(KeyError)
     end
 
-    build('tools').keys.shuffle.each do |k|
+    sham!(:tools).keys.shuffle.each do |k|
       it do
         # use ``to_h`` method before a ``fetch``
         tool = subject.to_h[k]
@@ -69,7 +70,7 @@ end
 # Provide, not so evident, proofs of success for ``merge!``
 describe Kamaze::Project::ToolsProvider, :tools_provider do
   context '#merge!.fetch(k)' do
-    let(:random_tools) { build('tools').random_tools }
+    let(:random_tools) { sham!(:tools).randomizer.call }
 
     it do
       subject.merge!(random_tools)
@@ -82,7 +83,7 @@ describe Kamaze::Project::ToolsProvider, :tools_provider do
   end
 
   context '#merge!.fetch(k).random_name' do
-    let(:random_tools) { build('tools').random_tools }
+    let(:random_tools) { sham!(:tools).randomizer.call }
 
     it do
       subject.merge!(random_tools)
@@ -95,8 +96,8 @@ describe Kamaze::Project::ToolsProvider, :tools_provider do
 end
 
 describe Kamaze::Project::ToolsProvider, :tools_provider do
-  let(:random_tools) { build('tools').random_tools }
-  let(:target) { build('tools').keys[0] }
+  let(:random_tools) { sham!(:tools).randomizer.call }
+  let(:target) { sham!(:tools).keys.fetch(0) }
   let(:replacement) { random_tools.to_a[0][1] }
 
   # replace an original tool by an arbitrary class

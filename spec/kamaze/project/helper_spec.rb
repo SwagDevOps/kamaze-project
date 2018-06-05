@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'kamaze/project/helper'
-require 'kamaze/project/helper/inflector'
-require 'kamaze/project/helper/project'
-require 'kamaze/project/helper/project/config'
 
 # testing instance
 describe Kamaze::Project::Helper, :helper do
-  let(:subject) { described_class.__send__(:new) }
-  let(:helpers) { build('helper').helpers }
+  let(:subject) { sham!(:helper).subjecter.call }
+  let(:helpers) { sham!(:helper).classes }
 
   context '#to_h' do
     it { expect(subject.__send__(:to_h)).to be_a(Hash) }
@@ -22,7 +19,7 @@ end
 # getting inflector
 describe Kamaze::Project::Helper, :helper do
   let(:subject) { described_class.__send__(:new) }
-  let(:helpers) { build('helper').helpers }
+  let(:helpers) { sham!(:helper).classes }
 
   context '#get(:inflector)' do
     it { expect(subject.get(:inflector)).to be_a(helpers[:inflector]) }
@@ -32,13 +29,13 @@ end
 # loading helpers
 describe Kamaze::Project::Helper, :helper do
   let(:subject) do
-    build('helper').subject.tap do |helper|
+    sham!(:helper).subjecter.call.tap do |helper|
       helper.get(:project)
       helper.get('project/config')
     end
   end
 
-  let(:helpers) { build('helper').helpers }
+  let(:helpers) { sham!(:helper).classes }
 
   context '#to_h.keys' do
     it do
@@ -48,9 +45,9 @@ describe Kamaze::Project::Helper, :helper do
 end
 
 describe Kamaze::Project::Helper, :helper do
-  let(:subject) { build('helper').subject }
+  let(:subject) { sham!(:helper).subjecter.call }
 
-  build('helper').helpers.each do |k, v|
+  sham!(:helper).classes.each do |k, v|
     context "#get(:'#{v}')" do
       it { expect(subject.get(k)).to be_a(v) }
     end

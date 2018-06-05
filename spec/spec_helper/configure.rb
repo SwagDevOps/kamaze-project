@@ -1,15 +1,8 @@
 # frozen_string_literal: true
-# -*- coding: utf-8 -*-
 
-require 'factory_bot'
+require 'sham'
+require_relative 'local'
 
-RSpec.configure do |config|
-  config.include FactoryBot::Syntax::Methods
+Sham::Config.activate!(Pathname.new(__dir__).join('..').realpath)
 
-  FactoryBot.find_definitions
-
-  # Build is defined on a root level to be available outside of examples
-  def build(name)
-    FactoryBot.build(name)
-  end
-end
+Object.class_eval { include Local }

@@ -2,8 +2,9 @@
 
 require 'kamaze/project/concern/observable'
 
-describe build('concern/observable').described_class, \
-         :concern, :'concern/observable' do
+describe Class, :concern, :'concern/observable' do
+  let(:described_class) { sham!('concern/observable').subjecter.call.class }
+
   it do
     expect(described_class).to respond_to(:add_observer)
     expect(described_class).to respond_to(:add_observer).with(1).arguments
@@ -27,7 +28,7 @@ end
 
 describe Class, :concern, :'concern/observable' do
   context '.protected_methods' do
-    subject { build('concern/observable').described_class.new }
+    subject { sham!('concern/observable').subjecter.call }
 
     [:dispatch_event,
      :observer_peers,
@@ -37,7 +38,7 @@ describe Class, :concern, :'concern/observable' do
   end
 
   context '.observer_peers' do
-    subject { build('concern/observable').described_class.new }
+    subject { sham!('concern/observable').subjecter.call }
 
     it { expect(subject.__send__(:observer_peers)).to be_a(Hash) }
   end

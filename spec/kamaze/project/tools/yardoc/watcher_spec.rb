@@ -4,22 +4,21 @@ require 'kamaze/project/tools/yardoc/watcher'
 
 describe Kamaze::Project::Tools::Yardoc::Watcher, \
          :tools, :'tools/yardoc', :'tools/yardoc/watcher' do
-  build('tools/yardoc/watcher')
-    .describe_instance_methods
-    .each do |method, counts|
-    counts.each do |n|
-      it { expect(subject).to respond_to(method).with(n).arguments }
-    end
-  end
+  it { expect(subject).to respond_to(:paths).with(0).arguments }
+  it { expect(subject).to respond_to(:options).with(0).arguments }
+  it { expect(subject).to respond_to(:patterns).with(0).arguments }
+
+  it { expect(subject).to respond_to(:watch).with(0).arguments }
+  it { expect(subject).to respond_to(:watch).with(1).arguments }
 end
 
 # rubocop:disable Metrics/BlockLength
 10.times do
   describe Kamaze::Project::Tools::Yardoc::Watcher, \
            :tools, :'tools/yardoc', :'tools/yardoc/watcher' do
-    let(:paths) { build('tools/yardoc/watcher').random_paths }
-    let(:patterns) { build('tools/yardoc/watcher').random_patterns }
-    let(:options) { build('tools/yardoc/watcher').random_options }
+    let(:paths) { sham!('tools/yardoc/watcher').paths_randomizer.call }
+    let(:patterns) { sham!('tools/yardoc/watcher').patterns_randomizer.call }
+    let(:options) { sham!('tools/yardoc/watcher').options_randomizer.call }
 
     subject do
       # testing purpose only, SHOULD use an observer instead

@@ -3,7 +3,7 @@
 require 'kamaze/project/concern/cli'
 
 describe Class, :concern, :'concern/cli' do
-  subject { build('concern/cli').subject }
+  let(:subject) { sham!('concern/cli').subjecter.call }
 
   it { expect(subject).to respond_to(:successful?).with(0).arguments }
   it { expect(subject).to respond_to(:success?).with(0).arguments }
@@ -14,7 +14,7 @@ end
 # Build an instance of ``cli`` with a retcode ``255``
 describe Class, :concern, :'concern/cli' do
   let(:subject) do
-    build('concern/cli').subject.tap do |subject|
+    sham!('concern/cli').subjecter.call.tap do |subject|
       subject.__send__('retcode=', 255)
     end
   end
@@ -34,7 +34,7 @@ end
 
 # Build an instance of ``cli`` with default retcode
 describe Class, :concern, :'concern/cli' do
-  let(:subject) { build('concern/cli').subject }
+  let(:subject) { sham!('concern/cli').subjecter.call }
 
   context '#success?' do
     it { expect(subject.success?).to be(true) }

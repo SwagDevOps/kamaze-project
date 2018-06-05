@@ -50,7 +50,7 @@ end
 
 # testing on empty file
 describe Kamaze::Project::Version, :version do
-  let(:file_name) { build('version').samples.fetch('empty') }
+  let(:file_name) { sham!(:version).samples.fetch('empty') }
   let(:subject) { described_class.new(file_name) }
 
   context '#valid?' do
@@ -75,7 +75,7 @@ end
 
 # testing on invalid (incomplete description), missing major
 describe Kamaze::Project::Version, :version do
-  let(:file_name) { build('version').samples.fetch('invalid_major') }
+  let(:file_name) { sham!(:version).samples.fetch('invalid_major') }
   let(:subject) { described_class.new(file_name) }
 
   context '#valid?' do
@@ -93,7 +93,7 @@ end
 
 # testing on invalid (incomplete description), missing minor
 describe Kamaze::Project::Version, :version do
-  let(:file_name) { build('version').samples.fetch('invalid_minor') }
+  let(:file_name) { sham!(:version).samples.fetch('invalid_minor') }
   let(:subject) { described_class.new(file_name) }
 
   context '#valid?' do
@@ -111,7 +111,7 @@ end
 
 # testing on invalid (incomplete description), missing patch
 describe Kamaze::Project::Version, :version do
-  let(:file_name) { build('version').samples.fetch('invalid_patch') }
+  let(:file_name) { sham!(:version).samples.fetch('invalid_patch') }
   let(:subject) { described_class.new(file_name) }
 
   context '#valid?' do
@@ -129,7 +129,7 @@ end
 
 # testing on inexisting file
 describe Kamaze::Project::Version, :version do
-  let(:file_name) { build('version').samples.fetch('random') }
+  let(:file_name) { sham!(:version).samples.fetch('random') }
   let(:subject) { described_class.new(file_name) }
 
   context '#valid?' do

@@ -23,8 +23,10 @@ sampler = lambda do
   end
 end
 
-FactoryBot.define do
-  factory 'version', class: FactoryStruct do
-    samples(sampler.call)
+Sham.config(FactoryStruct, File.basename(__FILE__, '.*').to_sym) do |c|
+  c.attributes do
+    {
+      samples: sampler.call
+    }
   end
 end

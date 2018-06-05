@@ -4,7 +4,7 @@ require 'kamaze/project/concern/env'
 
 # Ensure attr_accessor is accessible
 describe Class, :concern, :'concern/env' do
-  subject { build('concern/env').subject }
+  subject { sham!('concern/env').subjecter.call }
 
   it { expect(subject).to respond_to(:env_loaded) }
 
@@ -24,9 +24,9 @@ describe Class, :concern, :'concern/env' do
     end
 
     let(:subject) do
-      build('concern/env')
-        .subject
-        .tap { |subject| subject.__send__(:'env_loaded=', env) }
+      sham!('concern/env').subjecter.call.tap do |subject|
+        subject.__send__(:'env_loaded=', env)
+      end
     end
 
     it do
@@ -39,14 +39,12 @@ end
 # Load a sample file (math.env)
 describe Class, :concern, :'concern/env' do
   context '#env_loaded' do
-    let(:file) { build('concern/env').files[:math] }
+    let(:file) { sham!('concern/env').files.fetch(:math) }
 
     let(:subject) do
-      build('concern/env')
-        .subject
-        .__send__(:env_load,
-                  pwd: file.path.dirname,
-                  file: file.path.basename)
+      sham!('concern/env')
+        .subjecter.call
+        .__send__(:env_load, pwd: file.path.dirname, file: file.path.basename)
     end
 
     it do
