@@ -12,7 +12,6 @@ require 'fileutils'
 require 'pathname'
 require 'tmpdir'
 require 'process_lock'
-require 'active_support/inflector'
 
 module Kamaze::Project::Tools
   class ProcessLocker < BaseTool
@@ -100,7 +99,10 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
     tmpdir
   end
 
+  # @return [Dry::Inflector]
   def inflector
-    ActiveSupport::Inflector
+    require 'dry/inflector'
+
+    Dry::Inflector.new
   end
 end
