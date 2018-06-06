@@ -6,7 +6,7 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'kamaze/project/helper'
+require_relative '../helper'
 
 # Inflector built on top of ``Dry::Inflector``
 class Kamaze::Project::Helper::Inflector
