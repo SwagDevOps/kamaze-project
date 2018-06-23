@@ -9,6 +9,7 @@ group :default do
   gem 'cliver', '~> 0.3'
   gem 'dotenv', '~> 2.4'
   gem 'dry-inflector', '~> 0.1'
+  gem 'kamaze-version', '~> 1.0'
   gem 'process_lock', '~> 0.1'
   gem 'pry', '~> 0.11'
   gem 'rake', '~> 12.3'
