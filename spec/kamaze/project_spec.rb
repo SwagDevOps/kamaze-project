@@ -16,4 +16,5 @@ describe Kamaze::Project, :project do
 
   it { expect(subject).to respond_to(:path).with(0).arguments }
   it { expect(subject).to respond_to(:path).with_unlimited_arguments }
+  it { expect(subject.class).to define_constant(:VERSION) }
 end

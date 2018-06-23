@@ -13,16 +13,14 @@ module Kamaze
   # rubocop:disable Style/Documentation
 
   class Project
+    autoload :VERSION, "#{__dir__}/project/version"
+
     module Concern
       [nil, :env, :mode, :helper,
        :tasks, :tools].each do |req|
         require_relative "project/concern/#{req}".gsub(%r{/$}, '')
       end
     end
-
-    require_relative 'project/version'
-
-    VERSION = Version.new.freeze
 
     # @see Kamaze::Project::Version
     # @return [Object]
