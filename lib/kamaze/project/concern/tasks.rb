@@ -42,14 +42,21 @@ module Kamaze::Project::Concern::Tasks
   # @see Kamaze::Project::DSL::Definition
   # @return [self]
   def tasks_load!
-    if Kernel.const_defined?('Rake::DSL')
-      ns = Pathname.new('kamaze/project')
+    return self unless Kernel.const_defined?('Rake::DSL')
 
-      [ns.join('dsl/setup'),
-       tasks.map { |task| ns.join("tasks/#{task}") }]
-        .flatten.map(&:to_s).each { |req| require req }
-    end
+    require tasks_ns.join('dsl/setup')
+
+    tasks.map { |task| tasks_ns.join("tasks/#{task}") }
+         .map(&:to_s)
+         .each { |req| require req }
 
     self
+  end
+
+  # Get namespace for default tasks
+  #
+  # @return [Pathname]
+  def tasks_ns
+    Pathname.new('kamaze/project')
   end
 end
