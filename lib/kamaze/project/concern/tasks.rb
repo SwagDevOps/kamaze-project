@@ -10,7 +10,11 @@ require_relative '../concern'
 
 # Concern tasks
 #
-# Stores tasks to enable and provides method to load them
+# Stores tasks to enable and provides method to load them.
+#
+# Tasks are deignated by a string, preprocessing is applied on this strings
+# before each ``task`` is required. Task prefixd by a ``@`` character are
+# required without preprocessing, except first char removal.
 module Kamaze::Project::Concern::Tasks
   # Get tasks
   #
