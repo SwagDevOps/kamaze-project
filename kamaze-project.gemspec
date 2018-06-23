@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("cliver", ["~> 0.3"])
   s.add_runtime_dependency("dotenv", ["~> 2.4"])
   s.add_runtime_dependency("dry-inflector", ["~> 0.1"])
+  s.add_runtime_dependency("kamaze-version", ["~> 1.0"])
   s.add_runtime_dependency("process_lock", ["~> 0.1"])
   s.add_runtime_dependency("pry", ["~> 0.11"])
   s.add_runtime_dependency("rake", ["~> 12.3"])
