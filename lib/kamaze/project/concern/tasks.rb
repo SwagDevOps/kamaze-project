@@ -24,11 +24,16 @@ module Kamaze::Project::Concern::Tasks
   # Set tasks
   #
   # @param [Array] tasks
+  # @return [Array<String>]
   def tasks=(tasks)
     @tasks = (@tasks.to_a + tasks.to_a).map(&:to_s).map do |tn|
-      { ':': '/', '-': '_' }.each { |k, v| tn = tn.tr(k.to_s, v) }
+      if tn[0] != '@'
+        { ':': '/', '-': '_' }.each do |k, v|
+          tn = tn.tr(k.to_s, v)
+        end
+      end
 
-      tn
+      tn.to_s
     end.map(&:to_sym).uniq
   end
 
@@ -44,13 +49,23 @@ module Kamaze::Project::Concern::Tasks
   def tasks_load!
     return self unless Kernel.const_defined?('Rake::DSL')
 
-    require tasks_ns.join('dsl/setup')
+    require tasks_ns.join('dsl/setup').to_s
 
-    tasks.map { |task| tasks_ns.join("tasks/#{task}") }
-         .map(&:to_s)
-         .each { |req| require req }
+    tasks.map { |task| load_task!(task) }
 
     self
+  end
+
+  # Load task by given name
+  #
+  # @param [String] task
+  # @return [String]
+  def load_task!(task)
+    req = task[0] != '@' ? tasks_ns.join("tasks/#{task}") : task[1..-1]
+
+    require req
+
+    req
   end
 
   # Get namespace for default tasks
