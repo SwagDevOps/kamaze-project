@@ -1,33 +1,40 @@
 # frozen_string_literal: true
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
 # rubocop:disable all
-
-# MUST follow the higher required_ruby_version
-# requires version >= 2.3.0 due to safe navigation operator &
-
-Gem::Specification.new do |s|
-  s.name        = '#{@name}'
-  s.version     = '#{@version}'
-  s.date        = '#{@date}'
-  s.summary     = '#{@summary}'
-  s.description = '#{@description}'
-
-  s.licenses    = #{@licenses}
-  s.authors     = #{@authors}
-  s.email       = '#{@email}'
-  s.homepage    = '#{@homepage}'
-
-  s.required_ruby_version = '>= 2.3.0'
-  s.require_paths = ['lib']
-  s.files         = [
+<?rb
+@files = [
     '.yardopts',
     '.rubocop.yml',
     'bin/*',
     'lib/**/*.rb',
     'lib/**/resources/**/**',
     'lib/**/version.yml'
-  ].map { |m| Dir.glob(m) }.flatten
-   .map { |f| File.file?(f) ? f : nil }.compact
+].map { |m| Dir.glob(m) }.flatten.keep_if { |f| File.file?(f) }.sort
+
+self.singleton_class.define_method(:quote) { |input| input.to_s.inspect }
+?>
+
+Gem::Specification.new do |s|
+  s.name        = #{quote(@name)}
+  s.version     = #{quote(@version)}
+  s.date        = #{quote(@date)}
+  s.summary     = #{quote(@summary)}
+  s.description = #{quote(@description)}
+
+  s.licenses    = #{@licenses}
+  s.authors     = #{@authors}
+  s.email       = #{quote(@email)}
+  s.homepage    = #{quote(@homepage)}
+
+  # MUST follow the higher required_ruby_version
+  # requires version >= 2.3.0 due to safe navigation operator &
+  s.required_ruby_version = ">= 2.3.0"
+  s.require_paths = ["lib"]
+  s.files         = [
+    <?rb for file in @files ?>
+    #{"%s," % quote(file)}
+    <?rb end ?>
+  ]
 
   #{@dependencies.keep(:runtime).to_s.lstrip}
 end
