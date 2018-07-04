@@ -43,7 +43,7 @@ class Kamaze::Project::Tools::Shell < Kamaze::Project::Tools::BaseTool
 
   def setup
     @console ||= Kamaze.project.tools.fetch(:console)
-    @provider ||= require_any(:pry) ? Pry : nil
+    @provider ||= require_any(:pry) ? Object.const_get(:Pry) : nil
     @banner ||= nil
   end
 
@@ -69,16 +69,15 @@ class Kamaze::Project::Tools::Shell < Kamaze::Project::Tools::BaseTool
   # Require any gem based on ``Gem::Specification``
   #
   # @param [String|Symbol] gem_name
-  # @param [String|Symbol] req_name
+  # @param [Array|nil] requirements
   # @return [Boolean]
-  def require_any(gem_name, req_name = nil)
+  def require_any(gem_name, requirements = nil)
     gem_name = gem_name.to_s
-    req_name ||= gem_name
-    spec = Gem::Specification
+    requirements ||= [gem_name]
 
-    return false unless spec.find_all_by_name(gem_name).any?
+    return false unless Gem::Specification.find_all_by_name(gem_name).any?
 
-    require req_name
+    requirements.each { |req| require req.to_s }
 
     true
   end
