@@ -17,7 +17,7 @@ GEM
     fuubar (2.3.1)
       rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
-    github-markup (2.0.0)
+    github-markup (2.0.1)
     hitimes (1.3.0)
     interesting_methods (0.1.2)
     jaro_winkler (1.5.1)
@@ -135,4 +135,4 @@ DEPENDENCIES
   yard (~> 0.9)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
