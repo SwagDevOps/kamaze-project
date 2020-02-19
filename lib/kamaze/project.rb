@@ -6,14 +6,44 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'pathname'
-
 # Base module (almost a namespace)
 module Kamaze
   # rubocop:disable Style/Documentation
 
   class Project
-    autoload :VERSION, "#{__dir__}/project/version"
+    require 'tmpdir'
+    autoload(:YAML, 'yaml')
+    autoload(:Digest, 'digest')
+    autoload(:Bootsnap, 'bootsnap')
+    # @formatter:off
+    {
+      VERSION: 'version',
+      Bundled: 'bundled',
+    }.each { |s, fp| autoload(s, "#{__dir__}/project/#{fp}") }
+    # @formatter:on
+
+    # @formatter:off
+    BOOTSNAP_CONFIG = {
+      development_mode: true,
+      load_path_cache: true,
+      autoload_paths_cache: false,
+      compile_cache_iseq: true,
+      compile_cache_yaml: true,
+      cache_dir: [
+        Dir.tmpdir,
+        "bootsnap.#{Digest::SHA1.hexdigest(__FILE__)}.#{Process.uid}"
+      ].join('/')
+    }.freeze
+    # @formatter:on
+
+    include(Bundled).tap do
+      self.base_path = self.base_path.join('..')
+      require 'bundler/setup' if bundled?
+      require 'kamaze/project/core_ext/pp' if development?
+      if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
+        Bootsnap.setup(BOOTSNAP_CONFIG)
+      end
+    end
 
     module Concern
       [nil, :env, :mode, :helper,
