@@ -8,15 +8,6 @@
 
 require_relative '../project'
 
-class Kamaze::Project
-  class ToolsProvider
-    class Resolver
-    end
-  end
-end
-
-require_relative 'tools_provider/resolver'
-
 # Tools provider
 #
 # Tools are instantiated on demand,
@@ -33,6 +24,12 @@ require_relative 'tools_provider/resolver'
 # end
 # ```
 class Kamaze::Project::ToolsProvider
+  # @formatter:off
+  {
+    Resolver: 'resolver',
+  }.each { |s, fp| autoload(s, "#{__dir__}/tools_provider/#{fp}") }
+  # @formatter:on
+
   class << self
     # Default tools
     #
@@ -62,19 +59,15 @@ class Kamaze::Project::ToolsProvider
   # @param [Hash] items
   def initialize(items = {})
     @items = Hash[self.class.defaults].merge(items)
-    @cache = {}
     @resolver = Resolver.new
   end
 
   # @param [Hash] items
   # @return [self]
   def merge!(items)
-    items = Hash[items.map { |k, v| [k.to_sym, v] }]
-    @cache.delete_if { |k| items.member?(k) }
-
-    @items.merge!(items)
-
-    self
+    self.tap do
+      Hash[items.map { |k, v| [k.to_sym, v] }].tap { |h| @items.merge!(h) }
+    end
   end
 
   # Associates the value given by value with the given key.
@@ -82,7 +75,9 @@ class Kamaze::Project::ToolsProvider
   # @param [String|Symbol] name
   # @param [Class] value
   def []=(name, value)
-    merge!(name => value)
+    value.tap do
+      { name => value }.tap { |h| merge!(h) }
+    end
   end
 
   # Prevents further modifications.
@@ -91,8 +86,9 @@ class Kamaze::Project::ToolsProvider
   #
   # @return [self]
   def freeze
-    @items.freeze
-    super
+    super.tap do
+      @items.freeze
+    end
   end
 
   # Get a fresh instance with given name
@@ -115,11 +111,9 @@ class Kamaze::Project::ToolsProvider
 
     return nil unless member?(name)
 
-    @cache[name] ||= @items.fetch(name).yield_self do |klass|
-      resolver.classify(klass)
+    self.items.fetch(name).yield_self do |klass|
+      resolver.classify(klass).new
     end
-
-    @cache.fetch(name).new
   end
 
   alias get fetch
@@ -128,10 +122,10 @@ class Kamaze::Project::ToolsProvider
   #
   # @return [Hash]
   def to_h
-    @items
-      .map { |k, v| [k, @cache[k] ||= resolver.classify(v)] }
-      .yield_self { |results| Hash[results] }
-      .yield_self { |items| Hash[items.collect { |k, v| [k, v.new] }] }
+    self.items
+        .map { |k, v| [k, resolver.classify(v)] }
+        .yield_self { |results| Hash[results] }
+        .yield_self { |items| Hash[items.collect { |k, v| [k, v.new] }] }
   end
 
   # Returns ``true`` if the given key is present
@@ -139,9 +133,7 @@ class Kamaze::Project::ToolsProvider
   # @param [Symbol|String] name
   # @return [Boolean]
   def member?(name)
-    name = name.to_sym
-
-    @items.member?(name)
+    self.items.member?(name.to_sym)
   end
 
   protected
@@ -153,9 +145,4 @@ class Kamaze::Project::ToolsProvider
   #
   # @return [Hash]
   attr_reader :items
-
-  # Used to avoid classes resolution.
-  #
-  # @return [Hash]
-  attr_reader :cache
 end
