@@ -46,7 +46,6 @@ group :doc do
 end
 
 group :test do
-  gem 'fuubar', '~> 2.5'
   gem 'mocha', '~> 1.11'
   gem 'rspec', '~> 3.7'
   gem 'sham', '~> 2.0'
