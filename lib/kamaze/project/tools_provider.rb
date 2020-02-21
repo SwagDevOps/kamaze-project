@@ -49,10 +49,11 @@ class Kamaze::Project::ToolsProvider
     #
     # @return [Hash]
     def items
-      config = "#{__dir__}/resources/config/tools.yml"
-      defaults = YAML.load_file(config)
-
-      Hash[defaults.collect { |k, v| [k.to_sym, v] }]
+      "#{__dir__}/resources/config/tools.yml"
+        .yield_self { |file| YAML.load_file(file) }
+        .yield_self do |defaults|
+        Hash[defaults.collect { |k, v| [k.to_sym, v] }]
+      end
     end
   end
 
