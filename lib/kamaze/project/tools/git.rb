@@ -34,6 +34,8 @@ end
 
 # Provide a wrapper based on ``rugged`` (``libgit2``}
 class Kamaze::Project::Tools::Git
+  autoload(:Rugged, 'rugged')
+
   # @return [String]
   attr_writer :base_dir
 
@@ -65,7 +67,7 @@ class Kamaze::Project::Tools::Git
 
   # Get status
   #
-  # @return [Hash]
+  # @return [Status]
   def status
     status = {}
     repository.status { |file, data| status[file] = data }
@@ -84,12 +86,6 @@ class Kamaze::Project::Tools::Git
 
   def setup
     @base_dir ||= Dir.pwd
-    begin
-      require 'rugged'
-      @repository = Rugged::Repository.new(base_dir.to_s)
-    rescue LoadError, Rugged::RepositoryError
-      # @todo Load error SHOULD be stored (as a boolean?)
-      @repository = nil
-    end
+    @repository = Rugged::Repository.new(base_dir.to_s)
   end
 end
