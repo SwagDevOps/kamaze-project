@@ -4,8 +4,6 @@
 <?rb
 @files = [
     '.yardopts',
-    '.rubocop.yml',
-    'bin/*',
     'lib/**/*.rb',
     'lib/**/resources/**/**',
     'lib/**/version.yml'
@@ -28,7 +26,8 @@ Gem::Specification.new do |s|
 
   # MUST follow the higher required_ruby_version
   # requires version >= 2.3.0 due to safe navigation operator &
-  s.required_ruby_version = ">= 2.3.0"
+  # requires version >= 2.5.0 due to yield_self
+  s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
     <?rb for file in @files ?>
