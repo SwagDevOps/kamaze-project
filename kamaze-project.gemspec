@@ -16,12 +16,12 @@ Gem::Specification.new do |s|
 
   # MUST follow the higher required_ruby_version
   # requires version >= 2.3.0 due to safe navigation operator &
-  s.required_ruby_version = ">= 2.3.0"
+  # requires version >= 2.5.0 due to yield_self
+  s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
     ".rubocop.yml",
     ".yardopts",
-    "bin/plop",
     "lib/kamaze-project.rb",
     "lib/kamaze/project.rb",
     "lib/kamaze/project/boot/core_ext.rb",
