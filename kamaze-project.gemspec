@@ -4,10 +4,10 @@
 
 Gem::Specification.new do |s|
   s.name        = "kamaze-project"
-  s.version     = "1.0.4"
-  s.date        = "2018-06-05"
-  s.summary     = "Automatize recurrent dev tasks with swag"
-  s.description = "A bunch of (rake) tasks to automatize your development workflow."
+  s.version     = "1.1.0"
+  s.date        = "2020-02-24"
+  s.summary     = "Automatize recurrent dev tasks"
+  s.description = "A bunch of (rake) tasks to automatize development workflows."
 
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
-    ".rubocop.yml",
     ".yardopts",
     "lib/kamaze-project.rb",
     "lib/kamaze/project.rb",

@@ -1,15 +1,15 @@
 ---
 major: 1
-minor: 0
-patch: 4
+minor: 1
+patch: 0
 authors: ['Dimitri Arrigoni']
 email: 'dimitri@arrigoni.me'
-date: '2018-06-05'
-summary: 'Automatize recurrent dev tasks with swag'
-description: 'A bunch of (rake) tasks to automatize your development workflow.'
+date: '2020-02-24'
+summary: 'Automatize recurrent dev tasks'
+description: 'A bunch of (rake) tasks to automatize development workflows.'
 licenses: ['GPL-3.0']
 license_header: |
-  Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+  Copyright (C) 2017-2020 Dimitri Arrigoni <dimitri@arrigoni.me>
   License GPLv3+: GNU GPL version 3 or later
   <http://www.gnu.org/licenses/gpl.html>.
   This is free software: you are free to change and redistribute it.
