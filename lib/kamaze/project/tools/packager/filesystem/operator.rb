@@ -7,13 +7,19 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require 'pathname'
-require_relative '../filesystem'
-require_relative 'operator/utils'
 
 # Filesystem operator (manipulator)
 #
 # This class is intended to manipulate a ``Filesystem``.
 class Kamaze::Project::Tools::Packager::Filesystem::Operator
+  autoload(:Pathname, 'pathname')
+
+  # @formatter:off
+  {
+    Utils: 'utils',
+  }.each { |k, v| autoload(k, "#{__dir__}/operator/#{v}") }
+  # @formatter:on
+
   include Utils
 
   # @return [Kamaze::Project::Tools::Packager::Filesystem]
@@ -28,9 +34,11 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
 
     # Pass included methods to protected
     utils_methods.each do |m|
-      if self.public_methods.include?(m)
-        self.singleton_class.class_eval { protected m }
-      end
+      next unless self.public_methods.include?(m)
+
+      # rubocop:disable Style/AccessModifierDeclarations
+      self.singleton_class.class_eval { protected m }
+      # rubocop:enable Style/AccessModifierDeclarations
     end
   end
 

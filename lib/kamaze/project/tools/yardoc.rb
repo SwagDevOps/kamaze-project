@@ -9,22 +9,13 @@
 require_relative '../tools'
 require 'pathname'
 
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Yardoc < BaseTool
-  end
-
-  require_relative 'yardoc/file'
-  require_relative 'yardoc/watchable'
-end
-
-# rubocop:enable Style/Documentation
-
 # Tool to run ``CLI::Yardoc`` and generate documentation
 #
 # @see https://github.com/lsegal/yard/blob/49d885f29075cfef4cb954bb9247b6fbc8318cac/lib/yard/rake/yardoc_task.rb
-class Kamaze::Project::Tools::Yardoc
+class Kamaze::Project::Tools::Yardoc < Kamaze::Project::Tools::BaseTool
+  require_relative 'yardoc/file'
+  require_relative 'yardoc/watchable'
+
   include Watchable
 
   # Options used by ``YARD::CLI::Yardoc``

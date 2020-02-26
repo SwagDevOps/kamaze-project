@@ -9,11 +9,6 @@
 require_relative '../hooks'
 require_relative 'base_hook'
 
-class Kamaze::Project::Tools::Git::Hooks
-  class PreCommit < BaseHook
-  end
-end
-
 # PreCommit hook
 #
 # Provide helper methods intended to write hooks relating to pre-commit
@@ -29,7 +24,7 @@ end
 #   exit(retcode) unless retcode.zero?
 # end
 # ```
-class Kamaze::Project::Tools::Git::Hooks::PreCommit
+class Kamaze::Project::Tools::Git::Hooks::PreCommit < Kamaze::Project::Tools::Git::Hooks::BaseHook # rubocop:disable Layout/LineLength
   # Process index (files)
   #
   # Exits with a status code, raising ``SystemExit``.
@@ -72,6 +67,7 @@ class Kamaze::Project::Tools::Git::Hooks::PreCommit
         options[key] = options.keys.include?(key) ? !!options[key] : false
 
         next if options[key]
+
         self.retcode = v.const_get(:Errno) if index.public_send("#{type}?")
       end
     end

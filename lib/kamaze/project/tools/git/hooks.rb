@@ -7,13 +7,19 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../git'
-require_relative 'hooks/base_hook'
 require 'kamaze/project/concern/helper'
 
 # Provide hooks
 #
 # Kind of factory registering and building hooks
-class Kamaze::Project::Tools::Git::Hooks
+class Kamaze::Project::Tools::Git::Hooks < Kamaze::Project::Tools::Git::Util
+  # @formatter:off
+  {
+    BaseHook: 'base_hook',
+    PreCommit: 'pre_commit',
+  }.each { |k, v| autoload(k, "#{__dir__}/hooks/#{v}") }
+  # @formatter:on
+
   class << self
     include Kamaze::Project::Concern::Helper
 
@@ -43,9 +49,9 @@ class Kamaze::Project::Tools::Git::Hooks
 
     [:pre_commit].each { |n| self.class.register(n) }
 
-    self.class
-        .registered_hooks
-        .each { |name, klass| @hooks[name] = klass.new(repository) }
+    self.class.registered_hooks.each do |name, klass|
+      @hooks[name] = klass.new(repository)
+    end
   end
 
   # @return [Hash]

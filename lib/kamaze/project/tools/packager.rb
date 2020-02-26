@@ -7,32 +7,22 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require_relative 'base_tool'
-
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Packager < BaseTool
-    class Filesystem
-      class Operator
-        module Utils
-        end
-      end
-    end
-
-    require_relative 'packager/filesystem'
-    require_relative 'packager/filesystem/operator'
-    require_relative 'packager/filesystem/operator/utils'
-  end
-end
-
-# rubocop:enable Style/Documentation
 
 # Provides a packager
 #
 # Packager is intended to provide basic packaging operations
 # @abstract
-class Kamaze::Project::Tools::Packager
+class Kamaze::Project::Tools::Packager < Kamaze::Project::Tools::BaseTool
+  # @formatter:off
+  {
+    FileSystem: 'filesystem',
+  }.each { |k, v| autoload(k, "#{__dir__}/packager/#{v}") }
+  # @formatter:on
+
+  require_relative 'packager/filesystem'
+  require_relative 'packager/filesystem/operator'
+  require_relative 'packager/filesystem/operator/utils'
+
   # Get filesystem
   #
   # @return [Kamaze::Project::Tools::Packager::Filesystem]

@@ -10,31 +10,17 @@ require_relative '../tools'
 require_relative 'base_tool'
 require 'pathname'
 
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Git < BaseTool
-    # @abstract
-    class Util
-    end
-
-    class Status
-    end
-
-    class Hooks < Util
-    end
-  end
-
-  [:util,
-   :hooks,
-   :status].each { |req| require_relative "git/#{req}" }
-end
-
-# rubocop:enable Style/Documentation
-
 # Provide a wrapper based on ``rugged`` (``libgit2``}
-class Kamaze::Project::Tools::Git
+class Kamaze::Project::Tools::Git < Kamaze::Project::Tools::BaseTool
   autoload(:Rugged, 'rugged')
+
+  # @formatter:off
+  {
+    Util: 'util',
+    Hooks: 'hooks',
+    Status: 'status',
+  }.each { |k, v| autoload(k, "#{__dir__}/git/#{v}") }
+  # @formatter:on
 
   # @return [String]
   attr_writer :base_dir

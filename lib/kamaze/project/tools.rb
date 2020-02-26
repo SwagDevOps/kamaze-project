@@ -9,10 +9,12 @@
 require_relative '../project'
 require_relative 'tools_provider'
 
-# rubocop:disable Style/Documentation
-
+# Namespace for tools
 module Kamaze::Project::Tools
-  require_relative 'tools/base_tool'
+  # @formatter:off
+  {
+    Git: 'git',
+    BaseTool: 'base_tool',
+  }.each { |k, v| autoload(k, "#{__dir__}/tools/#{v}") }
+  # @formatter:on
 end
-
-# rubocop:enable Style/Documentation
