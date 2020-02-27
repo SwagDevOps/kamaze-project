@@ -10,7 +10,7 @@
 class Kamaze::Project::BootsanpConfig < ::Hash
   autoload(:Digest, 'digest')
 
-  def initialize # rubocop:disable Metrics/MethodLength:
+  def initialize
     {
       # @formatter:off
       development_mode: true,
@@ -18,11 +18,24 @@ class Kamaze::Project::BootsanpConfig < ::Hash
       autoload_paths_cache: false,
       compile_cache_iseq: true,
       compile_cache_yaml: true,
-      cache_dir: [
-        Dir.tmpdir,
-        "bootsnap.#{Digest::SHA1.hexdigest(__FILE__)}.#{Process.uid}"
-      ].join('/')
+      cache_dir: cache_dir(caller_locations.fetch(0).path)
       # @formatter:on
     }.each { |k, v| self[k] = v }
+  end
+
+  protected
+
+  # Get cache dir from given path.
+  #
+  # @param [String] from_path
+  #
+  # @return [String]
+  def cache_dir(from_path)
+    [
+      # @formatter:off
+      Dir.tmpdir,
+      "bootsnap.#{Digest::SHA1.hexdigest(from_path)}.#{Process.uid}",
+      # @formatter:on
+    ].join('/')
   end
 end
