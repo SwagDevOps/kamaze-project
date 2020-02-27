@@ -8,7 +8,12 @@
 
 # Config for bootsnap.
 class Kamaze::Project::BootsanpConfig < ::Hash
-  autoload(:Digest, 'digest')
+  {
+    # @formatter:off
+    Digest: 'digest',
+    Bootsnap: 'bootsnap',
+    # @formatter:on
+  }.each { |s, fp| autoload(s, fp) }
 
   def initialize
     {
@@ -21,6 +26,13 @@ class Kamaze::Project::BootsanpConfig < ::Hash
       cache_dir: cache_dir(caller_locations.fetch(0).path)
       # @formatter:on
     }.each { |k, v| self[k] = v }
+  end
+
+  # Apply config config.
+  #
+  # @return [self]
+  def call
+    self.tap { |config| Bootsnap.setup(**config) }
   end
 
   protected
