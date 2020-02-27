@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "lib/kamaze/project.rb",
     "lib/kamaze/project/boot/core_ext.rb",
     "lib/kamaze/project/boot/listen.rb",
+    "lib/kamaze/project/bootsnap_config.rb",
     "lib/kamaze/project/bundled.rb",
     "lib/kamaze/project/concern.rb",
     "lib/kamaze/project/concern/cli.rb",
