@@ -28,7 +28,6 @@ class Kamaze::Project
   {
     # @formatter:off
     YAML: 'yaml',
-    Bootsnap: 'bootsnap',
     Pathname: 'pathname',
     # @formatter:on
   }.each { |s, fp| autoload(s, fp) }
@@ -55,8 +54,9 @@ class Kamaze::Project
     self.base_path = self.base_path.join('..')
     require 'bundler/setup' if bundled?
     require 'kamaze/project/core_ext/pp' if development?
+
     if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
-      Bootsnap.setup(BootsanpConfig.new)
+      BootsanpConfig.new.call
     end
   end
 
