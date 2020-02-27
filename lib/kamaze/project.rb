@@ -6,74 +6,10 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Base module (almost a namespace)
 module Kamaze
-  # rubocop:disable Style/Documentation
-
   class Project
-    require 'tmpdir'
-    autoload(:YAML, 'yaml')
-    autoload(:Digest, 'digest')
-    autoload(:Bootsnap, 'bootsnap')
-    # @formatter:off
-    {
-      VERSION: 'version',
-      Bundled: 'bundled',
-    }.each { |s, fp| autoload(s, "#{__dir__}/project/#{fp}") }
-    # @formatter:on
-
-    # @formatter:off
-    BOOTSNAP_CONFIG = {
-      development_mode: true,
-      load_path_cache: true,
-      autoload_paths_cache: false,
-      compile_cache_iseq: true,
-      compile_cache_yaml: true,
-      cache_dir: [
-        Dir.tmpdir,
-        "bootsnap.#{Digest::SHA1.hexdigest(__FILE__)}.#{Process.uid}"
-      ].join('/')
-    }.freeze
-    # @formatter:on
-
-    include(Bundled).tap do
-      self.base_path = self.base_path.join('..')
-      require 'bundler/setup' if bundled?
-      require 'kamaze/project/core_ext/pp' if development?
-      if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
-        Bootsnap.setup(BOOTSNAP_CONFIG)
-      end
-    end
-
-    module Concern
-      [nil, :env, :mode, :helper,
-       :tasks, :tools].each do |req|
-        require_relative "project/concern/#{req}".gsub(%r{/$}, '')
-      end
-    end
-
-    # @see Kamaze::Project::Version
-    # @return [Object]
-    def version
-      subject.const_get('VERSION')
-    end
   end
-
-  # rubocop:enable Style/Documentation
-end
-
-# Base namespace
-module Kamaze
-  class << self
-    include Project::Concern::Helper
-
-    # Get an instance of project
-    #
-    # @return [Kamaze::Project]
-    def project(&block)
-      helper.get(:project).setup(&block)
-    end
-  end
+  # rubocop:disable Metrics/ClassLength
 end
 
 # Represent a project
@@ -87,7 +23,79 @@ end
 #   c.tasks       = [ :doc, :gem ]
 # end
 # ```
+#
+# @todo Class has too many lines.
 class Kamaze::Project
+  require 'tmpdir'
+
+  {
+    # @formatter:off
+    YAML: 'yaml',
+    Digest: 'digest',
+    Bootsnap: 'bootsnap',
+    Pathname: 'pathname',
+    # @formatter:on
+  }.each { |s, fp| autoload(s, fp) }
+
+  {
+    # @formatter:off
+    VERSION: 'version',
+    Bundled: 'bundled',
+    Concern: 'concern',
+    Config: 'config',
+    Debug: 'debug',
+    DSL: 'dsl',
+    Helper: 'helper',
+    Observable: 'observable',
+    Observer: 'observer',
+    Struct: 'struct',
+    Tools: 'tools',
+    ToolsProvider: 'tools_provider',
+    # @formatter:on
+  }.each { |s, fp| autoload(s, "#{__dir__}/project/#{fp}") }
+
+  BOOTSNAP_CONFIG = {
+    # @formatter:off
+    development_mode: true,
+    load_path_cache: true,
+    autoload_paths_cache: false,
+    compile_cache_iseq: true,
+    compile_cache_yaml: true,
+    cache_dir: [
+      Dir.tmpdir,
+      "bootsnap.#{Digest::SHA1.hexdigest(__FILE__)}.#{Process.uid}"
+    ].join('/')
+    # @formatter:on
+  }.freeze
+
+  include(Bundled).tap do
+    self.base_path = self.base_path.join('..')
+    require 'bundler/setup' if bundled?
+    require 'kamaze/project/core_ext/pp' if development?
+    if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
+      Bootsnap.setup(BOOTSNAP_CONFIG)
+    end
+  end
+
+  ::Kamaze.instance_eval do
+    class << self
+      include Concern::Helper
+
+      # Get an instance of project
+      #
+      # @return [Kamaze::Project]
+      def project(&block)
+        helper.get(:project).setup(&block)
+      end
+    end
+  end
+
+  # @see Kamaze::Project::Version
+  # @return [Object]
+  def version
+    subject.const_get('VERSION')
+  end
+
   include Concern::Mode
   include Concern::Helper
   include Concern::Tasks
@@ -149,7 +157,7 @@ class Kamaze::Project
 
   # @return [Pathname]
   def pwd
-    ::Pathname.new(Dir.pwd)
+    Pathname.new(Dir.pwd)
   end
 
   protected
@@ -180,4 +188,6 @@ class Kamaze::Project
 
     helper.get(:inflector).resolve(resolvable)
   end
+
+  # rubocop:enable Metrics/ClassLength
 end

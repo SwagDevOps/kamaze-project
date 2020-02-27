@@ -6,8 +6,23 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'kamaze/project'
+require_relative '../project'
 
 # Namespace for ``Concern``
 module Kamaze::Project::Concern
+  # @formatter:off
+  {
+    CLI: 'cli',
+    Env: 'env',
+    Helper: 'helper',
+    Mode: 'mode',
+    Observable: 'observable',
+    Sh: 'sh',
+    Tasks: 'tasks',
+  }.each { |s, fp| autoload(s, "#{__dir__}/concern/#{fp}") }
+  # @formatter:on
+
+  [nil, :env, :mode, :helper, :tasks, :tools].each do |req|
+    require_relative "./concern/#{req}".gsub(%r{/$}, '')
+  end
 end

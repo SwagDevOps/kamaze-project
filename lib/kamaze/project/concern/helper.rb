@@ -7,7 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require_relative '../helper'
 
 # Provides access to helpers
 module Kamaze::Project::Concern::Helper
