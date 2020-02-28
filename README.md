@@ -11,10 +11,9 @@ This gem is intended to provide a bunch of recurrent dev tasks, such as:
 and so on.
 
 Automation mostly relies on the ``gem`` (and ``gemspec``) standards,
-most tasks MUST run in a sufficient gem context.
+most tasks SHOULD run in a sufficient gem context.
 
 ## Install
-
 
 ```ruby
 gem 'kamaze-project', '~> 1.0'
