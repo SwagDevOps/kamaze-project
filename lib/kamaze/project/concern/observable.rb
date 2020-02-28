@@ -54,6 +54,7 @@ module Kamaze::Project::Concern::Observable
     # Add observer.
     #
     # @param [Class] observer_class
+    #
     # @return [self]
     def add_observer(observer_class, func = :handle_event)
       func = func.to_sym
@@ -71,20 +72,19 @@ module Kamaze::Project::Concern::Observable
     # Remove observer, so that it will no longer receive notifications.
     #
     # @param [Class] observer_class
+    #
     # @return [self]
     def delete_observer(observer_class)
-      observer_peers.delete(observer_class)
-
-      return self
+      self.tap do
+        observer_peers.delete(observer_class)
+      end
     end
 
     # Remove all observers.
     #
     # @return [self]
     def delete_observers
-      observers.clear
-
-      self
+      self.tap { observers.clear }
     end
 
     protected
@@ -121,12 +121,13 @@ module Kamaze::Project::Concern::Observable
   #
   # @param [Symbol|String] event
   # @param [Array<Object>] args
+  #
   # @return [self]
   def dispatch_event(event, *args)
-    observer_peers.to_h.each do |k, v|
-      k.__send__(v, *[event, self].concat(args))
+    self.tap do
+      observer_peers.to_h.each do |k, v|
+        k.__send__(v, *[event, self].concat(args))
+      end
     end
-
-    self
   end
 end
