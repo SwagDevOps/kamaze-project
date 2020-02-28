@@ -7,8 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require 'dotenv'
-require 'pathname'
 
 # Load dotenv file
 #
@@ -21,6 +19,9 @@ require 'pathname'
 # @see https://github.com/bkeepers/dotenv
 # @see http://12factor.net/config
 module Kamaze::Project::Concern::Env
+  autoload(:Dotenv, 'dotenv')
+  autoload(:Pathanme, 'pathname')
+
   # @!attribute [r] env_loaded
   #   @return [Hash] loaded environment
 
@@ -39,23 +40,24 @@ module Kamaze::Project::Concern::Env
   # @return [Hash]
   def env_loaded
     @env_loaded ||= {}
-
-    @env_loaded
   end
 
   protected
 
   # Load ``.env`` file (and store result)
   #
-  # @todo load different (or additionnal) files depending on env/mode
-  #
   # @return [self]
-  def env_load(options = {})
-    options[:pwd] = ::Pathname.new(options[:pwd] || Dir.pwd).realpath
-    options[:file] ||= '.env'
+  def env_load(**options)
+    options = {
+      # @formatter:off
+      pwd: Pathname.new(options[:pwd] || Dir.pwd).realpath,
+      file: '.env',
+      # @formatter:on
+    }.merge(options)
 
-    [options.fetch(:pwd).join(options.fetch(:file))].each do |file|
-      env_loaded.merge!(::Dotenv.load(file))
+    # @todo load different (or additionnal) files depending on env/mode
+    [Pathname.new(options.fetch(:pwd)).join(options.fetch(:file))].each do |file| # rubocop:disable Layout/LineLength
+      env_loaded.merge!(Dotenv.load(file))
     end
 
     self
