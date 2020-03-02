@@ -61,12 +61,12 @@ module Kamaze::Project::Concern::Sh
       self.shell_runner_last_status = status
 
       if !ok and shell_runner_debug?
-        # rubocop:disable Layout/IndentHash
-        warn("Command failed with status (%<retcode>s):\n# %<command>s" % {
-               retcode: status.exitstatus,
-               command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
-             })
-        # rubocop:enable Layout/IndentHash
+        # @formatter:off
+        "Command failed with status (%<retcode>s):\n# %<command>s" % {
+          retcode: status.exitstatus,
+          command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
+        }.tap { |message| warn(message) }
+        # @formatter:on
       end
     end
   end
