@@ -6,8 +6,38 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
+# Kamaze namesapace
 module Kamaze
-  class Project
+  class Project # rubocop:disable Style/Documentation
+    # @formatter:off
+    {
+      YAML: 'yaml',
+      Pathname: 'pathname',
+      Autoload: "#{__dir__}/project/autoload"
+    }.each { |s, fp| autoload(s, fp) }
+    # @formatter:on
+
+    Autoload.new.call("#{__dir__}/project")
+
+    include(Bundled).tap do
+      self.base_path = self.base_path.join('..')
+      require 'bundler/setup' if bundled?
+      require 'kamaze/project/core_ext/pp' if development?
+
+      if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
+        BootsanpConfig.new.call
+      end
+    end
+  end
+
+  class << self
+    # Get an instance of project
+    #
+    # @deprecated
+    # @return [Kamaze::Project]
+    def project(&block)
+      Project.instance(&block)
+    end
   end
 end
 
@@ -23,53 +53,19 @@ end
 # end
 # ```
 class Kamaze::Project
-  require 'tmpdir'
+  include Concern::Mode
+  include Concern::Helper
+  include Concern::Tasks
+  include Concern::Tools
 
-  {
-    # @formatter:off
-    YAML: 'yaml',
-    Pathname: 'pathname',
-    # @formatter:on
-  }.each { |s, fp| autoload(s, fp) }
+  class << self
+    include Concern::Helper
 
-  {
-    # @formatter:off
-    VERSION: 'version',
-    BootsanpConfig: 'bootsnap_config',
-    Bundled: 'bundled',
-    Concern: 'concern',
-    Config: 'config',
-    Debug: 'debug',
-    DSL: 'dsl',
-    Helper: 'helper',
-    Observable: 'observable',
-    Observer: 'observer',
-    Struct: 'struct',
-    Tools: 'tools',
-    ToolsProvider: 'tools_provider',
-    # @formatter:on
-  }.each { |s, fp| autoload(s, "#{__dir__}/project/#{fp}") }
-
-  include(Bundled).tap do
-    self.base_path = self.base_path.join('..')
-    require 'bundler/setup' if bundled?
-    require 'kamaze/project/core_ext/pp' if development?
-
-    if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
-      BootsanpConfig.new.call
-    end
-  end
-
-  ::Kamaze.instance_eval do
-    class << self
-      include Concern::Helper
-
-      # Get an instance of project
-      #
-      # @return [Kamaze::Project]
-      def project(&block)
-        helper.get(:project).setup(&block)
-      end
+    # Get an instance of project
+    #
+    # @return [Kamaze::Project]
+    def instance(&block)
+      helper.get(:project).setup(&block)
     end
   end
 
@@ -78,11 +74,6 @@ class Kamaze::Project
   def version
     subject.const_get('VERSION')
   end
-
-  include Concern::Mode
-  include Concern::Helper
-  include Concern::Tasks
-  include Concern::Tools
 
   # Project name
   #
