@@ -43,6 +43,8 @@ class Kamaze::Project::BootsanpConfig < ::Hash
   #
   # @return [String]
   def cache_dir(from_path)
+    require 'tmpdir'
+
     [
       # @formatter:off
       Dir.tmpdir,
