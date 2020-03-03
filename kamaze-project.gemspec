@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     ".yardopts",
     "lib/kamaze-project.rb",
     "lib/kamaze/project.rb",
+    "lib/kamaze/project/autoload.rb",
     "lib/kamaze/project/boot/core_ext.rb",
     "lib/kamaze/project/boot/listen.rb",
     "lib/kamaze/project/bootsnap_config.rb",
