@@ -39,11 +39,13 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # @raise [ArgumentError] when type is not supported
   # @param [nil|Class|Symbol] type
   # @return [Gem::Specification|Object]
+  #
+  # @see Gem::Specification.load()
   def read(type = nil)
     Dir.chdir(pwd) do
-      spec = Gem::Specification.load(self.spec_file.to_s)
-
-      type ? Decorator.new(spec).to(type) : spec
+      eval(self.spec_file.read, binding, self.spec_file.to_s).tap do |spec| # rubocop:disable Security/Eval
+        return type ? Decorator.new(spec).to(type) : spec
+      end
     end
   end
 
@@ -56,10 +58,9 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   # Get project
   #
-  # @see Kamaze.project
   # @return [Object|Kamaze::Project]
   def project
-    @project || Kamaze.project
+    @project || Kamaze::Project.instance
   end
 
   protected
