@@ -6,9 +6,13 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Require base tasks -------------------------------------------------
+# Require base tasks ------------------------------------------------
 [:gemspec, :build].each { |req| require_relative "gem/#{req}" }
 
-# Default task -------------------------------------------------------
-desc 'Build all the packages'
-task gem: [:'gem:build']
+lambda do |method, *args|
+  tools.fetch(:gemspec_writer).public_send(*[method].push(*args))
+end.tap do |writer|
+  # Default task ----------------------------------------------------
+  desc 'Build all the packages'
+  task gem: [writer.call(:to_s), :'gem:build']
+end

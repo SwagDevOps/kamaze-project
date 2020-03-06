@@ -6,15 +6,17 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-reader = tools.fetch(:gemspec_reader)
-writer = tools.fetch(:gemspec_writer)
+lambda do |method, *args|
+  tools.fetch(:gemspec_writer).public_send(*[method].push(*args))
+end.tap do |writer|
+  task "#{writer.call(:to_s)}": [:'gem:gemspec'] do |task| # rubocop:disable Style/SymbolProc
+    task.reenable
+  end
 
-files = [writer.templated]
-        .concat((reader.read&.files).to_a)
-        .concat(Dir.glob(['gems.rb', 'gems.locked'])).map(&:to_s).sort
+  desc 'Update gemspec'
+  task 'gem:gemspec' do |task|
+    writer.call(:write, preserve_mtime: true)
 
-# task 'gem:gemspec': [writer.to_s]
-desc 'Update gemspec'
-file writer.to_s => files do
-  writer.write
+    task.reenable
+  end
 end
