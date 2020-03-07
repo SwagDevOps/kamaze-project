@@ -7,8 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../gemspec'
-require 'pathname'
-require 'tenjin'
 
 # Class intended to generate ``gemspec`` file from a template
 #
@@ -19,6 +17,11 @@ require 'tenjin'
 # @see templated
 # @see Kamaze::Project
 class Kamaze::Project::Tools::Gemspec::Writer
+  autoload(:FileUtils, 'fileutils')
+  autoload(:Pathname, 'pathname')
+  autoload(:Tenjin, 'tenjin')
+  autoload(:DepGen, "#{__dir__}/writer/dep_gen")
+
   # Set path (almost filename) to templated gemspec
   #
   # @type [String|Pathname]
@@ -26,6 +29,7 @@ class Kamaze::Project::Tools::Gemspec::Writer
 
   # @see Kamaze.project
   # @type [Object|Kamaze::Project]
+  #
   # @return [Kamaze::Project]
   attr_accessor :project
 
@@ -59,18 +63,18 @@ class Kamaze::Project::Tools::Gemspec::Writer
   #
   # @return [String]
   def spec_id
+    # @formatter:off
     templated
       .read
       .scan(/Gem::Specification\.new\s+do\s+\|([a-z]+)\|/)
       .flatten.fetch(0)
+    # @formatter:on
   end
 
   # Get dependency
   #
   # @return [Dependency]
   def dependency
-    require_relative 'writer/dep_gen'
-
     DepGen.new(spec_id).dependency
   end
 
@@ -78,6 +82,7 @@ class Kamaze::Project::Tools::Gemspec::Writer
   #
   # @return [Hahsh]
   def context
+    # @formatter:off
     {
       name: project.name,
       version: project.version,
@@ -85,6 +90,7 @@ class Kamaze::Project::Tools::Gemspec::Writer
     }.yield_self do |variables|
       project.version.to_h.merge(variables)
     end
+    # @formatter:on
   end
 
   # Get generated/templated content
@@ -94,28 +100,46 @@ class Kamaze::Project::Tools::Gemspec::Writer
     template.render(templated.to_s, context)
   end
 
+  # Get status for current gemspec file.
+  #
+  # @return [Hash{Symbol => Object}]
+  def status
+    Pathname.new(self.to_s).yield_self do |file|
+      # @formatter:off
+      {
+        mtime: -> { return File.mtime(file) if file.file? }.call,
+        content: -> { return file.read if file.file? }.call
+      }
+      # @formatter:on
+    end
+  end
+
   # Write gemspec file
   #
   # @return [self]
-  def write
-    generated.write(content)
+  def write(preserve_mtime: false)
+    self.tap do
+      (preserve_mtime ? status : {}).tap do |meta|
+        generated.write(content)
 
-    self
+        if preserve_mtime
+          if content == meta.fetch(:content, nil)
+            fs.touch(self.to_s, mtime: meta.fetch(:mtime), nocreate: true)
+          end
+        end
+      end
+    end
   end
 
   protected
 
+  # @return [FileUtils]
+  attr_reader :fs
+
   def setup
     @templated ||= 'gemspec.tpl'
-    @project   ||= Kamaze.project
-  end
-
-  # Get ``GemspecDepsGen`` instance
-  #
-  # @see https://github.com/shvets/gemspec_deps_gen
-  # @return [GemspecDepsGen]
-  def deps_gen
-    GemspecDepsGen.new
+    @project ||= Kamaze::Project.instance
+    @fs ||= FileUtils
   end
 
   # Get template engine
