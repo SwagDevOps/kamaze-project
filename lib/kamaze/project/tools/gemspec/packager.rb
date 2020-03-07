@@ -44,17 +44,18 @@ class Kamaze::Project::Tools::Gemspec::Packager
   #
   # @return [Array<String>]
   def package_files
-    (Dir.glob([
-                '*.gemspec',
-                'Gemfile', 'Gemfile.lock',
-                'gems.rb', 'gems.locked',
-              ]) + (gemspec_reader.read&.files).to_a).sort
+    # @formatter: off
+    (gemspec_reader.read&.files).to_a.yield_self do |files| # rubocop:disable Style/RedundantParentheses
+      Dir.glob(%w[*.gemspec Gemfile Gemfile.lock gems.rb gems.locked])
+         .concat(files)
+    end.sort
+    # @formatter: on
   end
 
   def setup
-    @gemspec_reader ||= Kamaze.project.tools.fetch(:gemspec_reader)
+    @gemspec_reader ||= Kamaze::Project.instance.tools.fetch(:gemspec_reader)
 
-    self.verbose      = false
+    self.verbose = false
     self.source_files = package_files if self.source_files.to_a.empty?
   end
 
