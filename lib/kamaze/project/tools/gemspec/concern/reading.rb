@@ -29,9 +29,7 @@ module Kamaze::Project::Tools::Gemspec::Concern::Reading
 
   # @return [Kamaze::Project::Tools::Gemspec::Reader]
   def gemspec_reader
-    @gemspec_reader ||= Kamaze.project.fetch(:gemspec_reader)
-
-    @gemspec_reader
+    @gemspec_reader ||= Kamaze::Project.instance.tools.fetch(:gemspec_reader)
   end
 
   # Get specification
