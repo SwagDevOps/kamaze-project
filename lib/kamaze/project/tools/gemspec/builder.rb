@@ -49,6 +49,8 @@ class Kamaze::Project::Tools::Gemspec::Builder
   #
   # @return [Pathname]
   def buildable
+    return nil unless ready? # @todo raise an explicit exception
+
     gemspec_reader.read(Hash).fetch(:full_name).tap do |full_name|
       # @formatter:off
       return fs.package_dirs
