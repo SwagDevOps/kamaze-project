@@ -8,13 +8,6 @@
 
 require_relative '../dsl'
 
-# rubocop:disable Style/Documentation
-module Kamaze::Project::DSL
-  module Definition
-  end
-end
-# rubocop:enable Style/Documentation
-
 # ``DSL::Definition`` provides access to ``project`` and ``tools`` methods
 module Kamaze::Project::DSL::Definition
   protected
@@ -23,7 +16,7 @@ module Kamaze::Project::DSL::Definition
   #
   # @return [Kamaze::Project]
   def project
-    @project_dsl_stored ||= Kamaze.project
+    @project_dsl_stored ||= Kamaze::Project.instance
   end
 
   # Get tools
@@ -35,9 +28,10 @@ module Kamaze::Project::DSL::Definition
 
   private
 
+  # @return [self]
   def project_dsl_reset
-    @project_dsl_stored = nil
-
-    self
+    self.tap do
+      @project_dsl_stored = nil
+    end
   end
 end
