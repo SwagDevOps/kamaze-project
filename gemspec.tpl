@@ -2,12 +2,16 @@
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
 # rubocop:disable all
 <?rb
-@files = [
-    '.yardopts',
-    'lib/**/*.rb',
-    'lib/**/resources/**/**',
-    'lib/**/version.yml'
-].map { |m| Dir.glob(m) }.flatten.keep_if { |f| File.file?(f) }.sort
+[
+  '.yardopts',
+  'lib/**/*.rb',
+  'lib/**/resources/**/**',
+  'lib/**/version.yml',
+].tap do |patterns|
+  self.singleton_class.define_method(:files) do
+    patterns.map { |m| Dir.glob(m) }.flatten.keep_if { |f| File.file?(f) }.sort
+  end
+end
 
 self.singleton_class.define_method(:quote) { |input| input.to_s.inspect }
 ?>
@@ -30,7 +34,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
-    <?rb for file in @files ?>
+    <?rb for file in files ?>
     #{"%s," % quote(file)}
     <?rb end ?>
   ]
