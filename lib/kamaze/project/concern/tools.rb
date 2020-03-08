@@ -7,7 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require_relative '../../project/tools_provider'
 
 # Provides access to tools
 #
@@ -15,7 +14,7 @@ require_relative '../../project/tools_provider'
 module Kamaze::Project::Concern::Tools
   # Get tools
   #
-  # @return [Hash]
+  # @return [ToolsProvider|Hash]
   def tools
     @tools ||= Kamaze::Project::ToolsProvider.new
   end
