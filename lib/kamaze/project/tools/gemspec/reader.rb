@@ -7,10 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../gemspec'
-require_relative 'reader/decorator'
-
-require 'pathname'
-require 'rubygems'
 
 # Read ``gemspec`` file
 #
@@ -18,9 +14,14 @@ require 'rubygems'
 #
 # @see Kamaze::Project
 class Kamaze::Project::Tools::Gemspec::Reader
+  autoload(:Pathname, 'pathname')
+  autoload(:Gem, 'rubygems')
+  autoload(:Decorator, "#{__dir__}/reader/decorator")
+
   # @return [String]
   attr_accessor :gem_name
 
+  # @return [Kamaze::Project]
   attr_writer :project
 
   def mutable_attributes
@@ -29,7 +30,7 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   # @return [Pathname]
   def pwd
-    ::Pathname.new(Dir.pwd)
+    Pathname.new(Dir.pwd)
   end
 
   # Read gemspec (as given ``type``)
@@ -39,14 +40,8 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # @raise [ArgumentError] when type is not supported
   # @param [nil|Class|Symbol] type
   # @return [Gem::Specification|Object]
-  #
-  # @see Gem::Specification.load()
   def read(type = nil)
-    Dir.chdir(pwd) do
-      eval(self.spec_file.read, binding, self.spec_file.to_s).tap do |spec| # rubocop:disable Security/Eval
-        return type ? Decorator.new(spec).to(type) : spec
-      end
-    end
+    type ? Decorator.new(spec).to(type) : spec
   end
 
   # Get (gem)spec file path
@@ -67,5 +62,17 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   def setup
     @gem_name ||= project.name
+  end
+
+  # Read sepc file.
+  #
+  # @see Gem::Specification.load()
+  # @return [Gem::Specification|Object]
+  def spec
+    Dir.chdir(pwd) do
+      return Gem::Specification.new unless spec_file.file?
+
+      eval(self.spec_file.read, binding, self.spec_file.to_s) # rubocop:disable Security/Eval
+    end
   end
 end
