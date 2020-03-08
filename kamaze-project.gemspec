@@ -134,7 +134,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("dry-inflector", ["~> 0.1"])
   s.add_runtime_dependency("kamaze-version", ["~> 1.0"])
   s.add_runtime_dependency("process_lock", ["~> 0.1"])
-  s.add_runtime_dependency("rake", ["~> 12.3"])
+  s.add_runtime_dependency("rake", ["~> 13.0"])
   s.add_runtime_dependency("rugged", ["~> 0.28"])
   s.add_runtime_dependency("tenjin", ["~> 0.7"])
   s.add_runtime_dependency("tty-editor", ["~> 0.5"])
