@@ -26,11 +26,11 @@ CLOBBER.include(builder.call(:package_dir))
 # task ---------------------------------------------------------------
 task builder.call(:buildable) => [writer.call(:to_s)] do |task|
   task.reenable.tap do
-    # @formatter: off
+    # @formatter:off
     builder.call(:source_files).to_a
            .concat([Pathname.new(writer.call(:to_s))])
            .map { |file| File.mtime(file) }.max.tap do |mtime|
-      lambda do # @formatter: on
+      lambda do # @formatter:on
         builder.call(:buildable).tap do |build|
           return build.file? ? File.mtime(build) : nil
         end
