@@ -11,7 +11,7 @@ group :default do
   gem 'dry-inflector', '~> 0.1'
   gem 'kamaze-version', '~> 1.0'
   gem 'process_lock', '~> 0.1'
-  gem 'rake', '~> 12.3'
+  gem 'rake', '~> 13.0'
   gem 'rugged', '~> 0.28'
   gem 'tenjin', '~> 0.7'
   gem 'tty-editor', '~> 0.5'
