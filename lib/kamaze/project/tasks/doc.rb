@@ -14,8 +14,6 @@ tools.fetch(:yardoc).tap do |yardoc|
 end.yield_self do |yardoc|
   desc 'Generate documentation (using YARD)'
   task doc: [] do |task|
-    yardoc.run
-
-    task.reenable
+    task.reenable.tap { yardoc.run }
   end
 end
