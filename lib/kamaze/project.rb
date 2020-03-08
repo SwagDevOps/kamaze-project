@@ -24,8 +24,18 @@ module Kamaze
       require 'bundler/setup' if bundled?
       require 'kamaze/project/core_ext/pp' if development?
 
-      if development? and !YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s)
-        BootsanpConfig.new.call
+      if development?
+        lambda do
+          %w[BOOTSNAP_DISABLE BOOTSNAP_DISABLED].each do |k|
+            next unless ENV.key?(k)
+
+            YAML.safe_load(ENV['BOOTSNAP_DISABLE'].to_s).tap do |b|
+              Boot.new.call unless b
+
+              return b
+            end
+          end
+        end.call
       end
     end
   end

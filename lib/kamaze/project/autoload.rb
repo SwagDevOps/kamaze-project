@@ -6,7 +6,7 @@ class Kamaze::Project::Autoload < ::Hash
     # @formatter:off
     {
       VERSION: 'version',
-      BootsanpConfig: 'bootsnap_config',
+      BootsnapConfig: 'bootsnap_config',
       Bundled: 'bundled',
       Concern: 'concern',
       Config: 'config',

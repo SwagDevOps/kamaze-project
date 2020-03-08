@@ -7,7 +7,7 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 # Config for bootsnap.
-class Kamaze::Project::BootsanpConfig < ::Hash
+class Kamaze::Project::BootsnapConfig < ::Hash
   {
     # @formatter:off
     Digest: 'digest',
