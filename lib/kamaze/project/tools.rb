@@ -13,8 +13,18 @@ require_relative 'tools_provider'
 module Kamaze::Project::Tools
   # @formatter:off
   {
-    Git: 'git',
     BaseTool: 'base_tool',
+    Console: 'console',
+    Gemspec: 'gemspec',
+    Git: 'git',
+    Licenser: 'licenser',
+    Packager: 'packager',
+    ProcessLocker: 'process_locker',
+    Rspec: 'rspec',
+    Rubocop: 'rubocop',
+    Shell: 'shell',
+    Vagrant: 'vagrant',
+    Yardoc: 'yardoc',
   }.each { |k, v| autoload(k, "#{__dir__}/tools/#{v}") }
   # @formatter:on
 end
