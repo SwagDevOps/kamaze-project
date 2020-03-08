@@ -15,8 +15,8 @@ end.tap do |writer|
 
   desc 'Update gemspec'
   task 'gem:gemspec' do |task|
-    writer.call(:write, preserve_mtime: true)
-
-    task.reenable
+    task.reenable.tap do
+      writer.call(:write, preserve_mtime: true)
+    end
   end
 end
