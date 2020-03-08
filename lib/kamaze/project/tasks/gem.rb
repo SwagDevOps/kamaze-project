@@ -14,5 +14,7 @@ lambda do |method, *args|
 end.tap do |writer|
   # Default task ----------------------------------------------------
   desc 'Build all the packages'
-  task gem: [writer.call(:to_s), :'gem:build']
+  task gem: [writer.call(:to_s), :'gem:build'] do |task| # rubocop:disable Style/SymbolProc
+    task.reenable
+  end
 end
