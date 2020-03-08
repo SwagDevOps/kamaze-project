@@ -32,7 +32,7 @@ Sample of use:
 ```ruby
 require 'kamaze/project'
 
-Kamaze.project do |project|
+Kamaze::Project.instance do |project|
   project.subject = Kamaze::Project
   project.name    = :'kamaze-project'
   project.tasks   = [
@@ -84,7 +84,6 @@ Furthermore, adding a new tool is really easy.
 
 ```ruby
 require 'kamaze/project'
-require 'kamaze/project/tools/base_tool'
 
 class AwesomeTool < Kamaze::Project::Tools::BaseTool
   def run
@@ -92,7 +91,7 @@ class AwesomeTool < Kamaze::Project::Tools::BaseTool
   end
 end
 
-Kamaze.project do |project|
+Kamaze::Project.instance do |project|
   # initialization (as seen above)
 
   project.tools = {
@@ -126,6 +125,9 @@ Some dependencies are required to install ``rugged`` with native extensions:
 
 depending on Linux distributions, and/or package managers,
 dependency names are likely to change.
+
+
+<!-- hyperlinks -->
 
 [rubygems/specification#name]: http://guides.rubygems.org/specification-reference/#name
 [guard/listen#issues-limitations]: https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations
