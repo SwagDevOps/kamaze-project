@@ -27,10 +27,6 @@ module Kamaze::Project::Concern::Cli::WithExitOnFailure
   # @raise [SystemExit]
   # @return [Object]
   def with_exit_on_failure
-    result = yield(self)
-
-    exit(retcode) if failure?
-
-    result
+    yield(self).tap { exit(retcode) if failure? }
   end
 end

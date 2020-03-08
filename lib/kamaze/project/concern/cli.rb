@@ -12,6 +12,8 @@ require_relative '../concern'
 #
 # This module provides base methods focused on ``retcode``.
 module Kamaze::Project::Concern::Cli
+  autoload(:WithExitOnFailure, "#{__dir__}/cli/with_exit_on_failure")
+
   # @!attribute [r] retcode
   #   @return [Fixnum] retcode
 
@@ -36,6 +38,7 @@ module Kamaze::Project::Concern::Cli
   #
   # @return [Boolean]
   def success?
+    # noinspection RubyResolve
     Errno::NOERROR::Errno == retcode
   end
 
