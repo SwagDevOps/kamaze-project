@@ -94,7 +94,7 @@ class Kamaze::Project::Tools::Yardoc::Watcher
     @paths ||= yardoc.paths
     @patterns ||= yardoc.patterns
     @options = {
-      only:   /\.(rb|md)$/,
+      only: /\.(rb|md)$/,
       ignore: yardoc.excluded.map { |pattern| /#{pattern}/ }
     }.merge(@options.to_h)
   end
