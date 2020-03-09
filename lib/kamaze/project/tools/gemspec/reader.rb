@@ -13,7 +13,7 @@ require_relative '../gemspec'
 # Retrieve ``Gem::Specification`` through ``read`` method.
 #
 # @see Kamaze::Project
-class Kamaze::Project::Tools::Gemspec::Reader
+class Kamaze::Project::Tools::Gemspec::Reader < Kamaze::Project::Tools::BaseTool
   autoload(:Pathname, 'pathname')
   autoload(:Gem, 'rubygems')
   autoload(:Decorator, "#{__dir__}/reader/decorator")

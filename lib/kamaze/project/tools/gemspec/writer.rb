@@ -16,7 +16,7 @@ require_relative '../gemspec'
 #
 # @see templated
 # @see Kamaze::Project
-class Kamaze::Project::Tools::Gemspec::Writer
+class Kamaze::Project::Tools::Gemspec::Writer < Kamaze::Project::Tools::BaseTool
   autoload(:FileUtils, 'fileutils')
   autoload(:Pathname, 'pathname')
   autoload(:Tenjin, 'tenjin')
