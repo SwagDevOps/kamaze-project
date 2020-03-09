@@ -7,21 +7,20 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require 'etc'
-require 'fileutils'
-require 'pathname'
-require 'tmpdir'
-require 'process_lock'
-
-module Kamaze::Project::Tools
-  class ProcessLocker < BaseTool
-  end
-end
 
 # Process Locker
 #
 # @see https://github.com/ianheggie/process_lock
 class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
+  # @formatter:off
+  {
+    Etc: 'etc',
+    FileUtils: 'fileutils',
+    Pathname: 'pathname',
+    ProcessLock: 'process_lock',
+  }.each { |s, fp| autoload(s, fp) }
+  # @formatter:on
+
   # Manage lock on given block
   #
   # @return [Object]
@@ -37,26 +36,31 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   def lock!(lockname)
     mklock(lockname).acquire! { yield }
   rescue ProcessLock::AlreadyLocked
+    # noinspection RubyResolve
     raise Errno::EALREADY if mklock(lockname).alive?
+
     raise
   end
 
   # @return [Pathname]
   def tmpdir
-    tmp = Pathname.new(Dir.tmpdir)
-    uid = Etc.getpwnam(Etc.getlogin).uid
-    dir = [inflector.underscore(self.class.name).tr('/', '-'), uid].join('.')
+    require 'tmpdir'
 
-    tmp.join(dir)
+    Pathname.new(Dir.tmpdir).tap do |tmpdir|
+      uid = Etc.getpwnam(Etc.getlogin).uid
+      dir = [inflector.underscore(self.class.name).tr('/', '-'), uid].join('.')
+
+      return tmpdir.join(dir)
+    end
   end
 
   class << self
     def method_missing(method, *args, &block)
       if respond_to_missing?(method)
-        self.new.public_send(method, *args, &block)
-      else
-        super
+        return self.new.public_send(method, *args, &block)
       end
+
+      super
     end
 
     def respond_to_missing?(method, include_private = false)
@@ -71,9 +75,7 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   # @param [String] lockname
   # @return [ProcessLock]
   def mklock(lockname)
-    lockfile = mktemp(lockname)
-
-    ProcessLock.new(lockfile)
+    mktemp(lockname).yield_self { |lockfile| ProcessLock.new(lockfile) }
   end
 
   # Create a temporary file
@@ -81,9 +83,9 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   # @param [String] lockname
   # @return [Pathname]
   def mktemp(lockname)
-    lockname = Pathname.new(lockname.to_s).basename('.*')
-
-    mktmpdir.join(lockname)
+    Pathname.new(lockname.to_s).basename('.*').yield_self do |fp|
+      mktmpdir.join(fp)
+    end
   end
 
   # Create ``tmpdir``
@@ -91,12 +93,11 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   # @param [Hash] options
   # @return [Pathname]
   def mktmpdir(options = {})
-    tmpdir = self.tmpdir
-    options[:mode] ||= 0o700
+    self.tmpdir.tap do |tmpdir|
+      options[:mode] ||= 0o700
 
-    FileUtils.mkdir_p(tmpdir, options)
-
-    tmpdir
+      FileUtils.mkdir_p(tmpdir, options)
+    end
   end
 
   # @return [Dry::Inflector]
