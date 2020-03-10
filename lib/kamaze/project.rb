@@ -22,7 +22,7 @@ module Kamaze
     include(Bundled).tap do
       self.base_path = self.base_path.join('..')
       require 'bundler/setup' if bundled?
-      require 'kamaze/project/core_ext/pp' if development?
+      require_relative './project/core_ext/pp' if development?
 
       if development?
         lambda do
