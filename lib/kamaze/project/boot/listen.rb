@@ -6,6 +6,9 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
+autoload(:YAML, 'yaml')
+autoload(:Gem, 'rubygems')
+
 patchable = lambda do
   if Gem::Specification.find_all_by_name('listen').any?
     require 'listen'
