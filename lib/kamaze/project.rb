@@ -29,7 +29,8 @@ module Kamaze
           %w[BOOTSNAP_DISABLE BOOTSNAP_DISABLED].each do |k|
             next unless ENV.key?(k)
 
-            YAML.safe_load(k).tap { |b| BootsnapConfig.new.call unless b }
+            return YAML.safe_load(k)
+                       .tap { |b| BootsnapConfig.new.call unless b }
           end
         end.call
       end
