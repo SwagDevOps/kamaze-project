@@ -8,9 +8,6 @@
 
 require_relative '../project'
 
-# rubocop:disable Style/Documentation
-class Kamaze::Project
-  module DSL
-  end
+# namespace for dsl concerns
+module Kamaze::Project::DSL
 end
-# rubocop:enable Style/Documentation
