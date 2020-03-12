@@ -7,9 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../project'
-require_relative 'concern/observable'
-# implicitely require observer
-require_relative 'observer'
 
 # Observable provides the methods for managing the associated observers.
 #
