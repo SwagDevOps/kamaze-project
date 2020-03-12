@@ -7,7 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../output'
-require 'cli/ui'
 
 class Kamaze::Project::Tools::Console::Output
   class Buffer
@@ -43,6 +42,12 @@ class Kamaze::Project::Tools::Console::Output::Buffer
   # @param [String] str
   # @return [String]
   def decorate(str)
-    CLI::UI.fmt(str.to_s, enable_color: output.tty?)
+    ui.fmt(str.to_s, enable_color: output.tty?)
+  end
+
+  def ui
+    require 'cli/ui'
+
+    CLI::UI
   end
 end
