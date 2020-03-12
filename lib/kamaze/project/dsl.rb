@@ -10,4 +10,11 @@ require_relative '../project'
 
 # namespace for dsl concerns
 module Kamaze::Project::DSL
+  # @formatter:off
+  {
+    Definition: 'definition'
+  }.each do |s, fp|
+    autoload(s, "#{__dir__}/dsl/#{fp}")
+  end
+  # @formatter:on
 end
