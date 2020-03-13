@@ -62,6 +62,18 @@ group :test do
 end
 ```
 
+### Troubles with ``rugged`` gem
+
+Some system dependencies are required to install ``rugged``
+as native extensions:
+
+* ``make`` or ``gmake``
+* ``cmake``
+* ``pkg-config``
+* ``libssl-dev`` (asked for OpenSSL TLS backend)
+
+depending on Linux distributions, and/or package managers,
+dependency names are likely to change.
 
 ## Ease of use
 
@@ -142,19 +154,6 @@ end.load!
 # your tool is accessible (through DSL):
 tools.fetch(:awesome)
 ```
-
-### Troubles with ``rugged`` gem
-
-Some dependencies are required to install ``rugged`` with native extensions:
-
-* ``make`` or ``gmake``
-* ``cmake``
-* ``pkg-config``
-* ``libssl-dev`` (asked for OpenSSL TLS backend)
-
-depending on Linux distributions, and/or package managers,
-dependency names are likely to change.
-
 
 <!-- hyperlinks -->
 
