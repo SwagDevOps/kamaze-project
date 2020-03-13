@@ -26,6 +26,17 @@ gem install kamaze-project
 
 ## Optional dependencies
 
+Some dependencies are optional, as seen inspecting the
+``gems.rb`` file.
+
+For example, ``rspec`` is considered as a ``development`` dependency,
+but ``rspec`` is required by the ``test`` task.
+The ``listen`` gem is optional, due to
+[several system incompatibilities][guard/listen#issues-limitations];
+``listen`` gem is only used by some "``watch`` optional tasks".
+
+Example (``gems.rb``) with optional dependencies :
+
 ```ruby
 group :development do
   gem 'rake', '~> 13.0'
@@ -131,17 +142,6 @@ end.load!
 # your tool is accessible (through DSL):
 tools.fetch(:awesome)
 ```
-
-## Dependencies (``gems``)
-
-Some dependencies are optional, as seen inspecting the
-``gems.rb`` file.
-
-For example, ``rspec`` is considered as a ``development`` dependency,
-but ``rspec`` is required by the ``test`` task.
-The ``listen`` gem is optional, due to
-[several system incompatibilities][guard/listen#issues-limitations];
-``listen`` gem is only used by some "``watch`` optional tasks".
 
 ### Troubles with ``rugged`` gem
 
