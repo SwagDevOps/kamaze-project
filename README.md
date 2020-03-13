@@ -16,6 +16,7 @@ most tasks SHOULD run in a sufficient gem context.
 ## Install
 
 ```ruby
+gem 'rake', '~> 13.0'
 gem 'kamaze-project', '~> 1.0'
 ```
 
