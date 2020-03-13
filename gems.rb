@@ -11,20 +11,20 @@ group :default do
   gem 'dry-inflector', '~> 0.1'
   gem 'kamaze-version', '~> 1.0'
   gem 'process_lock', '~> 0.1'
-  gem 'rake', '~> 13.0'
-  gem 'rugged', '~> 0.28'
   gem 'tenjin', '~> 0.7'
   gem 'tty-editor', '~> 0.5'
   gem 'tty-screen', '>= 0.6.2', '~> 0.7'
 end
 
 # --------------------------------------------------------------------
-# 'rspec', 'rubocop' and 'yard' are supported tools
+# rspec, rubocop, rake, rugged and yard are supported tools
 # but we don't force to use them
 # --------------------------------------------------------------------
 
 group :development do
+  gem 'rake', '~> 13.0'
   gem 'rubocop', '~> 0.79'
+  gem 'rugged', '~> 0.28'
   gem 'sys-proc', '~> 1.1'
 
   # 'listen' is used to "watch"
