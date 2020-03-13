@@ -16,6 +16,7 @@ module Kamaze::Project::Tools::Gemspec
     Writer: 'writer',
     Packager: 'packager',
     Builder: 'builder',
+    Concern: 'concern',
     Packer: 'packer',
   }.each { |s, fp| autoload(s, "#{__dir__}/gemspec/#{fp}") }
   # @formatter:on
