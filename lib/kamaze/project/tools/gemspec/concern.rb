@@ -10,4 +10,9 @@ require_relative '../gemspec'
 
 # Concern for ``Gemspec``
 module Kamaze::Project::Tools::Gemspec::Concern
+  # @formatter:off
+  {
+    Reading: 'reading',
+  }.each { |k, v| autoload(k, "#{__dir__}/concern/#{v}") }
+  # @formatter:on
 end
