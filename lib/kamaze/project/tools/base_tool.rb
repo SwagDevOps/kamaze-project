@@ -7,7 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require_relative '../observable'
 
 # Provides base for tools
 #
@@ -47,7 +46,9 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   # @return [self]
   def attrs_mute!
     mutable_attributes.each do |m|
+      # rubocop:disable Style/AccessModifierDeclarations
       self.singleton_class.class_eval { protected "#{m}=" }
+      # rubocop:enable Style/AccessModifierDeclarations
     end
 
     self
