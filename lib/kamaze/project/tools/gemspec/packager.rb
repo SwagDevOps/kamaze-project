@@ -7,7 +7,6 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../gemspec'
-require_relative 'concern/reading'
 
 # Provide a specialized packager, for ``gemspec`` based projects
 #
