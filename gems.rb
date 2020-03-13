@@ -24,7 +24,6 @@ end
 # --------------------------------------------------------------------
 
 group :development do
-  gem 'bootsnap', '~> 1.4'
   gem 'rubocop', '~> 0.79'
   gem 'sys-proc', '~> 1.1'
 

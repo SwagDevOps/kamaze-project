@@ -23,17 +23,6 @@ module Kamaze
       self.base_path = self.base_path.join('..')
       require 'bundler/setup' if bundled?
       require_relative './project/core_ext/pp' if development?
-
-      if development?
-        lambda do
-          %w[BOOTSNAP_DISABLE BOOTSNAP_DISABLED].each do |k|
-            next unless ENV.key?(k)
-
-            return YAML.safe_load(k)
-                       .tap { |b| BootsnapConfig.new.call unless b }
-          end
-        end.call
-      end
     end
   end
 
