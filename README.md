@@ -24,6 +24,34 @@ gem 'kamaze-project', '~> 1.0'
 gem install kamaze-project
 ```
 
+## Optional dependencies
+
+```ruby
+group :development do
+  gem 'rake', '~> 13.0'
+  gem 'rubocop', '~> 0.79'
+  gem 'rugged', '~> 0.28'
+  gem 'sys-proc', '~> 1.1'
+
+  # 'listen' is used to "watch"
+  # but could be incompatible with some systems
+  gem 'listen', '~> 3.2'
+end
+
+group :doc do
+  gem 'yard', '~> 0.9'
+end
+
+group :repl do
+  gem 'pry', '~> 0.12'
+end
+
+group :test do
+  gem 'rspec', '~> 3.7'
+end
+```
+
+
 ## Ease of use
 
 This gem keeps ease of use (and DRY) in mind.
