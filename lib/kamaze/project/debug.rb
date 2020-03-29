@@ -14,7 +14,9 @@ require_relative '../project'
 # @see https://github.com/pry/pry
 class Kamaze::Project::Debug
   def initialize
-    @printers = available_printers
+    load_printers.tap do
+      @printers = available_printers.freeze
+    end
   end
 
   class << self
@@ -61,7 +63,7 @@ class Kamaze::Project::Debug
   # @param [IO] out
   # @return [PP]
   def printer_for(out)
-    printers[out.isatty ? 0 : 1]
+    printers.fetch(out.isatty ? 0 : 1)
   end
 
   # Get printers
@@ -70,18 +72,16 @@ class Kamaze::Project::Debug
   #
   # @return [Array<PP>]
   def available_printers
-    load_printers
-
-    default = '::PP'
-
-    [
-      proc do
-        target = '::Pry::ColorPrinter'
-
-        Kernel.const_defined?(target) ? target : default
-      end.call,
-      default
-    ].map { |n| inflector.constantize(n) }.freeze
+    '::PP'.yield_self do |default|
+      # @formatter:off
+      [
+        'Pry::ColorPrinter'.yield_self do |cp|
+          Kernel.const_defined?(cp) ? cp : default
+        end,
+        default
+      ].map { |n| inflector.constantize(n) }.freeze
+      # @formatter:on
+    end
   end
 
   protected
@@ -107,15 +107,15 @@ class Kamaze::Project::Debug
   #
   # @return [self]
   def load_printers
-    Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
+    self.tap do
+      Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
 
-    begin
-      load_printer_requirements
-    rescue LoadError => e
-      self.class.__send__('warned=', !!warn_error(e)) unless warned?
+      begin
+        load_printer_requirements
+      rescue LoadError => e
+        self.class.__send__('warned=', !!warn_error(e)) unless warned?
+      end
     end
-
-    self
   end
 
   # @raise [LoadError]
@@ -123,14 +123,7 @@ class Kamaze::Project::Debug
   def load_printer_requirements
     self.tap do
       # noinspection RubyLiteralArrayInspection,RubyResolve
-      # @formatter:off
-      [
-        'pp',
-        'coderay',
-        'pry/pager',
-        'pry/color_printer',
-      ].each { |req| require req }
-      # @formatter:on
+      ['pp', 'coderay', 'pry'].each { |req| require req }
     end
   end
 
@@ -139,13 +132,10 @@ class Kamaze::Project::Debug
   # unless warnings are disabled (for example with the -W0 flag).
   #
   # @param [Exception] error
-  # @return [Array<String>]
+  # @return [nil]
   def warn_error(error)
-    formats = { from: caller(1..1).first, mssg: error.message }
-    message = '%<from>s: %<mssg>s' % formats
-
-    warn(message)
-
-    formats.values
+    { from: caller(1..1).first, mssg: error.message }.tap do |formats|
+      return warn('%<from>s: %<mssg>s' % formats)
+    end
   end
 end
