@@ -8,13 +8,13 @@
 
 require_relative '../yardoc'
 
-class Kamaze::Project::Tools::Yardoc
-  class Watcher < Kamaze::Project::Tools::BaseTool
-  end
-end
-
 # Provide a watcher built on top of Yardoc
-class Kamaze::Project::Tools::Yardoc::Watcher
+class Kamaze::Project::Tools::Yardoc::Watcher < Kamaze::Project::Tools::BaseTool
+  autoload(:Listen, 'listen')
+
+  # @return [Kamaze::Project::Tools::Yardoc]
+  attr_accessor :yardoc
+
   # @type [Array<String>]
   attr_writer :paths
 
@@ -26,21 +26,18 @@ class Kamaze::Project::Tools::Yardoc::Watcher
 
   # Watch for changes
   #
-  # Non-blocking, unless ``wait``
+  # Non-blocking, unless ``wait`` (bool)
   #
   # @param [Boolean] wait
   # @return [self]
   def watch(wait = false)
-    listener = ::Listen.to(*paths, options) do |mod, add, rem|
-      if trigger?(mod + add + rem)
-        yardoc.run
-      end
+    self.tap do
+      Listen.to(*paths, options) do |mod, add, rem|
+        yardoc.run if trigger?(*mod.concat(add).concat(rem))
+      end.tap(&:start)
+
+      sleep if wait
     end
-
-    listener.start
-    sleep if wait
-
-    self
   end
 
   # @return [Array<String>]
@@ -50,13 +47,13 @@ class Kamaze::Project::Tools::Yardoc::Watcher
 
   # @return [Array<String>]
   def paths
-    paths = @paths.map(&:to_s)
-
-    paths.include?('.') ? ['.'] : paths
+    @paths.map(&:to_s).tap do |paths|
+      return paths.include?('.') ? ['.'] : paths
+    end
   end
 
   def mutable_attributes
-    [:paths, :options, :patterns]
+    [:yardoc, :paths, :options, :patterns]
   end
 
   protected
@@ -64,10 +61,8 @@ class Kamaze::Project::Tools::Yardoc::Watcher
   # Transform paths to relative paths
   #
   # @param [String|Pathname|Array<String>] paths
-  def rel(paths)
-    paths = [paths] unless paths.is_a?(Array)
-
-    paths.map do |path|
+  def relative(*paths)
+    (paths.is_a?(Array) ? paths : [paths]).map do |path|
       path.to_s.gsub(%r{^#{Dir.pwd}/+}, '')
     end
   end
@@ -76,31 +71,29 @@ class Kamaze::Project::Tools::Yardoc::Watcher
   #
   # @param [String|Pathname|Array<String>] paths
   # @return [Boolean]
-  def trigger?(paths)
-    paths = [paths] unless paths.is_a?(Array)
-
+  def trigger?(*paths)
+    # @formatter:off
     paths.map(&:to_s)
-         .map { |path| rel(path)[0] }
+         .map { |path| relative(path)[0] }
          .each do |path|
       patterns.each do |pattern|
         return true if File.fnmatch(pattern, path, File::FNM_PATHNAME)
       end
+      # @formatter:on
     end
 
     false
   end
 
   def setup
+    @yardoc ||= Kamaze::Project.instance.tools.fetch('yardoc')
     @paths ||= yardoc.paths
     @patterns ||= yardoc.patterns
+    # @formatter:off
     @options = {
       only: /\.(rb|md)$/,
       ignore: yardoc.excluded.map { |pattern| /#{pattern}/ }
     }.merge(@options.to_h)
-  end
-
-  # @return [Kamaze::Project::Tools::Yardoc]
-  def yardoc
-    Kamaze.project.tools.fetch('yardoc')
+    # @formatter:on
   end
 end
