@@ -10,12 +10,9 @@ autoload(:YAML, 'yaml')
 autoload(:Gem, 'rubygems')
 
 patchable = lambda do
-  if Gem::Specification.find_all_by_name('listen').any?
-    require 'listen'
-    return YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
-  end
+  return false unless Gem::Specification.find_all_by_name('listen').any?
 
-  false
+  YAML.safe_load(ENV['SILENCE_DUPLICATE_DIRECTORY_ERRORS'].to_s)
 end
 
 # rubocop:disable all
@@ -25,14 +22,12 @@ end
 # Listen >=2.8
 # patch to silence duplicate directory errors. USE AT YOUR OWN RISK
 if patchable.call
+  require 'listen'
+
   if Gem::Version.new(Listen::VERSION) >= Gem::Version.new('2.8.0')
-    module Listen
-      class Record
-        class SymlinkDetector
-          def _fail(_, _)
-            fail Error, "Don't watch locally-symlinked directory twice"
-          end
-        end
+    class Listen::Record::SymlinkDetector
+      def _fail(_, _)
+        fail Error, "Don't watch locally-symlinked directory twice"
       end
     end
   end
