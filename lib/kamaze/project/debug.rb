@@ -103,7 +103,7 @@ class Kamaze::Project::Debug
     TTY::Screen.width
   end
 
-  # Load printers requirements (on demand)
+  # Load printers requirements.
   #
   # @return [self]
   def load_printers
@@ -111,16 +111,18 @@ class Kamaze::Project::Debug
       Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
 
       begin
-        load_printer_requirements
+        load_requirements
       rescue LoadError => e
         self.class.__send__('warned=', !!warn_error(e)) unless warned?
       end
     end
   end
 
+  # Load requirements.
+  #
   # @raise [LoadError]
   # @return [self]
-  def load_printer_requirements
+  def load_requirements
     self.tap do
       # noinspection RubyLiteralArrayInspection,RubyResolve
       ['pp', 'coderay', 'pry'].each { |req| require req }
