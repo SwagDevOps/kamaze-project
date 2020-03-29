@@ -49,6 +49,10 @@ class Kamaze::Project::Debug
   def dump(obj, out = $stdout, width = nil)
     width ||= screen_width || 79
 
+    unless out.respond_to?(:isatty)
+      out.singleton_class.define_method(:isatty) { false }
+    end
+
     printer_for(out).pp(obj, out, width)
   end
 
@@ -57,9 +61,7 @@ class Kamaze::Project::Debug
   # @param [IO] out
   # @return [PP]
   def printer_for(out)
-    out_tty = out.respond_to?(:isatty) and out.isatty
-
-    printers[out_tty ? 0 : 1]
+    printers[out.isatty ? 0 : 1]
   end
 
   # Get printers
@@ -119,12 +121,17 @@ class Kamaze::Project::Debug
   # @raise [LoadError]
   # @return [self]
   def load_printer_requirements
-    ['pp',
-     'coderay',
-     'pry/pager',
-     'pry/color_printer'].each { |req| require req }
-
-    self
+    self.tap do
+      # noinspection RubyLiteralArrayInspection,RubyResolve
+      # @formatter:off
+      [
+        'pp',
+        'coderay',
+        'pry/pager',
+        'pry/color_printer',
+      ].each { |req| require req }
+      # @formatter:on
+    end
   end
 
   # Display the given exception message (followed by a newline) on STDERR
