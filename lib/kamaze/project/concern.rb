@@ -12,7 +12,7 @@ require_relative '../project'
 module Kamaze::Project::Concern
   # @formatter:off
   {
-    CLI: 'cli',
+    Cli: 'cli',
     Env: 'env',
     Helper: 'helper',
     Mode: 'mode',
