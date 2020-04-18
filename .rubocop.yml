@@ -11,7 +11,7 @@
 #    - .rubocop.yml
 # ```
 ---
-AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.3 }
+AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.5 }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
 Lint/UnusedBlockArgument: { Enabled: false }
 Metrics/AbcSize: { Max: 20 }
