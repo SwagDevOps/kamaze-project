@@ -1,10 +1,14 @@
 # see:
 # http://relaxed.ruby.style/
+# https://rubocop.readthedocs.io/en/latest/
 # https://github.com/bbatsov/rubocop/blob/master/manual/cops.md
 # https://github.com/bbatsov/rubocop/tree/master/config
 # https://raw.githubusercontent.com/bbatsov/rubocop/master/config/enabled.yml
 # https://github.com/tootsuite/mastodon/blob/master/.rubocop.yml
 # https://blog.percy.io/share-rubocop-rules-across-all-of-your-repos-f3281fbd71f8
+#
+# Sample of use:
+#
 # ```yml
 # inherit_gem:
 #  kamaze-project:
@@ -13,6 +17,8 @@
 ---
 AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.5 }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
+Lint/RaiseException: { Enabled: true }
+Lint/StructNewOverride: { Enabled: true }
 Lint/UnusedBlockArgument: { Enabled: false }
 Metrics/AbcSize: { Max: 20 }
 Metrics/ClassLength: { CountComments: false }
@@ -24,6 +30,7 @@ Style/AndOr: { Enabled: false }
 Style/ClassAndModuleChildren: { Enabled: false }
 Style/DoubleNegation: { Enabled: false }
 Style/Encoding: { Enabled: false }
+Style/ExponentialNotation: { Enabled: true, EnforcedStyle: scientific }
 Style/FormatString: { Enabled: false }
 Style/HashEachMethods: { Enabled: true }
 Style/HashTransformKeys: { Enabled: true }
