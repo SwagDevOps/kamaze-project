@@ -7,10 +7,8 @@
 # There is NO WARRANTY, to the extent permitted by law.
 
 desc 'Run test suites'
-task :test do |task, args|
-  tags = args.extras
-
+task :test do |_task, args|
   tools.fetch(:rspec).tap do |rspec|
-    rspec.tags = tags
+    rspec.tags = args.extras
   end.run
 end
