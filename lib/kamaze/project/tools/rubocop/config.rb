@@ -26,9 +26,7 @@ class Kamaze::Project::Tools::Rubocop::Config
 
   # @return [Array<String>]
   def to_a
-    filepaths = match_patterns(patterns)
-
-    self.options.to_a.clone.concat(['--'] + filepaths)
+    self.options.to_a.clone.concat(['--']).concat(match_patterns(patterns))
   end
 
   protected

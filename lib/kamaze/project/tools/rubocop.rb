@@ -97,7 +97,7 @@ class Kamaze::Project::Tools::Rubocop < Kamaze::Project::Tools::BaseTool
   attr_writer :arguments
 
   def setup
-    @defaults = Arguments.new(@defaults.to_a)
+    @defaults = Arguments.new((@defaults || %w[--only-recognized-file-types]).to_a)
   end
 
   # Reset arguments + retcode
