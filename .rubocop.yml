@@ -17,6 +17,7 @@
 ---
 AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.5 }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
+Layout/LineLength: { Max: 120 }
 Layout/SpaceAroundMethodCallOperator: { Enabled: true }
 Lint/RaiseException: { Enabled: true }
 Lint/StructNewOverride: { Enabled: true }
