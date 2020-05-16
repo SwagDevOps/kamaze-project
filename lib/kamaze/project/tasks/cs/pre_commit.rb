@@ -58,9 +58,7 @@ end
 
 # task ---------------------------------------------------------------
 task 'cs:pre-commit' do
-  begin
-    process.call
-  rescue SystemExit => e
-    after.call(e.status)
-  end
+  process.call
+rescue SystemExit => e
+  after.call(e.status)
 end
