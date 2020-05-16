@@ -20,7 +20,7 @@ require_relative '../gemspec'
 # can be dynamically retrieved through the project.
 #
 # @abstract
-class Kamaze::Project::Tools::Gemspec::Packager < Kamaze::Project::Tools::Packager # rubocop:disable Layout/LineLength
+class Kamaze::Project::Tools::Gemspec::Packager < Kamaze::Project::Tools::Packager
   include Kamaze::Project::Tools::Gemspec::Concern::Reading
 
   def mutable_attributes

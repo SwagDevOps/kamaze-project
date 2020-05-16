@@ -11,7 +11,7 @@ require_relative '../gemspec'
 # Provides a ready to use interface based on rubyc (aka ruby-packer)
 #
 # @see https://github.com/pmq20/ruby-packer
-class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec::Packager # rubocop:disable Layout/LineLength
+class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec::Packager
   autoload(:Gem, 'rubygems')
   autoload(:Pathname, 'pathname')
   autoload(:Command, "#{__dir__}/packer/")

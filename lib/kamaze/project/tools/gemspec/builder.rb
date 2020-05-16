@@ -21,7 +21,7 @@ require_relative '../gemspec'
 # builder = Kamaze.project.tools.fetch(:gemspec_builder)
 # builder.build if builder.ready?
 # ```
-class Kamaze::Project::Tools::Gemspec::Builder < Kamaze::Project::Tools::Gemspec::Packager # rubocop:disable Layout/LineLength
+class Kamaze::Project::Tools::Gemspec::Builder < Kamaze::Project::Tools::Gemspec::Packager
   autoload(:FileUtils, 'fileutils')
   autoload(:Pathname, 'pathname')
 
