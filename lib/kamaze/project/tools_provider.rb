@@ -52,7 +52,7 @@ class Kamaze::Project::ToolsProvider
       "#{__dir__}/resources/config/tools.yml"
         .yield_self { |file| YAML.load_file(file) }
         .yield_self do |defaults|
-        Hash[defaults.collect { |k, v| [k.to_sym, v] }]
+        defaults.transform_keys(&:to_sym)
       end
     end
   end
@@ -67,7 +67,7 @@ class Kamaze::Project::ToolsProvider
   # @return [self]
   def merge!(items)
     self.tap do
-      Hash[items.map { |k, v| [k.to_sym, v] }].tap { |h| @items.merge!(h) }
+      items.transform_keys(&:to_sym).tap { |h| @items.merge!(h) }
     end
   end
 
@@ -126,7 +126,7 @@ class Kamaze::Project::ToolsProvider
     self.items
         .map { |k, v| [k, resolver.classify(v)] }
         .yield_self { |results| Hash[results] }
-        .yield_self { |items| Hash[items.collect { |k, v| [k, v.new] }] }
+        .yield_self { |items| items.transform_values(&:new) }
   end
 
   # Returns ``true`` if the given key is present
