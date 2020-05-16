@@ -56,7 +56,7 @@ module Kamaze::Project::Concern::Env
     }.merge(options)
 
     # @todo load different (or additionnal) files depending on env/mode
-    [Pathname.new(options.fetch(:pwd)).join(options.fetch(:file))].each do |file| # rubocop:disable Layout/LineLength
+    [Pathname.new(options.fetch(:pwd)).join(options.fetch(:file))].each do |file|
       env_loaded.merge!(Dotenv.load(file))
     end
 
