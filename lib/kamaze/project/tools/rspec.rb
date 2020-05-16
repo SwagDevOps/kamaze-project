@@ -67,10 +67,12 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
       @arguments += ['--tag', tag]
     end
 
+    # @formatter:off
     {
-      true  => @arguments,
+      true => @arguments,
       false => @arguments.clone.concat(options_arguments).map(&:to_s).freeze
-    }.fetch(caller_locations(1..1).first.path == __FILE__)
+    }.fetch(caller_locations(1..1).first&.path == __FILE__)
+    # @formatter:on
   end
 
   protected
