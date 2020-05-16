@@ -24,7 +24,7 @@ require_relative 'base_hook'
 #   exit(retcode) unless retcode.zero?
 # end
 # ```
-class Kamaze::Project::Tools::Git::Hooks::PreCommit < Kamaze::Project::Tools::Git::Hooks::BaseHook # rubocop:disable Layout/LineLength
+class Kamaze::Project::Tools::Git::Hooks::PreCommit < Kamaze::Project::Tools::Git::Hooks::BaseHook
   # Process index (files)
   #
   # Exits with a status code, raising ``SystemExit``.

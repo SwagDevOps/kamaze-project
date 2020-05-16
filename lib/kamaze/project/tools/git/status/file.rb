@@ -45,6 +45,7 @@ class Kamaze::Project::Tools::Git::Status::File
   # @return [String]
   def status
     return '??' if untracked?
+
     states = [' ', ' ']
     mapping = { new: 'A', modified: 'M', deleted: 'D' }
     { index: 0, worktree: 1 }.each do |from, index|
