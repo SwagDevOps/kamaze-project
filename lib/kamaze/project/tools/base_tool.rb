@@ -27,6 +27,7 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   # Mutable attributes become ``ro`` after initialization
   #
   # @return [Array]
+  # @abstract
   def mutable_attributes
     []
   end
@@ -34,6 +35,8 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   protected
 
   # Execute additionnal setup
+  #
+  # @abstract
   def setup
     nil
   end
