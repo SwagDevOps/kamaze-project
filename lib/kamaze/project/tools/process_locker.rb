@@ -12,6 +12,8 @@ require_relative '../tools'
 #
 # @see https://github.com/ianheggie/process_lock
 class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
+  autoload(:Digest, 'digest')
+
   # @formatter:off
   {
     Etc: 'etc',
@@ -20,6 +22,23 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
     ProcessLock: 'process_lock',
   }.each { |s, fp| autoload(s, fp) }
   # @formatter:on
+
+  # @return [String]
+  attr_reader :lockdir
+
+  def mutable_attributes
+    [:lockdir]
+  end
+
+  # Set name for lockdir.
+  #
+  # @see #tmpdir
+  # @see #setup
+  def lockdir=(lockdir)
+    inflector.classify(lockdir).yield_self { |s| inflector.underscore(s) }.tap do |name|
+      @lockdir = name
+    end
+  end
 
   # Manage lock on given block
   #
@@ -42,16 +61,16 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
     raise
   end
 
+  # Get tmpdir where lock files are stored.
+  #
   # @return [Pathname]
   def tmpdir
-    require 'tmpdir'
+    require 'tmpdir' unless Dir.respond_to?(:tmpdir)
 
-    Pathname.new(Dir.tmpdir).tap do |tmpdir|
-      uid = Etc.getpwnam(Etc.getlogin).uid
-      dir = [inflector.underscore(self.class.name).tr('/', '-'), uid].join('.')
-
-      return tmpdir.join(dir)
-    end
+    Pathname.new(Dir.tmpdir).join('%<libname>s.%<uid>s' % { # @formatter:off
+      libname: inflector.underscore(self.class.name).split('/')[0..1].join('-'),
+      uid: Etc.getpwnam(Etc.getlogin).uid, # @formatter:on
+    }, lockdir)
   end
 
   class << self
@@ -71,6 +90,16 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   end
 
   protected
+
+  def setup
+    unless lockdir # rubocop:disable Style/GuardClause
+      self.lockdir = lambda do
+        return Kamaze::Project.instance.name if Kamaze::Project.instance
+
+        Digest::SHA1.hexdigest(__FILE__) # Does not avoid collision if package is globally installed
+      end.call
+    end
+  end
 
   # @param [String] lockname
   # @return [ProcessLock]
