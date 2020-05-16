@@ -14,7 +14,7 @@ require 'pathname'
 requires_from_boxes = lambda do |boxes|
   pwd = ::Pathname.new(Dir.pwd)
 
-  Array.new.tap do |requires|
+  [].tap do |requires|
     boxes.each do |box, box_config|
       requires.concat(box_config['requires'] || [])
     end
