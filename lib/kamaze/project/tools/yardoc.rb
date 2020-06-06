@@ -13,6 +13,7 @@ require_relative '../tools'
 # @see https://github.com/lsegal/yard/blob/49d885f29075cfef4cb954bb9247b6fbc8318cac/lib/yard/rake/yardoc_task.rb
 class Kamaze::Project::Tools::Yardoc < Kamaze::Project::Tools::BaseTool
   autoload(:Pathname, 'pathname')
+  autoload(:YARD, 'yard')
 
   # @formatter:off
   {
@@ -62,10 +63,8 @@ class Kamaze::Project::Tools::Yardoc < Kamaze::Project::Tools::BaseTool
 
   # @return [YARD::CLI::Yardoc]
   def core
-    require 'yard'
-
     YARD::CLI::Yardoc.new.tap do |yard|
-      yard.parse_arguments([])
+      yard.parse_arguments
 
       options.to_h.each { |k, v| yard.options[k.to_sym] = v }
     end
