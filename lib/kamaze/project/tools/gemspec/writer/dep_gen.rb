@@ -43,18 +43,21 @@ class Kamaze::Project::Tools::Gemspec::Writer::DepGen
 
   protected
 
+  # @return [Bundler::Runtime]
+  def runtime
+    # Bundler.environment has been removed in favor of Bundler.load
+    Bundler.public_send(Bundler.respond_to?(:load) ? :load : :environment)
+  end
+
   # Get gems for given group
   #
   # @param [Symbol|String] group
   # @return [Array]
   def gems_by_group(group)
-    Bundler.environment
-           .dependencies
-           .select { |d| d.groups.include?(group.to_sym) }
-           .to_a
+    runtime.dependencies.select { |d| d.groups.include?(group.to_sym) }.to_a
   end
 
-  # @return [Kamaze::Project::Tools::Gemspec::Writer::Dependency]
+  # @return [Class<Kamaze::Project::Tools::Gemspec::Writer::Dependency>]
   def decorator
     Kamaze::Project::Tools::Gemspec::Writer::Dependency
   end
