@@ -46,7 +46,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare
-    fs.package_dirs.each_value { |dir| mkdir_p(dir, options) }
+    fs.package_dirs.each_value { |dir| mkdir_p(dir, **options) }
 
     self.purge_purgeables.prepare_srcdir
   end
@@ -55,7 +55,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def purge_purgeables
-    fs.purgeable_dirs.each_value { |dir| purge(dir, options) }
+    fs.purgeable_dirs.each_value { |dir| purge(dir, **options) }
 
     self
   end
@@ -66,7 +66,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare_srcdir
-    src_dir = ::Pathname.new(fs.package_dirs.fetch(:src))
+    src_dir = Pathname.new(fs.package_dirs.fetch(:src))
 
     purge(src_dir, options)
     skel_dirs(src_dir, fs.source_files, options)
@@ -74,7 +74,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
     fs.source_files.map do |path|
       origin = path.realpath # resolves symlinks
 
-      cp(origin, src_dir.join(path), options.merge(preserve: true))
+      cp(origin, src_dir.join(path), **options.merge(preserve: true))
     end
 
     self
@@ -86,6 +86,6 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
 
   protected
 
-  # @return [Hash]
+  # @return [Hash{Symbol => Object}]
   attr_reader :options
 end

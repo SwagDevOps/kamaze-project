@@ -6,15 +6,18 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'pathname'
-require 'fileutils'
-require 'rake/file_utils'
-
 require_relative '../operator'
 
 # Utilities related to files/paths manipulations
 module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
-  include FileUtils
+  autoload(:Pathname, 'pathname')
+
+  lambda do
+    require 'fileutils'
+    require 'rake/file_utils'
+
+    include FileUtils
+  end.call
 
   protected
 
@@ -24,11 +27,11 @@ module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
   # @return [Pathname]
   def purge(dir, options = {})
     options = { verbose: true }.merge(options)
-    dir = ::Pathname.new(dir)
+    dir = Pathname.new(dir)
 
     if dir.exist?
       ls(dir).each do |entry|
-        rm_rf(dir.join(entry), options)
+        rm_rf(dir.join(entry), **options)
       end
     end
 
@@ -42,9 +45,9 @@ module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
   # @param [Hash] options
   # @return [Pathname]
   def skel_dirs(basedir, entries, options = {})
-    basedir = ::Pathname.new(basedir)
+    basedir = Pathname.new(basedir)
 
-    map_dirs(entries).each { |dir| mkdir_p(basedir.join(dir), options) }
+    map_dirs(entries).each { |dir| mkdir_p(basedir.join(dir), **options) }
 
     basedir
   end
@@ -54,9 +57,11 @@ module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
   # @param [String] dir
   # @return [Array<Pathname>]
   def ls(dir)
-    ::Pathname.new(dir).entries
-              .map { |path| ::Pathname.new(path) }
-              .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
+    # @formatter:off
+    Pathname.new(dir).entries
+            .map { |path| ::Pathname.new(path) }
+            .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
+    # @formatter:on
   end
 
   # Extract directories from given paths
@@ -64,10 +69,12 @@ module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
   # @param [Array<String>] paths
   # @return [Array<Pathname>]
   def map_dirs(paths)
+    # @formatter:off
     paths.map { |path| ::Pathname.new(path) }
          .map(&:dirname)
          .delete_if { |path| ['.', '..'].include?(path.basename.to_s) }
          .uniq.sort
+    # @formatter:on
   end
 
   # @return [Array<Symbol>]
