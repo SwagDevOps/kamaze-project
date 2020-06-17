@@ -6,8 +6,10 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-lambda do |method, *args|
-  tools.fetch(:gemspec_writer).public_send(*[method].push(*args))
+lambda do |method, *args, **kwargs|
+  tools.fetch(:gemspec_writer).yield_self do |writer|
+    RUBY_VERSION >= '2.7' ? writer.public_send(method, *args, **kwargs) : writer.public_send(method, *args)
+  end
 end.tap do |writer|
   task "#{writer.call(:to_s)}": [:'gem:gemspec'] do |task| # rubocop:disable Style/SymbolProc
     task.reenable
