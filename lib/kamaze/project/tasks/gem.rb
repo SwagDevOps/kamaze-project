@@ -6,19 +6,16 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
+# @type [Kamaze::Project::Tools::Gemspec::Writer] writer
 tools.fetch(:gemspec_writer).tap do |writer|
-  writer.write unless writer.generated.file?
-end
+  writer.write(preserve_mtime: true) unless writer.generated.file?
 
-# Require base tasks ------------------------------------------------
-[:gemspec, :build].each { |req| require_relative "gem/#{req}" }
+  # Require base tasks ----------------------------------------------
+  [:gemspec, :build].each { |req| require_relative "gem/#{req}" }
 
-lambda do |method, *args|
-  tools.fetch(:gemspec_writer).public_send(*[method].push(*args))
-end.tap do |writer|
   # Default task ----------------------------------------------------
   desc 'Build all the packages'
-  task gem: [writer.call(:to_s), :'gem:build'] do |task| # rubocop:disable Style/SymbolProc
+  task gem: [writer.to_s, :'gem:build'] do |task| # rubocop:disable Style/SymbolProc
     task.reenable
   end
 end
