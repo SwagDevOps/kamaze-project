@@ -43,13 +43,12 @@ module Kamaze::Project::Tools::Packager::Filesystem::Operator::Utils
   # @param [String|Pathname] basedir
   # @param [Array<>] entries
   # @param [Hash] options
+  #
   # @return [Pathname]
   def skel_dirs(basedir, entries, options = {})
-    basedir = Pathname.new(basedir)
-
-    map_dirs(entries).each { |dir| mkdir_p(basedir.join(dir), **options) }
-
-    basedir
+    Pathname.new(basedir).tap do
+      map_dirs(entries).each { |dir| mkdir_p(basedir.join(dir), **options) }
+    end
   end
 
   # List entries
