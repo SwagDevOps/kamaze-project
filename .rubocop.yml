@@ -49,6 +49,7 @@ Style/RedundantReturn: { Enabled: false }
 Style/RedundantSelf: { Enabled: false }
 Style/Send: { Enabled: true }
 Style/SlicingWithRange: { Enabled: false }
+Style/StringConcatenation: { Enabled: true }
 Style/SymbolArray: { Enabled: false }
 Style/TrailingCommaInArrayLiteral: { Enabled: false }
 Style/TrailingCommaInHashLiteral: { Enabled: false }
