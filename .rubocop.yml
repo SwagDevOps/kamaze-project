@@ -16,6 +16,7 @@
 # ```
 ---
 AllCops: { DisplayCopNames: true, TargetRubyVersion: 2.5 }
+Layout/BlockAlignment: { EnforcedStyleAlignWith: start_of_block }
 Layout/EmptyLineAfterMagicComment: { Enabled: false }
 Layout/EmptyLinesAroundAttributeAccessor: { Enabled: true }
 Layout/LineLength: { Max: 120 }
