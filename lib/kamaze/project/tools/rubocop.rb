@@ -27,6 +27,7 @@ class Kamaze::Project::Tools::Rubocop < Kamaze::Project::Tools::BaseTool
   # @formatter:on
 
   autoload(:Pathname, 'pathname')
+  autoload(:RuboCop, 'rubocop')
 
   include Kamaze::Project::Concern::Cli::WithExitOnFailure
 
@@ -97,7 +98,7 @@ class Kamaze::Project::Tools::Rubocop < Kamaze::Project::Tools::BaseTool
   attr_writer :arguments
 
   def setup
-    @defaults = Arguments.new((@defaults || %w[--only-recognized-file-types]).to_a)
+    @defaults = Arguments.new((@defaults || ['--only-recognized-file-types']).to_a)
   end
 
   # Reset arguments + retcode
@@ -112,8 +113,6 @@ class Kamaze::Project::Tools::Rubocop < Kamaze::Project::Tools::BaseTool
 
   # @return [RuboCop::CLI]
   def core
-    require 'rubocop'
-
     RuboCop::CLI.new
   end
 end
