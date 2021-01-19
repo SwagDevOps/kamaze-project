@@ -18,6 +18,7 @@ class Kamaze::Project::Autoload < ::Hash
       Debug: 'debug',
       DSL: 'dsl',
       Helper: 'helper',
+      Inflector: 'inflector',
       Observable: 'observable',
       Observer: 'observer',
       Struct: 'struct',
