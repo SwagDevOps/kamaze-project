@@ -170,7 +170,7 @@ class Kamaze::Project::Tools::Licenser < Kamaze::Project::Tools::BaseTool
   # @return [Pathname] file
   def apply_license(file)
     content    = file.read
-    licensable = !content.scan(license_regexp)[0] and !license.strip.empty?
+    licensable = !!(!content.scan(license_regexp)[0] and !license.strip.empty?)
     output     = self.output || file
 
     if licensable
