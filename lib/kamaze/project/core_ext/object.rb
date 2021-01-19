@@ -15,13 +15,18 @@
 #
 # @see https://ruby-doc.org/core-2.5.0/Object.html
 class Object
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.5.0')
-    # Yields self to the block and returns the result of the block.
-    #
-    # @return [Object]
-    # @see https://ruby-doc.org/core-2.5.0/Object.html#method-i-yield_self
-    def yield_self
-      yield(self)
+  autoload(:Gem, 'rubygems')
+  autoload(:RbConfig, 'rbconfig')
+
+  RbConfig::CONFIG['ruby_version']&.tap do |ruby_version|
+    if Gem::Version.new(ruby_version) < Gem::Version.new('2.5.0')
+      # Yields self to the block and returns the result of the block.
+      #
+      # @return [Object]
+      # @see https://ruby-doc.org/core-2.5.0/Object.html#method-i-yield_self
+      def yield_self
+        yield(self)
+      end
     end
   end
 end
