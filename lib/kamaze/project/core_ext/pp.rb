@@ -6,6 +6,8 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
+require_relative '../../project'
+
 Kernel.tap do |c|
   # @see https://ruby-doc.org/stdlib-2.4.0/libdoc/pp/rdoc/Kernel.html
   # @see https://github.com/topazproject/topaz/blob/bf4a56adbe03ae9ab4984729c733fcbc64a164c4/lib-ruby/pp.rb#L58
