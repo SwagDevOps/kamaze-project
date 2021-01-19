@@ -14,9 +14,9 @@ require_relative '../project'
 # @see https://github.com/pry/pry
 class Kamaze::Project::Debug
   def initialize
-    load_printers.tap do
-      @printers = available_printers.freeze
-    end
+    self.tap do
+      @printers = load_printers.yield_self { available_printers }.freeze
+    end.freeze
   end
 
   class << self
@@ -72,6 +72,8 @@ class Kamaze::Project::Debug
   #
   # @return [Array<PP>]
   def available_printers
+    require 'dry/inflector'
+
     '::PP'.yield_self do |default|
       # @formatter:off
       [
@@ -79,22 +81,12 @@ class Kamaze::Project::Debug
           Kernel.const_defined?(cp) ? cp : default
         end,
         default
-      ].map { |n| inflector.constantize(n) }.freeze
+      ].map { |n| Dry::Inflector.new.constantize(n) }.freeze
       # @formatter:on
     end
   end
 
   protected
-
-  # @return [Boolean|nil]
-  attr_reader :warned
-
-  # @return [Dry::Inflector]
-  def inflector
-    require 'dry/inflector'
-
-    Dry::Inflector.new
-  end
 
   # @return [Integer]
   def screen_width
