@@ -91,7 +91,16 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
 
   protected
 
+  # @return [Dry::Inflector]
+  attr_reader :inflector
+
+  # @return [Module<FileUtils>]
+  attr_reader :fs
+
   def setup
+    @fs ||= FileUtils
+    @inflector ||= Kamaze::Project::Inflector.new
+
     unless lockdir # rubocop:disable Style/GuardClause
       self.lockdir = lambda do
         return Kamaze::Project.instance.name if Kamaze::Project.instance
@@ -112,9 +121,7 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
   # @param [String] lockname
   # @return [Pathname]
   def mktemp(lockname)
-    Pathname.new(lockname.to_s).basename('.*').yield_self do |fp|
-      mktmpdir.join(fp)
-    end
+    Pathname.new(lockname.to_s).basename('.*').yield_self { |fp| mktmpdir.join(fp) }
   end
 
   # Create ``tmpdir``
@@ -124,14 +131,7 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
     self.tmpdir.tap do |tmpdir|
       options[:mode] ||= 0o700
 
-      FileUtils.mkdir_p(tmpdir, **options)
+      fs.mkdir_p(tmpdir, **options)
     end
-  end
-
-  # @return [Dry::Inflector]
-  def inflector
-    require 'dry/inflector'
-
-    Dry::Inflector.new
   end
 end
