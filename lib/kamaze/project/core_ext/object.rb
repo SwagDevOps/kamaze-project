@@ -15,11 +15,15 @@
 #
 # @see https://ruby-doc.org/core-2.5.0/Object.html
 class Object
-  autoload(:Gem, 'rubygems')
   autoload(:RbConfig, 'rbconfig')
+  # noinspection RubyEmptyRescueBlockInspection
+  begin
+    autoload(:Gem, 'rubygems')
+  rescue LoadError # rubocop:disable Lint/SuppressedException
+  end
 
   RbConfig::CONFIG['ruby_version']&.tap do |ruby_version|
-    if Gem::Version.new(ruby_version) < Gem::Version.new('2.5.0')
+    if defined?(Gem) and Gem::Version.new(ruby_version) < Gem::Version.new('2.5.0')
       # Yields self to the block and returns the result of the block.
       #
       # @return [Object]
