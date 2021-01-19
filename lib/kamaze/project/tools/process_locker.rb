@@ -119,13 +119,12 @@ class Kamaze::Project::Tools::ProcessLocker < Kamaze::Project::Tools::BaseTool
 
   # Create ``tmpdir``
   #
-  # @param [Hash] options
   # @return [Pathname]
-  def mktmpdir(options = {})
+  def mktmpdir(**options)
     self.tmpdir.tap do |tmpdir|
       options[:mode] ||= 0o700
 
-      FileUtils.mkdir_p(tmpdir, options)
+      FileUtils.mkdir_p(tmpdir, **options)
     end
   end
 
