@@ -48,6 +48,7 @@ Gem::Specification.new do |s|
     "lib/kamaze/project/helper/inflector.rb",
     "lib/kamaze/project/helper/project.rb",
     "lib/kamaze/project/helper/project/config.rb",
+    "lib/kamaze/project/inflector.rb",
     "lib/kamaze/project/observable.rb",
     "lib/kamaze/project/observer.rb",
     "lib/kamaze/project/resources/Vagrantfile",
