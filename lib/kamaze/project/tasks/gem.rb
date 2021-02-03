@@ -15,7 +15,9 @@ tools.fetch(:gemspec_writer).tap do |writer|
 
   # Default task ----------------------------------------------------
   desc 'Build all the packages'
-  task gem: [writer.to_s, :'gem:build'] do |task| # rubocop:disable Style/SymbolProc
+  # rubocop:disable Style/SymbolProc
+  task(gem: [writer.to_s, :'gem:build']) do |task|
     task.reenable
   end
+  # rubocop:enable Style/SymbolProc
 end
