@@ -11,18 +11,69 @@ This gem is intended to provide a bunch of recurrent dev tasks, such as:
 and so on.
 
 Automation mostly relies on the ``gem`` (and ``gemspec``) standards,
-most tasks MUST run in a sufficient gem context.
+most tasks SHOULD run in a sufficient gem context.
 
 ## Install
 
-
 ```ruby
+gem 'rake', '~> 13.0'
 gem 'kamaze-project', '~> 1.0'
 ```
 
 ```sh
 gem install kamaze-project
 ```
+
+## Optional dependencies
+
+Some dependencies are optional, as seen inspecting the
+``gems.rb`` file.
+
+For example, ``rspec`` is considered as a ``development`` dependency,
+but ``rspec`` is required by the ``test`` task.
+The ``listen`` gem is optional, due to
+[several system incompatibilities][guard/listen#issues-limitations];
+``listen`` gem is only used by some "``watch`` optional tasks".
+
+Example (``gems.rb``) with optional dependencies :
+
+```ruby
+group :development do
+  gem 'rake', '~> 13.0'
+  gem 'rubocop', '~> 0.79'
+  gem 'rugged', '~> 0.28'
+  gem 'sys-proc', '~> 1.1'
+
+  # 'listen' is used to "watch"
+  # but could be incompatible with some systems
+  gem 'listen', '~> 3.2'
+end
+
+group :doc do
+  gem 'yard', '~> 0.9'
+end
+
+group :repl do
+  gem 'pry', '~> 0.12'
+end
+
+group :test do
+  gem 'rspec', '~> 3.7'
+end
+```
+
+### Troubles with ``rugged`` gem
+
+Some system dependencies are required to install ``rugged``
+as native extensions:
+
+* ``make`` or ``gmake``
+* ``cmake``
+* ``pkg-config``
+* ``libssl-dev`` (asked for OpenSSL TLS backend)
+
+depending on Linux distributions, and/or package managers,
+dependency names are likely to change.
 
 ## Ease of use
 
@@ -33,7 +84,7 @@ Sample of use:
 ```ruby
 require 'kamaze/project'
 
-Kamaze.project do |project|
+Kamaze::Project.instance do |project|
   project.subject = Kamaze::Project
   project.name    = :'kamaze-project'
   project.tasks   = [
@@ -85,7 +136,6 @@ Furthermore, adding a new tool is really easy.
 
 ```ruby
 require 'kamaze/project'
-require 'kamaze/project/tools/base_tool'
 
 class AwesomeTool < Kamaze::Project::Tools::BaseTool
   def run
@@ -93,7 +143,7 @@ class AwesomeTool < Kamaze::Project::Tools::BaseTool
   end
 end
 
-Kamaze.project do |project|
+Kamaze::Project.instance do |project|
   # initialization (as seen above)
 
   project.tools = {
@@ -105,28 +155,7 @@ end.load!
 tools.fetch(:awesome)
 ```
 
-## Dependencies (``gems``)
-
-Some dependencies are optional, as seen inspecting the
-``gems.rb`` file.
-
-For example, ``rspec`` is considered as a ``development`` dependency,
-but ``rspec`` is required by the ``test`` task.
-The ``listen`` gem is optional, due to
-[several system incompatibilities][guard/listen#issues-limitations];
-``listen`` gem is only used by some "``watch`` optional tasks".
-
-### Troubles with ``rugged`` gem
-
-Some dependencies are required to install ``rugged`` with native extensions:
-
-* ``make`` or ``gmake``
-* ``cmake``
-* ``pkg-config``
-* ``libssl-dev`` (asked for OpenSSL TLS backend)
-
-depending on Linux distributions, and/or package managers,
-dependency names are likely to change.
+<!-- hyperlinks -->
 
 [rubygems/specification#name]: http://guides.rubygems.org/specification-reference/#name
 [guard/listen#issues-limitations]: https://github.com/guard/listen/blob/d43cbd510ef151b9365bb9c421ef62496260d3fa/README.md#issues--limitations

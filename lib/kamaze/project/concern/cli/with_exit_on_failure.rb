@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -27,10 +27,6 @@ module Kamaze::Project::Concern::Cli::WithExitOnFailure
   # @raise [SystemExit]
   # @return [Object]
   def with_exit_on_failure
-    result = yield(self)
-
-    exit(retcode) if failure?
-
-    result
+    yield(self).tap { exit(retcode) if failure? }
   end
 end

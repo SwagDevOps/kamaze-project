@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -12,6 +12,8 @@ require_relative '../concern'
 #
 # This module provides base methods focused on ``retcode``.
 module Kamaze::Project::Concern::Cli
+  autoload(:WithExitOnFailure, "#{__dir__}/cli/with_exit_on_failure")
+
   # @!attribute [r] retcode
   #   @return [Fixnum] retcode
 
@@ -36,6 +38,7 @@ module Kamaze::Project::Concern::Cli
   #
   # @return [Boolean]
   def success?
+    # noinspection RubyResolve
     Errno::NOERROR::Errno == retcode
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -67,10 +67,12 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
       @arguments += ['--tag', tag]
     end
 
+    # @formatter:off
     {
-      true  => @arguments,
+      true => @arguments,
       false => @arguments.clone.concat(options_arguments).map(&:to_s).freeze
-    }.fetch(caller_locations(1..1).first.path == __FILE__)
+    }.fetch(caller_locations(1..1).first&.path == __FILE__)
+    # @formatter:on
   end
 
   protected

@@ -1,47 +1,38 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'pathname'
-
-# Base module (almost a namespace)
+# Kamaze namesapace
 module Kamaze
-  # rubocop:disable Style/Documentation
+  class Project # rubocop:disable Style/Documentation
+    # @formatter:off
+    {
+      YAML: 'yaml',
+      Pathname: 'pathname',
+      Autoload: "#{__dir__}/project/autoload"
+    }.each { |s, fp| autoload(s, fp) }
+    # @formatter:on
 
-  class Project
-    autoload :VERSION, "#{__dir__}/project/version"
+    Autoload.new.call("#{__dir__}/project")
 
-    module Concern
-      [nil, :env, :mode, :helper,
-       :tasks, :tools].each do |req|
-        require_relative "project/concern/#{req}".gsub(%r{/$}, '')
-      end
-    end
-
-    # @see Kamaze::Project::Version
-    # @return [Object]
-    def version
-      subject.const_get('VERSION')
+    include(Bundled).tap do
+      self.base_path = self.base_path.join('..')
+      require 'bundler/setup' if bundled?
+      require_relative './project/core_ext/pp' if development?
     end
   end
 
-  # rubocop:enable Style/Documentation
-end
-
-# Base namespace
-module Kamaze
   class << self
-    include Project::Concern::Helper
-
     # Get an instance of project
     #
+    # @deprecated
     # @return [Kamaze::Project]
     def project(&block)
-      helper.get(:project).setup(&block)
+      Project.instance(&block)
     end
   end
 end
@@ -62,6 +53,23 @@ class Kamaze::Project
   include Concern::Helper
   include Concern::Tasks
   include Concern::Tools
+
+  class << self
+    include Concern::Helper
+
+    # Get an instance of project
+    #
+    # @return [Kamaze::Project]
+    def instance(&block)
+      helper.get(:project).setup(&block)
+    end
+  end
+
+  # @see Kamaze::Project::Version
+  # @return [Object]
+  def version
+    subject.const_get('VERSION')
+  end
 
   # Project name
   #
@@ -119,7 +127,7 @@ class Kamaze::Project
 
   # @return [Pathname]
   def pwd
-    ::Pathname.new(Dir.pwd)
+    Pathname.new(Dir.pwd)
   end
 
   protected

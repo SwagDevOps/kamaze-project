@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../concern'
-require_relative '../../project/tools_provider'
 
 # Provides access to tools
 #
@@ -15,7 +14,7 @@ require_relative '../../project/tools_provider'
 module Kamaze::Project::Concern::Tools
   # Get tools
   #
-  # @return [Hash]
+  # @return [ToolsProvider|Hash]
   def tools
     @tools ||= Kamaze::Project::ToolsProvider.new
   end

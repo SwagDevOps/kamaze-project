@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -45,6 +45,7 @@ class Kamaze::Project::Tools::Git::Status::File
   # @return [String]
   def status
     return '??' if untracked?
+
     states = [' ', ' ']
     mapping = { new: 'A', modified: 'M', deleted: 'D' }
     { index: 0, worktree: 1 }.each do |from, index|

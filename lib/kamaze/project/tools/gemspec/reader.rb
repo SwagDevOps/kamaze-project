@@ -1,26 +1,27 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../gemspec'
-require_relative 'reader/decorator'
-
-require 'pathname'
-require 'rubygems'
 
 # Read ``gemspec`` file
 #
 # Retrieve ``Gem::Specification`` through ``read`` method.
 #
 # @see Kamaze::Project
-class Kamaze::Project::Tools::Gemspec::Reader
+class Kamaze::Project::Tools::Gemspec::Reader < Kamaze::Project::Tools::BaseTool
+  autoload(:Pathname, 'pathname')
+  autoload(:Gem, 'rubygems')
+  autoload(:Decorator, "#{__dir__}/reader/decorator")
+
   # @return [String]
   attr_accessor :gem_name
 
+  # @return [Kamaze::Project]
   attr_writer :project
 
   def mutable_attributes
@@ -29,7 +30,7 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   # @return [Pathname]
   def pwd
-    ::Pathname.new(Dir.pwd)
+    Pathname.new(Dir.pwd)
   end
 
   # Read gemspec (as given ``type``)
@@ -40,11 +41,7 @@ class Kamaze::Project::Tools::Gemspec::Reader
   # @param [nil|Class|Symbol] type
   # @return [Gem::Specification|Object]
   def read(type = nil)
-    Dir.chdir(pwd) do
-      spec = Gem::Specification.load(self.spec_file.to_s)
-
-      type ? Decorator.new(spec).to(type) : spec
-    end
+    type ? Decorator.new(spec).to(type) : spec
   end
 
   # Get (gem)spec file path
@@ -56,15 +53,26 @@ class Kamaze::Project::Tools::Gemspec::Reader
 
   # Get project
   #
-  # @see Kamaze.project
   # @return [Object|Kamaze::Project]
   def project
-    @project || Kamaze.project
+    @project || Kamaze::Project.instance
   end
 
   protected
 
   def setup
     @gem_name ||= project.name
+  end
+
+  # Read sepc file.
+  #
+  # @see Gem::Specification.load()
+  # @return [Gem::Specification|Object]
+  def spec
+    Dir.chdir(pwd) do
+      return Gem::Specification.new unless spec_file.file?
+
+      eval(self.spec_file.read, binding, self.spec_file.to_s) # rubocop:disable Security/Eval
+    end
   end
 end

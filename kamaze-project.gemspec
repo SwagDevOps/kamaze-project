@@ -4,10 +4,10 @@
 
 Gem::Specification.new do |s|
   s.name        = "kamaze-project"
-  s.version     = "1.0.4"
-  s.date        = "2018-06-05"
-  s.summary     = "Automatize recurrent dev tasks with swag"
-  s.description = "A bunch of (rake) tasks to automatize your development workflow."
+  s.version     = "1.1.0"
+  s.date        = "2021-02-03"
+  s.summary     = "Automatize recurrent dev tasks"
+  s.description = "A bunch of (rake) tasks to automatize development workflows."
 
   s.licenses    = ["GPL-3.0"]
   s.authors     = ["Dimitri Arrigoni"]
@@ -16,16 +16,17 @@ Gem::Specification.new do |s|
 
   # MUST follow the higher required_ruby_version
   # requires version >= 2.3.0 due to safe navigation operator &
-  s.required_ruby_version = ">= 2.3.0"
+  # requires version >= 2.5.0 due to yield_self
+  s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
-    ".rubocop.yml",
     ".yardopts",
-    "bin/plop",
     "lib/kamaze-project.rb",
     "lib/kamaze/project.rb",
+    "lib/kamaze/project/autoload.rb",
     "lib/kamaze/project/boot/core_ext.rb",
     "lib/kamaze/project/boot/listen.rb",
+    "lib/kamaze/project/bundled.rb",
     "lib/kamaze/project/concern.rb",
     "lib/kamaze/project/concern/cli.rb",
     "lib/kamaze/project/concern/cli/with_exit_on_failure.rb",
@@ -47,6 +48,7 @@ Gem::Specification.new do |s|
     "lib/kamaze/project/helper/inflector.rb",
     "lib/kamaze/project/helper/project.rb",
     "lib/kamaze/project/helper/project/config.rb",
+    "lib/kamaze/project/inflector.rb",
     "lib/kamaze/project/observable.rb",
     "lib/kamaze/project/observer.rb",
     "lib/kamaze/project/resources/Vagrantfile",
@@ -126,18 +128,15 @@ Gem::Specification.new do |s|
     "lib/kamaze/project/version.yml",
   ]
 
-  s.add_runtime_dependency("cli-ui", ["~> 1.1"])
+  s.add_runtime_dependency("cli-ui", ["~> 1.3"])
   s.add_runtime_dependency("cliver", ["~> 0.3"])
-  s.add_runtime_dependency("dotenv", ["~> 2.4"])
+  s.add_runtime_dependency("dotenv", ["~> 2.7"])
   s.add_runtime_dependency("dry-inflector", ["~> 0.1"])
   s.add_runtime_dependency("kamaze-version", ["~> 1.0"])
   s.add_runtime_dependency("process_lock", ["~> 0.1"])
-  s.add_runtime_dependency("pry", ["~> 0.11"])
-  s.add_runtime_dependency("rake", ["~> 12.3"])
-  s.add_runtime_dependency("rugged", ["~> 0.27"])
   s.add_runtime_dependency("tenjin", ["~> 0.7"])
-  s.add_runtime_dependency("tty-editor", ["~> 0.4"])
-  s.add_runtime_dependency("tty-screen", [">= 0.6.2", "~> 0.6"])
+  s.add_runtime_dependency("tty-editor", ["~> 0.5"])
+  s.add_runtime_dependency("tty-screen", [">= 0.6.2", "~> 0.7"])
 end
 
 # Local Variables:

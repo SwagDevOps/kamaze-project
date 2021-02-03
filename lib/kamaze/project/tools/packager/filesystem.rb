@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../packager'
-require_relative 'filesystem/operator'
-require 'pathname'
 
 # Filesystem description used during packaging
 #
@@ -20,6 +18,14 @@ require 'pathname'
 # Labels are used to constitute the complete directory path
 # (relative to ``pwd``).
 class Kamaze::Project::Tools::Packager::Filesystem
+  autoload(:Pathname, 'pathname')
+
+  # @formatter:off
+  {
+    Operator: 'operator',
+  }.each { |k, v| autoload(k, "#{__dir__}/filesystem/#{v}") }
+  # @formatter:on
+
   # Package dir (root directory)
   #
   # Relative to current pwd
@@ -170,7 +176,9 @@ class Kamaze::Project::Tools::Packager::Filesystem
   # @return [self]
   def mute_attributes!(attributes)
     attributes.each do |m|
+      # rubocop:disable Style/AccessModifierDeclarations
       self.singleton_class.class_eval { protected "#{m}=" }
+      # rubocop:enable Style/AccessModifierDeclarations
     end
 
     self

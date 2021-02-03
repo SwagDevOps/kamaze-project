@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -26,9 +26,7 @@ class Kamaze::Project::Tools::Rubocop::Config
 
   # @return [Array<String>]
   def to_a
-    filepaths = match_patterns(patterns)
-
-    self.options.to_a.clone.concat(['--'] + filepaths)
+    self.options.to_a.clone.concat(['--']).concat(match_patterns(patterns))
   end
 
   protected

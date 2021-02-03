@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'fileutils'
-require 'rubygems'
-require 'rubygems/gem_runner'
-
-require_relative 'packager'
+require_relative '../gemspec'
 
 # Package a ``gem`` from its own ``gemspec`` file
 #
@@ -25,39 +21,46 @@ require_relative 'packager'
 # builder = Kamaze.project.tools.fetch(:gemspec_builder)
 # builder.build if builder.ready?
 # ```
-class Kamaze::Project::Tools::Gemspec::Builder
+class Kamaze::Project::Tools::Gemspec::Builder < Kamaze::Project::Tools::Gemspec::Packager
+  autoload(:FileUtils, 'fileutils')
+  autoload(:Pathname, 'pathname')
+
   # Build ``.gem`` file
   #
   # @return [self]
   def build
-    prepare
+    self.tap do
+      prepare
 
-    buildable_dir = self.buildable.dirname.realpath
+      buildable_dir = self.buildable.dirname.realpath
 
-    # dive into ``src`` file
-    Dir.chdir(gemspec_srcfile.dirname) do
-      Gem::GemRunner.new.run(build_args).yield_self do |file|
-        FileUtils.mv(file, buildable_dir)
+      # dive into ``src`` file
+      Dir.chdir(gemspec_srcfile.dirname) do
+        self.gem_runner.run(build_args).yield_self do |file|
+          FileUtils.mv(file, buildable_dir)
 
-        buildable_dir.join(file)
+          buildable_dir.join(file)
+        end
       end
     end
-
-    self
   end
 
   # Get buildable (relative path)
   #
   # @return [Pathname]
   def buildable
-    full_name = gemspec_reader.read(Hash).fetch(:full_name)
-    file_path = fs.package_dirs
-                  .fetch(:gem)
-                  .join("#{full_name}.gem")
-                  .to_s
-                  .gsub(%r{^\./}, '')
+    return nil unless ready? # @todo raise an explicit exception
 
-    ::Pathname.new(file_path)
+    gemspec_reader.read(Hash).fetch(:full_name).tap do |full_name|
+      # @formatter:off
+      return fs.package_dirs
+               .fetch(:gem)
+               .join("#{full_name}.gem")
+               .to_s
+               .gsub(%r{^\./}, '')
+               .yield_self { |file_path| Pathname.new(file_path) }
+      # @formatter:on
+    end
   end
 
   def ready?
@@ -70,12 +73,13 @@ class Kamaze::Project::Tools::Gemspec::Builder
   #
   # @return [Pathname]
   def gemspec_srcfile
+    # @formatter:off
     (package_dirs.fetch(:src)
-                 .realpath
-                 .join(buildable.basename('.*')).to_s
-                 .gsub(/-([0-9 \.])+$/, '') + '.gemspec').yield_self do |s|
-      Pathname.new(s)
-    end
+         .realpath
+         .join(buildable.basename('.*')).to_s
+         .gsub(/-([0-9 \.])+$/, '') + '.gemspec')
+      .yield_self { |s| Pathname.new(s) }
+    # @formatter:on
   end
 
   protected
@@ -84,8 +88,16 @@ class Kamaze::Project::Tools::Gemspec::Builder
     super
 
     self.package_labels = [:src, :gem]
-    self.purgeables     = [:gem]
-    self.package_name   = "ruby/gem-#{Gem::VERSION}"
+    self.purgeables = [:gem]
+    self.package_name = "ruby/gem-#{Gem::VERSION}"
+  end
+
+  # @return [Gem::GemRunner]
+  def gem_runner
+    require 'rubygems'
+    require 'rubygems/gem_runner'
+
+    Gem::GemRunner.new
   end
 
   # Get args used by ``gem`` command

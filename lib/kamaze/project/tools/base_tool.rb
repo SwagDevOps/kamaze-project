@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require_relative '../observable'
 
 # Provides base for tools
 #
@@ -28,6 +27,7 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   # Mutable attributes become ``ro`` after initialization
   #
   # @return [Array]
+  # @abstract
   def mutable_attributes
     []
   end
@@ -35,6 +35,8 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   protected
 
   # Execute additionnal setup
+  #
+  # @abstract
   def setup
     nil
   end
@@ -47,7 +49,9 @@ class Kamaze::Project::Tools::BaseTool < Kamaze::Project::Observable
   # @return [self]
   def attrs_mute!
     mutable_attributes.each do |m|
+      # rubocop:disable Style/AccessModifierDeclarations
       self.singleton_class.class_eval { protected "#{m}=" }
+      # rubocop:enable Style/AccessModifierDeclarations
     end
 
     self

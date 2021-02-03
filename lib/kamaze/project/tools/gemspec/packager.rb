@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../gemspec'
-require_relative 'concern/reading'
 
 # Provide a specialized packager, for ``gemspec`` based projects
 #
@@ -21,7 +20,7 @@ require_relative 'concern/reading'
 # can be dynamically retrieved through the project.
 #
 # @abstract
-class Kamaze::Project::Tools::Gemspec::Packager
+class Kamaze::Project::Tools::Gemspec::Packager < Kamaze::Project::Tools::Packager
   include Kamaze::Project::Tools::Gemspec::Concern::Reading
 
   def mutable_attributes
@@ -44,17 +43,18 @@ class Kamaze::Project::Tools::Gemspec::Packager
   #
   # @return [Array<String>]
   def package_files
-    (Dir.glob([
-                '*.gemspec',
-                'Gemfile', 'Gemfile.lock',
-                'gems.rb', 'gems.locked',
-              ]) + (gemspec_reader.read&.files).to_a).sort
+    # @formatter: off
+    (gemspec_reader.read&.files).to_a.yield_self do |files| # rubocop:disable Style/RedundantParentheses
+      Dir.glob(%w[*.gemspec Gemfile Gemfile.lock gems.rb gems.locked])
+         .concat(files)
+    end.sort
+    # @formatter: on
   end
 
   def setup
-    @gemspec_reader ||= Kamaze.project.tools.fetch(:gemspec_reader)
+    @gemspec_reader ||= Kamaze::Project.instance.tools.fetch(:gemspec_reader)
 
-    self.verbose      = false
+    self.verbose = false
     self.source_files = package_files if self.source_files.to_a.empty?
   end
 

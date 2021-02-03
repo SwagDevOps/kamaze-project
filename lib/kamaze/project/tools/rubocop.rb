@@ -1,30 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require_relative '../concern/cli/with_exit_on_failure'
-require 'pathname'
-
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Rubocop < BaseTool
-    class Arguments < Array
-      require_relative 'rubocop/arguments'
-    end
-
-    class Config
-      require_relative 'rubocop/config'
-    end
-  end
-end
-
-# rubocop:enable Style/Documentation
 
 # Tool to run ``Rubocop::CLI``
 #
@@ -36,7 +18,17 @@ end
 #   c.options = ['--fail-level', 'E']
 # end.run
 # ```
-class Kamaze::Project::Tools::Rubocop
+class Kamaze::Project::Tools::Rubocop < Kamaze::Project::Tools::BaseTool
+  # @formatter:off
+  {
+    Arguments: 'arguments',
+    Config: 'config',
+  }.each { |s, fp| autoload(s, "#{__dir__}/rubocop/#{fp}") }
+  # @formatter:on
+
+  autoload(:Pathname, 'pathname')
+  autoload(:RuboCop, 'rubocop')
+
   include Kamaze::Project::Concern::Cli::WithExitOnFailure
 
   # Default arguments used by ``Rubocop::CLI``
@@ -50,17 +42,18 @@ class Kamaze::Project::Tools::Rubocop
   end
 
   def prepare
-    reset
+    self.tap do
+      reset
 
-    if block_given?
-      config = Config.new
-      yield(config)
-      arguments.concat(config.freeze.to_a)
+      if block_given?
+        Config.new.tap do |config|
+          yield(config)
+          arguments.concat(config.freeze.to_a)
+        end
+      end
+
+      arguments.freeze
     end
-
-    arguments.freeze
-
-    self
   end
 
   # Arguments used by ``CLI`` (during execution/``run``)
@@ -92,10 +85,8 @@ class Kamaze::Project::Tools::Rubocop
 
     if runnable?
       with_exit_on_failure do
-        core.run(arguments.to_a).yield_self do |retcode|
-          self.retcode = retcode
-          reset
-        end
+        core.run(arguments.to_a).tap { |retcode| self.retcode = retcode }
+        reset
       end
     end
 
@@ -107,23 +98,21 @@ class Kamaze::Project::Tools::Rubocop
   attr_writer :arguments
 
   def setup
-    @defaults = Arguments.new(@defaults.to_a)
+    @defaults = Arguments.new((@defaults || ['--only-recognized-file-types']).to_a)
   end
 
   # Reset arguments + retcode
   #
   # @return [self]
   def reset
-    @arguments = nil
-    self.retcode = nil if retcode.to_i.zero?
-
-    self
+    self.tap do
+      @arguments = nil
+      self.retcode = nil if retcode.to_i.zero?
+    end
   end
 
-  # @return [YARD::CLI::Yardoc]
+  # @return [RuboCop::CLI]
   def core
-    require 'rubocop'
-
     RuboCop::CLI.new
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -10,30 +10,18 @@ require_relative '../tools'
 require_relative 'base_tool'
 require 'pathname'
 
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Git < BaseTool
-    # @abstract
-    class Util
-    end
-
-    class Status
-    end
-
-    class Hooks < Util
-    end
-  end
-
-  [:util,
-   :hooks,
-   :status].each { |req| require_relative "git/#{req}" }
-end
-
-# rubocop:enable Style/Documentation
-
 # Provide a wrapper based on ``rugged`` (``libgit2``}
-class Kamaze::Project::Tools::Git
+class Kamaze::Project::Tools::Git < Kamaze::Project::Tools::BaseTool
+  autoload(:Rugged, 'rugged')
+
+  # @formatter:off
+  {
+    Util: 'util',
+    Hooks: 'hooks',
+    Status: 'status',
+  }.each { |k, v| autoload(k, "#{__dir__}/git/#{v}") }
+  # @formatter:on
+
   # @return [String]
   attr_writer :base_dir
 
@@ -65,7 +53,7 @@ class Kamaze::Project::Tools::Git
 
   # Get status
   #
-  # @return [Hash]
+  # @return [Status]
   def status
     status = {}
     repository.status { |file, data| status[file] = data }
@@ -84,12 +72,6 @@ class Kamaze::Project::Tools::Git
 
   def setup
     @base_dir ||= Dir.pwd
-    begin
-      require 'rugged'
-      @repository = Rugged::Repository.new(base_dir.to_s)
-    rescue LoadError, Rugged::RepositoryError
-      # @todo Load error SHOULD be stored (as a boolean?)
-      @repository = nil
-    end
+    @repository = Rugged::Repository.new(base_dir.to_s)
   end
 end

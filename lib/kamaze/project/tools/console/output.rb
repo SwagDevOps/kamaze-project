@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../console'
-require_relative 'output/buffer'
 
 # Provide a console output
 #
@@ -23,6 +22,14 @@ require_relative 'output/buffer'
 # @see https://github.com/Shopify/cli-ui
 # @see http://ruby-doc.org/core-2.1.3/IO.html
 class Kamaze::Project::Tools::Console::Output
+  # @formatter:off
+  {
+    Buffer: 'buffer'
+  }.each do |s, fp|
+    autoload(s, "#{__dir__}/output/#{fp}")
+  end
+  # @formatter:on
+
   # @param [IO] to
   def initialize(to = $stdout)
     @output = to
@@ -42,9 +49,9 @@ class Kamaze::Project::Tools::Console::Output
   #
   # @return [self]
   def flush
-    output.flush if output.respond_to?(:flush)
-
-    self
+    self.tap do
+      output.flush if output.respond_to?(:flush)
+    end
   end
 
   def method_missing(method, *args, &block)
@@ -113,7 +120,8 @@ class Kamaze::Project::Tools::Console::Output
   # Bufferize given arguments
   #
   # @param [Array<String>] strings
-  # @return [Array<String>]
+  #
+  # @return [Array<Buffer>|Array<String>]
   def bufferize(*strings)
     strings.to_a.map { |s| Buffer.new(self, s) }
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -170,7 +170,7 @@ class Kamaze::Project::Tools::Licenser < Kamaze::Project::Tools::BaseTool
   # @return [Pathname] file
   def apply_license(file)
     content    = file.read
-    licensable = !content.scan(license_regexp)[0] and !license.strip.empty?
+    licensable = !!(!content.scan(license_regexp)[0] and !license.strip.empty?)
     output     = self.output || file
 
     if licensable

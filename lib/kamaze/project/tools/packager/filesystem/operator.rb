@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require 'pathname'
-require_relative '../filesystem'
-require_relative 'operator/utils'
 
 # Filesystem operator (manipulator)
 #
 # This class is intended to manipulate a ``Filesystem``.
 class Kamaze::Project::Tools::Packager::Filesystem::Operator
+  autoload(:Pathname, 'pathname')
+
+  # @formatter:off
+  {
+    Utils: 'utils',
+  }.each { |k, v| autoload(k, "#{__dir__}/operator/#{v}") }
+  # @formatter:on
+
   include Utils
 
   # @return [Kamaze::Project::Tools::Packager::Filesystem]
@@ -28,9 +34,11 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
 
     # Pass included methods to protected
     utils_methods.each do |m|
-      if self.public_methods.include?(m)
-        self.singleton_class.class_eval { protected m }
-      end
+      next unless self.public_methods.include?(m)
+
+      # rubocop:disable Style/AccessModifierDeclarations
+      self.singleton_class.class_eval { protected m }
+      # rubocop:enable Style/AccessModifierDeclarations
     end
   end
 
@@ -38,7 +46,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare
-    fs.package_dirs.each_value { |dir| mkdir_p(dir, options) }
+    fs.package_dirs.each_value { |dir| mkdir_p(dir, **options) }
 
     self.purge_purgeables.prepare_srcdir
   end
@@ -47,7 +55,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def purge_purgeables
-    fs.purgeable_dirs.each_value { |dir| purge(dir, options) }
+    fs.purgeable_dirs.each_value { |dir| purge(dir, **options) }
 
     self
   end
@@ -58,7 +66,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
   #
   # @return [self]
   def prepare_srcdir
-    src_dir = ::Pathname.new(fs.package_dirs.fetch(:src))
+    src_dir = Pathname.new(fs.package_dirs.fetch(:src))
 
     purge(src_dir, options)
     skel_dirs(src_dir, fs.source_files, options)
@@ -66,7 +74,7 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
     fs.source_files.map do |path|
       origin = path.realpath # resolves symlinks
 
-      cp(origin, src_dir.join(path), options.merge(preserve: true))
+      cp(origin, src_dir.join(path), **options.merge(preserve: true))
     end
 
     self
@@ -78,6 +86,6 @@ class Kamaze::Project::Tools::Packager::Filesystem::Operator
 
   protected
 
-  # @return [Hash]
+  # @return [Hash{Symbol => Object}]
   attr_reader :options
 end

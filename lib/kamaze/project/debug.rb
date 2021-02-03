@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -14,7 +14,9 @@ require_relative '../project'
 # @see https://github.com/pry/pry
 class Kamaze::Project::Debug
   def initialize
-    @printers = available_printers
+    self.tap do
+      @printers = load_printers.yield_self { available_printers }.freeze
+    end.freeze
   end
 
   class << self
@@ -49,6 +51,10 @@ class Kamaze::Project::Debug
   def dump(obj, out = $stdout, width = nil)
     width ||= screen_width || 79
 
+    unless out.respond_to?(:isatty)
+      out.singleton_class.define_method(:isatty) { false }
+    end
+
     printer_for(out).pp(obj, out, width)
   end
 
@@ -57,9 +63,7 @@ class Kamaze::Project::Debug
   # @param [IO] out
   # @return [PP]
   def printer_for(out)
-    out_tty = out.respond_to?(:isatty) and out.isatty
-
-    printers[out_tty ? 0 : 1]
+    printers.fetch(out.isatty ? 0 : 1)
   end
 
   # Get printers
@@ -68,31 +72,21 @@ class Kamaze::Project::Debug
   #
   # @return [Array<PP>]
   def available_printers
-    load_printers
+    require 'dry/inflector'
 
-    default = '::PP'
-
-    [
-      proc do
-        target = '::Pry::ColorPrinter'
-
-        Kernel.const_defined?(target) ? target : default
-      end.call,
-      default
-    ].map { |n| inflector.constantize(n) }.freeze
+    '::PP'.yield_self do |default|
+      # @formatter:off
+      [
+        'Pry::ColorPrinter'.yield_self do |cp|
+          Kernel.const_defined?(cp) ? cp : default
+        end,
+        default
+      ].map { |n| Dry::Inflector.new.constantize(n) }.freeze
+      # @formatter:on
+    end
   end
 
   protected
-
-  # @return [Boolean|nil]
-  attr_reader :warned
-
-  # @return [Dry::Inflector]
-  def inflector
-    require 'dry/inflector'
-
-    Dry::Inflector.new
-  end
 
   # @return [Integer]
   def screen_width
@@ -101,30 +95,30 @@ class Kamaze::Project::Debug
     TTY::Screen.width
   end
 
-  # Load printers requirements (on demand)
+  # Load printers requirements.
   #
   # @return [self]
   def load_printers
-    Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
+    self.tap do
+      Object.const_set('Pry', Class.new) unless Kernel.const_defined?('::Pry')
 
-    begin
-      load_printer_requirements
-    rescue LoadError => e
-      self.class.__send__('warned=', !!warn_error(e)) unless warned?
+      begin
+        load_requirements
+      rescue LoadError => e
+        self.class.__send__('warned=', !!warn_error(e)) unless warned?
+      end
     end
-
-    self
   end
 
+  # Load requirements.
+  #
   # @raise [LoadError]
   # @return [self]
-  def load_printer_requirements
-    ['pp',
-     'coderay',
-     'pry/pager',
-     'pry/color_printer'].each { |req| require req }
-
-    self
+  def load_requirements
+    self.tap do
+      # noinspection RubyLiteralArrayInspection,RubyResolve
+      ['pp', 'coderay', 'pry'].each { |req| require req }
+    end
   end
 
   # Display the given exception message (followed by a newline) on STDERR
@@ -132,13 +126,10 @@ class Kamaze::Project::Debug
   # unless warnings are disabled (for example with the -W0 flag).
   #
   # @param [Exception] error
-  # @return [Array<String>]
+  # @return [nil]
   def warn_error(error)
-    formats = { from: caller(1..1).first, mssg: error.message }
-    message = '%<from>s: %<mssg>s' % formats
-
-    warn(message)
-
-    formats.values
+    { from: caller(1..1).first, mssg: error.message }.tap do |formats|
+      return warn('%<from>s: %<mssg>s' % formats)
+    end
   end
 end

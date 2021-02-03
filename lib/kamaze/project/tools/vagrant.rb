@@ -1,28 +1,14 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../tools'
-require_relative 'base_tool'
 require 'base64'
 require 'pathname'
-
-# rubocop:disable Style/Documentation
-
-module Kamaze::Project::Tools
-  class Vagrant < BaseTool
-  end
-
-  [:composer, :shell, :writer, :remote].each do |req|
-    require_relative "vagrant/#{req}"
-  end
-end
-
-# rubocop:enable Style/Documentation
 
 # Vagrant based,
 # this class provides a easy and ready to use wrapper around ``vagrant``
@@ -53,7 +39,11 @@ end
 #
 # @see http://yaml.org/YAML_for_ruby.html
 # @see https://friendsofvagrant.github.io/v1/docs/boxes.html
-class Kamaze::Project::Tools::Vagrant
+class Kamaze::Project::Tools::Vagrant < Kamaze::Project::Tools::BaseTool
+  [:composer, :shell, :writer, :remote].each do |req|
+    require_relative "vagrant/#{req}"
+  end
+
   # Template file (used for code generation)
   #
   # @return [String]

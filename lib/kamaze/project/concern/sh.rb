@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
@@ -61,12 +61,12 @@ module Kamaze::Project::Concern::Sh
       self.shell_runner_last_status = status
 
       if !ok and shell_runner_debug?
-        # rubocop:disable Layout/IndentHash
-        warn("Command failed with status (%<retcode>s):\n# %<command>s" % {
-               retcode: status.exitstatus,
-               command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
-             })
-        # rubocop:enable Layout/IndentHash
+        # @formatter:off
+        "Command failed with status (%<retcode>s):\n# %<command>s" % {
+          retcode: status.exitstatus,
+          command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
+        }.tap { |message| warn(message) }
+        # @formatter:on
       end
     end
   end

@@ -2,7 +2,28 @@
 
 require 'kamaze/project'
 
-# testing instance (methods)
+# constants ---------------------------------------------------------
+describe Kamaze::Project, :project do
+  [
+    :VERSION,
+    :Bundled,
+    :Concern,
+    :Config,
+    :Debug,
+    :DSL,
+    :Helper,
+    :Inflector,
+    :Observable,
+    :Observer,
+    :Struct,
+    :Tools,
+    :ToolsProvider,
+  ].each do |sym|
+    it { expect(described_class).to define_constant(sym) }
+  end
+end
+
+# instance methods --------------------------------------------------
 describe Kamaze::Project, :project do
   let(:subject) { Kamaze.project }
 
@@ -16,5 +37,4 @@ describe Kamaze::Project, :project do
 
   it { expect(subject).to respond_to(:path).with(0).arguments }
   it { expect(subject).to respond_to(:path).with_unlimited_arguments }
-  it { expect(subject.class).to define_constant(:VERSION) }
 end

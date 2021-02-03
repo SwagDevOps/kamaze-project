@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
-# Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
+# Copyright (C) 2017-2021 Dimitri Arrigoni <dimitri@arrigoni.me>
 # License GPLv3+: GNU GPL version 3 or later
 # <http://www.gnu.org/licenses/gpl.html>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
 require_relative '../git'
-require_relative 'status/file'
-require_relative 'status/index'
-require_relative 'status/worktree'
-require_relative 'status/decorator'
-require 'pathname'
 
 # Provide status
 #
@@ -22,6 +17,17 @@ require 'pathname'
 #
 # @see Kamaze::Project::Tools::Git::Status::File
 class Kamaze::Project::Tools::Git::Status
+  autoload(:Pathname, 'pathname')
+
+  # @formatter:off
+  {
+    File: 'file',
+    Index: 'index',
+    Worktree: 'worktree',
+    Decorator: 'decorator',
+  }.each { |k, v| autoload(k, "#{__dir__}/status/#{v}") }
+  # @formatter:on
+
   # @return [Pathname]
   attr_reader :base_dir
 
@@ -77,9 +83,7 @@ class Kamaze::Project::Tools::Git::Status
   #
   # @return [Hash]
   def cached
-    @cached ||= prepared
-
-    @cached
+    (@cached ||= prepared)
   end
 
   # Get prepared filepaths with symbols (states)
