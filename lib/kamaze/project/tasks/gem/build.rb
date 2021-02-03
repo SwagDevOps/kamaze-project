@@ -8,6 +8,7 @@
 
 require 'rake/clean'
 autoload(:YAML, 'yaml')
+autoload(:Pathname, 'pathname')
 
 builder = lambda do |method, *args|
   tools.fetch(:gemspec_builder).public_send(*[method].push(*args))
@@ -17,36 +18,31 @@ writer = lambda do |method, *args|
   tools.fetch(:gemspec_writer).public_send(*[method].push(*args))
 end
 
-# Generate gemspec file (when missing) -------------------------------
-# writer.call(:write) unless builder.call(:buildable?)
+runner = lambda do
+  mtime = builder.call(:source_files)
+                 .to_a
+                 .concat([writer.call(:to_s)])
+                 .map { |fp| Pathname.new(fp) }
+                 .map(&:mtime).max || Time.now
+
+  lambda do
+    builder.call(:buildable).yield_self { |build| build.file? ? File.mtime(build) : nil }
+  end.call.tap do |build_mtime|
+    if build_mtime.nil? || (build_mtime and mtime > build_mtime)
+      builder.call(:build)
+      Rake::Task[:clobber].reenable
+    end
+  end
+end
 
 # clobber ------------------------------------------------------------
 CLOBBER.include(builder.call(:package_dir))
 
 # task ---------------------------------------------------------------
-task builder.call(:buildable) => [writer.call(:to_s)] do |task|
+task(:'gem:build', [writer.call(:to_s)]) do |task|
   task.reenable.tap do
-    # @formatter:off
-    builder.call(:source_files).to_a
-           .concat([Pathname.new(writer.call(:to_s))])
-           .map { |file| File.mtime(file) }.max.tap do |mtime|
-      lambda do # @formatter:on
-        builder.call(:buildable).tap do |build|
-          return build.file? ? File.mtime(build) : nil
-        end
-      end.call.tap do |build_mtime|
-        if build_mtime.nil? || (build_mtime && mtime > build_mtime)
-          builder.call(:build)
-          Rake::Task['clobber'].reenable
-        end
-      end
-    end
-  end
-end
+    runner.call
 
-# task ---------------------------------------------------------------
-task :'gem:build', [writer.call(:to_s)] do |task|
-  task.reenable.tap do
     [writer.call(:to_s), builder.call(:buildable)].each do |t|
       Rake::Task[t].invoke
     end
