@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-# bundle install --path vendor/bundle --clean
-
+# ```sh
+# bundle config set --local clean 'true'
+# bundle config set --local path 'vendor/bundle'
+# bundle install
+# ```
 source 'https://rubygems.org'
 
 group :default do
@@ -23,7 +26,7 @@ end
 
 group :development do
   gem 'rake', '~> 13.0'
-  gem 'rubocop', '~> 0.79'
+  gem 'rubocop', '~> 1.9'
   gem 'rugged', '~> 1.0'
   gem 'sys-proc', '~> 1.1'
 
