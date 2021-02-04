@@ -1,0 +1,7 @@
+---
+Layout/BlockAlignment: { EnforcedStyleAlignWith: start_of_block }
+Layout/EmptyLineAfterMagicComment: { Enabled: false }
+Layout/EmptyLinesAroundAttributeAccessor: { Enabled: true }
+Layout/LineLength: { Max: 120 }
+Layout/SpaceAroundMethodCallOperator: { Enabled: true }
+Layout/SpaceBeforeBrackets: { Enabled: true }
