@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.5.0"
   s.require_paths = ["lib"]
   s.files         = [
+    ".rubocop.yml",
     ".yardopts",
     "lib/kamaze-project.rb",
     "lib/kamaze/project.rb",
@@ -126,6 +127,12 @@ Gem::Specification.new do |s|
     "lib/kamaze/project/tools_provider/resolver.rb",
     "lib/kamaze/project/version.rb",
     "lib/kamaze/project/version.yml",
+    "rubocop.yml",
+    "rubocop/layout.yml",
+    "rubocop/lint.yml",
+    "rubocop/metrics.yml",
+    "rubocop/naming.yml",
+    "rubocop/style.yml",
   ]
 
   s.add_runtime_dependency("cli-ui", ["~> 1.3"])
