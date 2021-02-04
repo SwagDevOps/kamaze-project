@@ -4,6 +4,9 @@
 <?rb
 [
   '.yardopts',
+  '.rubocop.yml',
+  'rubocop.yml',
+  'rubocop/*.yml',
   'lib/**/*.rb',
   'lib/**/resources/**/**',
   'lib/**/version.yml',
