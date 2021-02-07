@@ -8,19 +8,21 @@
 
 [nil, :gem_runner, :exceptions].each { |req| require ['rubygems', req].compact.join('/') }
 
-tools.fetch(:gemspec_builder).tap do |builder|
-  # Code mostly based on gem executable
-  #
-  # @see http://guides.rubygems.org/publishing/
-  # @see rubygems-tasks
-  runner = lambda do
+require_relative './build'
+
+# Code mostly based on gem executable
+#
+# @see http://guides.rubygems.org/publishing/
+# @see rubygems-tasks
+lambda do
+  tools.fetch(:gemspec_builder).yield_self do |builder|
     [:push, builder.buildable].map(&:to_s).yield_self do |args|
       Gem::GemRunner.new.run(args.map(&:to_s))
     rescue Gem::SystemExitException => e
       exit(e.exit_code)
     end
   end
-
+end.tap do |runner|
   desc 'Push gem up to the gem server'
-  task('gem:push': [builder.buildable]) { runner.call }
+  task('gem:push': [:'gem:build']) { runner.call }
 end
