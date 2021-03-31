@@ -14,7 +14,7 @@ require_relative '../gemspec'
 class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec::Packager
   autoload(:Gem, 'rubygems')
   autoload(:Pathname, 'pathname')
-  autoload(:Command, "#{__dir__}/packer/")
+  autoload(:Command, "#{__dir__}/packer/command")
 
   # Binary (executable) used to pack the project
   #
