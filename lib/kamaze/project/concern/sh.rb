@@ -62,10 +62,10 @@ module Kamaze::Project::Concern::Sh
 
       if !ok and shell_runner_debug?
         # @formatter:off
-        "Command failed with status (%<retcode>s):\n# %<command>s" % {
+        ("Command failed with status (%<retcode>s):\n# %<command>s" % {
           retcode: status.exitstatus,
           command: debug_cmd(cmd.clone).gsub(/\{\}$/, '')
-        }.tap { |message| warn(message) }
+        }).tap { |message| warn(message) }
         # @formatter:on
       end
     end
