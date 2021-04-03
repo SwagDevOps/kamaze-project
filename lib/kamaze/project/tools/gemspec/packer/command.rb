@@ -92,12 +92,12 @@ class Kamaze::Project::Tools::Gemspec::Packer::Command
   end
 
   def execute
-    env = preserved_env
-
     Dir.chdir(pwd.join(src_dir)) do
       with_exit_on_failure do
-        Bundler.with_clean_env do
-          sh(*[env].concat(self.to_a))
+        # [DEPRECATED] `Bundler.with_clean_env` has been deprecated in favor of `Bundler.with_unbundled_env`.
+        # If you instead want the environment before bundler was originally loaded, use `Bundler.with_original_env`
+        Bundler.with_unbundled_env do
+          sh(*self.to_a)
 
           self.retcode = self.shell_runner_last_status.exitstatus
         end
@@ -120,24 +120,5 @@ class Kamaze::Project::Tools::Gemspec::Packer::Command
     end
 
     self
-  end
-
-  # Get preserved env (from given env)
-  #
-  # @param [ENV|Hash] from
-  # @return [Hash]
-  #
-  # @todo refactor
-  def preserved_env(from = ENV)
-    env = {}
-    from = from.to_h
-
-    ['CPPFLAGS'].each do |key|
-      next unless from.key?(key)
-
-      env[key] = from.fetch(key)
-    end
-
-    env
   end
 end
