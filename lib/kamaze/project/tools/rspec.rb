@@ -46,7 +46,6 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
   # @return [self]
   def run
     with_exit_on_failure do
-      pp self
       builder.call(arguments.concat(options_arguments)).yield_self do |runner|
         self.retcode = runner.run(stderr, stdout).to_i
       end
