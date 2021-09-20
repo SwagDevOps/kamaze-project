@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+autoload(:Pathname, 'pathname')
 require_relative '../lib/kamaze-project'
-require_relative '../rake'
+Pathname.new("#{__dir__}/..")
+        .realpath
+        .join('Rakefile')
+        .yield_self { |file| self.instance_eval(file.read, file.to_s, 1) }
 
 [
   :env,
