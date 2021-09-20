@@ -128,6 +128,8 @@ Gem::Specification.new do |s|
     "lib/kamaze/project/version.rb",
     "lib/kamaze/project/version.yml",
     "rubocop.yml",
+    "rubocop/bundler.yml",
+    "rubocop/gemspec.yml",
     "rubocop/layout.yml",
     "rubocop/lint.yml",
     "rubocop/metrics.yml",
