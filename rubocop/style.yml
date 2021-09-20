@@ -1,4 +1,5 @@
 ---
+Style/AccessorGrouping: { EnforcedStyle: separated }
 Style/AndOr: { Enabled: false }
 Style/ArgumentsForwarding: { Enabled: true }
 Style/ClassAndModuleChildren: { Enabled: false }
