@@ -96,11 +96,14 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
     @defaults ||= []
   end
 
-  # @return [RSpec::Core::Runner]
+  # builder for ``RSpec::Core::Runner``
+  #
+  # @return [Proc]
   def builder
     require 'rspec/core'
     require 'rspec/core/configuration_options'
 
+    # @return [RSpec::Core::Runner]
     lambda do |options|
       options = ::RSpec::Core::ConfigurationOptions.new(options.map(&:to_s))
 
