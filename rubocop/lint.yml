@@ -1,11 +1,15 @@
 ---
 Lint/AmbiguousAssignment: { Enabled: true }
+Lint/AmbiguousOperatorPrecedence: { Enabled: true }
+Lint/AmbiguousRange: { Enabled: true }
 Lint/DeprecatedConstants: { Enabled: true }
 Lint/DeprecatedOpenSSLConstant: { Enabled: true }
 Lint/DuplicateBranch: { Enabled: true }
 Lint/DuplicateRegexpCharacterClassElement: { Enabled: true }
 Lint/EmptyBlock: { Enabled: true }
 Lint/EmptyClass: { Enabled: true, AllowComments: true }
+Lint/EmptyInPattern: { Enabled: true }
+Lint/IncompatibleIoSelectWithFiberScheduler: { Enabled: true }
 Lint/LambdaWithoutLiteralBlock: { Enabled: true }
 Lint/MixedRegexpCaptureTypes: { Enabled: true }
 Lint/NoReturnInBeginEndBlocks: { Enabled: true }
