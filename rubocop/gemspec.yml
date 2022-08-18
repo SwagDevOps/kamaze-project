@@ -1,2 +1,2 @@
 ---
-Gemspec/DateAssignment: { Enabled: false }
+Gemspec/DeprecatedAttributeAssignment: { Enabled: false }
