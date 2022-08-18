@@ -4,8 +4,8 @@
 
 Gem::Specification.new do |s|
   s.name        = "kamaze-project"
-  s.version     = "1.1.0"
-  s.date        = "2021-02-03"
+  s.version     = "1.2.0"
+  s.date        = "2022-08-18"
   s.summary     = "Automatize recurrent dev tasks"
   s.description = "A bunch of (rake) tasks to automatize development workflows."
 
