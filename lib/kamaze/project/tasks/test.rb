@@ -6,9 +6,11 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-desc 'Run test suites'
-task :test do |_task, args|
-  tools.fetch(:rspec).tap do |rspec|
-    rspec.tags = args.extras
-  end.run
+-> { tools.fetch(:rspec) }.yield_self do |builder|
+  desc 'Run test suites'
+  task :test do |_, args|
+    # @type [Kamaze::Project::Tools::Rspec] rspec
+    builder.call.tap { |rspec| rspec.tags = args.extras }.run
+    # _.reenable # Can not be run twice :(
+  end
 end

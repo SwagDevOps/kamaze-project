@@ -1,0 +1,6 @@
+---
+Metrics/AbcSize: { Max: 20 }
+Metrics/ClassLength: { CountComments: false }
+Metrics/CyclomaticComplexity: { Max: 10 }
+Metrics/MethodLength: { CountComments: false, Max: 10 }
+Metrics/ModuleLength: { CountComments: false }

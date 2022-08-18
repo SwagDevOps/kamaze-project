@@ -14,7 +14,7 @@ require_relative '../gemspec'
 class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec::Packager
   autoload(:Gem, 'rubygems')
   autoload(:Pathname, 'pathname')
-  autoload(:Command, "#{__dir__}/packer/")
+  autoload(:Command, "#{__dir__}/packer/command")
 
   # Binary (executable) used to pack the project
   #
@@ -26,12 +26,9 @@ class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec:
   # @return [Array<Pathname>]
   def packables
     specification.executables.map do |executable|
-      # @formatter:off
-      package_dirs.fetch(:bin)
-                  .join(executable)
-                  .to_s.gsub(%r{^./}, '')
-                  .yield_self { |path| ::Pathname.new(path) }
-      # @formatter:on
+      package_dirs.fetch(:bin).join(executable).to_s.gsub(%r{^./}, '').yield_self do |path|
+        ::Pathname.new(path)
+      end
     end
   end
 
@@ -39,13 +36,25 @@ class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec:
   #
   # @return [Hash]
   def config
-    (RbConfig::CONFIG.map { |k, v| [k.to_sym, v] }).to_h
+    RbConfig::CONFIG.to_h.transform_keys(&:to_sym)
   end
+
+  # rubocop:disable Lint/UselessMethodDefinition
+
+  # Prepare package
+  #
+  # @return [self]
+  # @see Kamaze::Project::Tools::Packager::Filesystem::Operator#prepare
+  def prepare
+    super
+  end
+
+  # rubocop:enable Lint/UselessMethodDefinition
 
   # Pack given packable
   #
   # @param [String] packable
-  # @return [Pathname]
+  # @return [self]
   def pack(packable)
     prepare.tap { command_for(packable).execute }
   end
@@ -57,14 +66,14 @@ class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec:
   protected
 
   def setup
-    super
-
-    self.package_labels = [:src, :tmp, :bin]
-    self.purgeables     = [:bin]
-    self.package_name   = '%<os>s/%<arch>s' % {
-      os: config.fetch(:host_os),
-      arch: config.fetch(:host_cpu)
-    }
+    super.tap do
+      self.package_labels = [:src, :tmp, :bin]
+      self.purgeables = [:bin]
+      self.package_name = '%<os>s/%<arch>s' % {
+        os: config.fetch(:host_os),
+        arch: config.fetch(:host_cpu)
+      }
+    end
   end
 
   # Get command for (packing) a given packable
@@ -75,10 +84,10 @@ class Kamaze::Project::Tools::Gemspec::Packer < Kamaze::Project::Tools::Gemspec:
     Dir.chdir(pwd) do
       Command.new do |command|
         command.executable = compiler
-        command.src_dir    = package_dirs.fetch(:src)
-        command.tmp_dir    = package_dirs.fetch(:tmp)
-        command.bin_dir    = Pathname.new(specification.bin_dir)
-        command.packable   = packable
+        command.src_dir = package_dirs.fetch(:src)
+        command.tmp_dir = package_dirs.fetch(:tmp)
+        command.bin_dir = Pathname.new(specification.bindir)
+        command.packable = packable
       end
     end
   end

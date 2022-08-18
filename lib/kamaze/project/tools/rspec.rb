@@ -46,9 +46,9 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
   # @return [self]
   def run
     with_exit_on_failure do
-      options = arguments.concat(options_arguments).map(&:to_s)
-
-      self.retcode = core.run(options, stderr, stdout).to_i
+      builder.call(arguments.concat(options_arguments)).yield_self do |runner|
+        self.retcode = runner.run(stderr, stdout).to_i
+      end
       reset
     end
 
@@ -96,11 +96,19 @@ class Kamaze::Project::Tools::Rspec < Kamaze::Project::Tools::BaseTool
     @defaults ||= []
   end
 
-  # @return [RSpec::Core::Runner]
-  def core
+  # builder for ``RSpec::Core::Runner``
+  #
+  # @return [Proc]
+  def builder
     require 'rspec/core'
+    require 'rspec/core/configuration_options'
 
-    RSpec::Core::Runner
+    # @return [RSpec::Core::Runner]
+    lambda do |options|
+      options = ::RSpec::Core::ConfigurationOptions.new(options.map(&:to_s))
+
+      ::Class.new(::RSpec::Core::Runner).new(options)
+    end
   end
 
   # @return [Array<String>]

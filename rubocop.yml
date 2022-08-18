@@ -1,0 +1,32 @@
+# see:
+# http://relaxed.ruby.style/
+# https://rubocop.readthedocs.io/en/latest/
+# https://github.com/bbatsov/rubocop/blob/master/manual/cops.md
+# https://github.com/bbatsov/rubocop/tree/master/config
+# https://raw.githubusercontent.com/bbatsov/rubocop/master/config/enabled.yml
+# https://github.com/tootsuite/mastodon/blob/master/.rubocop.yml
+# https://blog.percy.io/share-rubocop-rules-across-all-of-your-repos-f3281fbd71f8
+#
+# Sample of use:
+#
+# ```yml
+# inherit_gem:
+#  kamaze-project:
+#    - .rubocop.yml
+# ```
+---
+inherit_from:
+  - ./rubocop/bundler.yml
+  - ./rubocop/gemspec.yml
+  - ./rubocop/layout.yml
+  - ./rubocop/lint.yml
+  - ./rubocop/metrics.yml
+  - ./rubocop/naming.yml
+  - ./rubocop/style.yml
+
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.5
+  SuggestExtensions: false
+
+

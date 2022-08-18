@@ -1,0 +1,26 @@
+---
+Lint/AmbiguousAssignment: { Enabled: true }
+Lint/AmbiguousOperatorPrecedence: { Enabled: true }
+Lint/AmbiguousRange: { Enabled: true }
+Lint/DeprecatedConstants: { Enabled: true }
+Lint/DeprecatedOpenSSLConstant: { Enabled: true }
+Lint/DuplicateBranch: { Enabled: true }
+Lint/DuplicateRegexpCharacterClassElement: { Enabled: true }
+Lint/EmptyBlock: { Enabled: true }
+Lint/EmptyClass: { Enabled: true, AllowComments: true }
+Lint/EmptyInPattern: { Enabled: true }
+Lint/IncompatibleIoSelectWithFiberScheduler: { Enabled: true }
+Lint/LambdaWithoutLiteralBlock: { Enabled: true }
+Lint/MixedRegexpCaptureTypes: { Enabled: true }
+Lint/NoReturnInBeginEndBlocks: { Enabled: true }
+Lint/NumberedParameterAssignment: { Enabled: true }
+Lint/OrAssignmentToConstant: { Enabled: true }
+Lint/RaiseException: { Enabled: true }
+Lint/RedundantDirGlobSort: { Enabled: false } # @see https://docs.rubocop.org/rubocop/cops_lint.html#lintredundantdirglobsort
+Lint/StructNewOverride: { Enabled: true }
+Lint/SymbolConversion: { Enabled: true }
+Lint/ToEnumArguments: { Enabled: true }
+Lint/TripleQuotes: { Enabled: true }
+Lint/UnexpectedBlockArity: { Enabled: true }
+Lint/UnmodifiedReduceAccumulator: { Enabled: true }
+Lint/UnusedBlockArgument: { Enabled: false }
