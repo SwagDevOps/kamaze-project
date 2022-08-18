@@ -52,6 +52,7 @@ class Kamaze::Project::Tools::Shell < Kamaze::Project::Tools::BaseTool
     require_any(:interesting_methods)
     console.stdout.puts(banner)
     provider.start
+    Pry.start
   end
 
   protected
